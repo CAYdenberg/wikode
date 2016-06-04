@@ -2,6 +2,7 @@
   "plugins": [
     "react"
   ],
+  "extends": ["eslint:recommended"],
   "ecmaFeatures": {
     "jsx": true
   },
@@ -16,9 +17,8 @@
     "console": true,
     "process": true
   },
-  "extends": "eslint:recommended",
   "rules": {
     "no-console": 0,
-    "no-unused-vars": [2, { "varsIgnorePattern" : "React" }]
+    "no-unused-vars": 0
   }
 }

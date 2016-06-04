@@ -7,8 +7,6 @@ const EditorState = Draft.EditorState;
 const RichUtils = Draft.RichUtils;
 const DefaultDraftBlockRenderMap = Draft.DefaultDraftBlockRenderMap;
 
-// const {Map} = Immutable;
-
 const WikEditor = React.createClass({
   getInitialState: function() {
     return ({
@@ -48,6 +46,11 @@ const WikEditor = React.createClass({
     );
   },
 
+  convert: function() {
+    const content = Draft.convertToRaw(this.state.editorState.getCurrentContent());
+    console.log(content);
+  },
+
   render: function() {
     const editorState = this.state.editorState;
 
@@ -82,6 +85,7 @@ const WikEditor = React.createClass({
             spellCheck={true}
           />
         </div>
+        <button onClick={this.convert}>Export</button>
       </div>
     );
   }
