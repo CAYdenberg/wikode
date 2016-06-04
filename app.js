@@ -17,10 +17,13 @@ module.exports = function() {
   }));
   app.set('view engine', 'hbs');
   app.set('views', path.join(__dirname, 'views'));
-
   hbs.registerHelper('json', function(obj) {
     return JSON.stringify(obj);
   });
+
+  // database setup
+  const mongoose = require('mongoose');
+  mongoose.connect(process.env.DB_CONNECT);
 
   app.use(logger('dev'));
   app.use(bodyParser.json());
