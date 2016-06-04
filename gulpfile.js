@@ -21,14 +21,14 @@ gulp.task('lint', function() {
 
 gulp.task('js', function () {
   // set up the browserify instance on a task basis
-  var b = browserify('_main.js')
+  var b = browserify('src/_main.js')
     .transform("babelify", {presets: ['es2015', 'react']});
 
   return b.bundle()
     .pipe(source('main.js'))
     .pipe(buffer())
     .on('error', gutil.log)
-    .pipe(gulp.dest('.'));
+    .pipe(gulp.dest('./dist'));
 
 });
 

@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+
+require('dotenv').config();
+var app = require('../app')(false);
+
+var server = app.listen(app.get('port'), function() {
+  console.log('Express server listening on port ' + server.address().port);
+});
