@@ -7,11 +7,13 @@ const EditorState = Draft.EditorState;
 const RichUtils = Draft.RichUtils;
 const DefaultDraftBlockRenderMap = Draft.DefaultDraftBlockRenderMap;
 
+const save = require('./save');
+
 const WikEditor = React.createClass({
   getInitialState: function() {
     return ({
-      editorState: EditorState.createEmpty()
-    })
+      editorState: this.props.content
+    });
   },
 
   onChange: function(editorState) {
@@ -46,9 +48,10 @@ const WikEditor = React.createClass({
     );
   },
 
-  convert: function() {
+  _save: function() {
     const content = Draft.convertToRaw(this.state.editorState.getCurrentContent());
     console.log(content);
+    save(globals.user, globals.slug, content);
   },
 
   render: function() {
@@ -85,7 +88,7 @@ const WikEditor = React.createClass({
             spellCheck={true}
           />
         </div>
-        <button onClick={this.convert}>Export</button>
+        <button onClick={this._save}>Save</button>
       </div>
     );
   }
@@ -182,7 +185,12 @@ const InlineStyleControls = (props) => {
   );
 };
 
-ReactDOM.render(
-  <WikEditor />,
-  document.getElementById('editor')
-);
+var content;
+try {
+  content = Draft.convertFromRaw(JSON.window.globals.content);
+  console.log(content);
+} catch(e) {
+  content = EditorState.createEmpty();
+}
+
+ReactDOM.render(<WikEditor content={content} />, document.getElementById('editor'));

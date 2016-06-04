@@ -15,13 +15,35 @@ router.post('/:user/:doc', function(req, res, next) {
 router.put('/:user/:doc', function(req, res, next) {
   // check if the current user is signed in
   // if yes, save
+  const content = req.body;
+  const wikode = new Wikode({
+    user: req.params.user,
+    slug: req.params.slug,
+    datetime: new Date().toISOString(), //TODO: move this into a save hook on the Model
+    content: content
+  }).save().then(() => {
+    next();
+  });
   // if no, offer to create a new document
 });
 
-router.get('/:user/:doc', function(req, res, next) {
+router.all('/:user/:doc', function(req, res, next) {
+
   req.context.template = 'editor';
-  // show the selected document
-  // edit mode can be on or off
+
+  Wikode.find({
+    user: req.params.user,
+    slug: req.params.slug
+  }).sort({datetime: -1}).limit(1).then(results => {
+    const wikode = results[0];
+    req.context.data = {
+      user: req.params.user,
+      slug: req.params.doc,
+      content: wikode.content
+    };
+    next();
+  });
+
 });
 
 router.post('/', function(req, res, next) {
@@ -31,9 +53,10 @@ router.post('/', function(req, res, next) {
 
   const wikode = new Wikode({
     user: 'anon',
+    datetime: new Date().toISOString(),
     slug: randomstring(8)
   }).save().then(wikode => {
-    res.send();
+    res.redirect('/' + wikode.user + '/' + wikode.slug + '/');
   });
 
 });
@@ -45,8 +68,9 @@ router.get('/', function(req, res, next) {
 });
 
 router.all('*', function(req, res, next) {
+  const template = req.context.template || 'index';
   if (req.accepts('text/html')) {
-    res.render(req.context.template, req.context);
+    res.render(template, req.context);
   } else {
     res.json(req.context.data);
   }
