@@ -1,3 +1,4 @@
+require('dotenv').config();
 
 const gulp = require('gulp');
 const gutil = require('gulp-util');
@@ -5,7 +6,7 @@ const eslint = require('gulp-eslint');
 const browserify = require('browserify');
 const source = require('vinyl-source-stream');
 const buffer = require('vinyl-buffer');
-
+const browserSync = require('browser-sync');
 
 gulp.task('lint', function() {
 
@@ -28,8 +29,22 @@ gulp.task('js', function () {
     .pipe(source('main.js'))
     .pipe(buffer())
     .on('error', gutil.log)
-    .pipe(gulp.dest('./dist'));
+    .pipe(gulp.dest('./dist'))
+    .pipe(browserSync.stream());
 
 });
 
-gulp.task('default', ['js']);
+gulp.task('default', ['lint', 'js']);
+
+gulp.task('watch', function() {
+
+  browserSync.init({
+    proxy: 'http://localhost:' + process.env.PORT,
+    port: (parseInt(process.env.PORT, 10) + 1)
+  });
+
+  gulp.watch(['src/**/*.js'], ['js']);
+  gulp.watch(['src/**/*.less'], ['css']);
+  gulp.watch(['views/**/*.hbs']).on('change', browserSync.reload);
+
+});
