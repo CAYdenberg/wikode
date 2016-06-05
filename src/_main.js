@@ -11,9 +11,18 @@ const save = require('./save');
 
 const WikEditor = React.createClass({
   getInitialState: function() {
+
+    var editorState;
+    try {
+      editorState = EditorState.createWithContent(Draft.convertFromRaw(this.props.content));
+    } catch(e) {
+      editorState = EditorState.createEmpty();
+    }
+
     return ({
-      editorState: this.props.editorState
+      editorState: editorState
     });
+
   },
 
   onChange: function(editorState) {
@@ -186,18 +195,6 @@ const InlineStyleControls = (props) => {
   );
 };
 
-var content;
 
-  console.log(globals.content);
-  var contentState = Draft.convertFromRaw(globals.content);
-  var editorState = EditorState.createWithContent(contentState);
-
-// catch(e) {
-//   content = EditorState.createEmpty();
-//   console.log('from empty');
-// }
-
-
-window.Draft = Draft;
-
-ReactDOM.render(<WikEditor editorState={editorState} />, document.getElementById('editor'));
+const content = globals.content || null;
+ReactDOM.render(<WikEditor content={content} />, document.getElementById('editor'));

@@ -6,13 +6,13 @@ const Wikode = require('../models/Wikode');
 
 
 
-router.post('/:user/:doc', function(req, res, next) {
+router.post('/:user/:slug', function(req, res, next) {
   // check if the current user already has that document
   // if they don't create a new blank document
   // if they do send a warning
 });
 
-router.put('/:user/:doc', function(req, res, next) {
+router.put('/:user/:slug', function(req, res, next) {
   // check if the current user is signed in
   // if yes, save
   const content = req.body;
@@ -27,7 +27,7 @@ router.put('/:user/:doc', function(req, res, next) {
   // if no, offer to create a new document
 });
 
-router.all('/:user/:doc', function(req, res, next) {
+router.all('/:user/:slug', function(req, res, next) {
 
   req.context.template = 'editor';
 
@@ -35,12 +35,19 @@ router.all('/:user/:doc', function(req, res, next) {
     user: req.params.user,
     slug: req.params.slug
   }).sort({datetime: -1}).limit(1).then(results => {
+
     const wikode = results[0];
+
+    if (results.length === 0) {
+      res.status(404).render('404');
+    }
+
     req.context.data = {
-      user: req.params.user,
-      slug: req.params.doc,
+      user: wikode.user,
+      slug: wikode.slug,
       content: wikode.content
     };
+
     next();
   });
 
@@ -68,7 +75,8 @@ router.get('/', function(req, res, next) {
 });
 
 router.all('*', function(req, res, next) {
-  const template = req.context.template || 'index';
+  const template = req.context.template || 'index'
+
   if (req.accepts('text/html')) {
     res.render(template, req.context);
   } else {

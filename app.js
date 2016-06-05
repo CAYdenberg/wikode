@@ -64,7 +64,7 @@ module.exports = function() {
         res.render('error', {
           message: err.message,
           error: err
-      });
+        });
     });
   }
 
