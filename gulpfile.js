@@ -1,12 +1,16 @@
 require('dotenv').config();
 
+const path = require('path');
+
 const gulp = require('gulp');
 const gutil = require('gulp-util');
 const eslint = require('gulp-eslint');
 const browserify = require('browserify');
 const source = require('vinyl-source-stream');
 const buffer = require('vinyl-buffer');
+
 const browserSync = require('browser-sync');
+const nodemon = require('gulp-nodemon');
 
 gulp.task('lint', function() {
 
@@ -34,17 +38,30 @@ gulp.task('js', function () {
 
 });
 
-gulp.task('default', ['lint', 'js']);
 
-gulp.task('watch', function() {
-
-  browserSync.init({
-    proxy: 'http://localhost:' + process.env.PORT,
-    port: (parseInt(process.env.PORT, 10) + 1)
-  });
+gulp.task('watch', function () {
 
   gulp.watch(['src/**/*.js'], ['js']);
-  gulp.watch(['src/**/*.less'], ['css']);
-  gulp.watch(['views/**/*.hbs']).on('change', browserSync.reload);
+  gulp.watch(['**/*.hbs'], browserSync.reload);
+
+  return nodemon({
+
+    // nodemon our expressjs server
+    script: 'bin/www',
+
+    // watch all js, hbs and scss files
+    watch: ['app.js', 'routes/**/*.js', 'models/**/*.js']
+
+  })
+  .once('start', function() {
+    browserSync.init({
+      proxy: 'http://localhost:' + process.env.PORT,
+      port: (parseInt(process.env.PORT, 10) + 1)
+    });
+  });
 
 });
+
+
+
+gulp.task('default', ['lint', 'js']);
