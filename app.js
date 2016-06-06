@@ -5,6 +5,10 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var hbs = require('express-hbs');
 
+const mongoose = require('mongoose');
+const session = require('express-session');
+const SessionStore = require('connect-mongo')(session);
+
 var routes = require('./routes/index');
 
 module.exports = function() {
@@ -22,14 +26,21 @@ module.exports = function() {
   });
 
   // database setup
-  const mongoose = require('mongoose');
   mongoose.connect(process.env.DB_CONNECT);
 
+  // basic middleware setup
   app.use(logger('dev'));
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(cookieParser());
   app.use(express.static(path.join(__dirname, 'dist')));
+
+  app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: true,
+    saveUninitialized: true,
+    store: new SessionStore({mongooseConnection: mongoose.connection})
+  }));
 
   //specify assets
   app.use(function(req, res, next) {
