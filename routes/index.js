@@ -3,6 +3,31 @@ var router = express.Router();
 const randomstring = require('randomstring').generate;
 
 const Wikode = require('../models/Wikode');
+const User = require('../models/User');
+
+
+router.all('/:user/:slug?', function(req, res, next) {
+  // find the user specified in the URL by either their hash or their name
+  User.findOne({
+    $or: [
+      {hash: req.params.user},
+      {name: req.params.user}
+    ]
+  }).then(user => {
+    // check if the user parameter is a hash for a user who already is registered
+    // if so redirect (301) to the page within the user's profile
+    if (user.name && user.name !== req.params.user) {
+      res.status(301).redirect('/' + user.name + '/' + req.params.slug);
+    }
+
+    // check if the session user is the same as the user URL parameter.
+    // if yes turn edit mode on
+    if (req.session.user === user) {
+      req.context.data.editMode = true;
+    }
+    next();
+  }).catch(err => next(err));
+});
 
 
 
@@ -23,6 +48,8 @@ router.put('/:user/:slug', function(req, res, next) {
     content: content
   }).save().then(() => {
     next();
+  }).catch((err) => {
+    next(err);
   });
   // if no, offer to create a new document
 });

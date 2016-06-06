@@ -9,6 +9,10 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const SessionStore = require('connect-mongo')(session);
 
+const randomstring = require('randomstring').generate;
+
+const User = require('./models/User');
+
 var routes = require('./routes/index');
 
 module.exports = function() {
@@ -35,6 +39,7 @@ module.exports = function() {
   app.use(cookieParser());
   app.use(express.static(path.join(__dirname, 'dist')));
 
+  // set up sessions
   app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: true,
@@ -42,8 +47,25 @@ module.exports = function() {
     store: new SessionStore({mongooseConnection: mongoose.connection})
   }));
 
-  //specify assets
+  // basic setup - used across the entire app
   app.use(function(req, res, next) {
+
+    // set up sessions
+    if (!req.session.user) {
+      req.session.user = new User({
+        hash: randomstring(8)
+      }).save().then(next).catch((err) => {
+        next(err);
+      });
+    }
+
+  });
+
+  app.use(function(req, res, next) {
+
+    // set up data
+    req.context.data.userHash = req.session.user.hash;
+
     req.context = {
       stylesheets: [
 
@@ -53,6 +75,7 @@ module.exports = function() {
       ]
     };
     next();
+
   });
 
   //specify routes
