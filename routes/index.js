@@ -1,5 +1,8 @@
 var express = require('express');
 var router = express.Router();
+const React = require('react');
+const ReactRender = require('react-dom/server').renderToString;
+
 const randomstring = require('randomstring').generate;
 
 const Wikode = require('../models/Wikode');
@@ -100,16 +103,18 @@ router.post('/', function(req, res, next) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  req.context.template = 'index';
+  req.context.template = 'Home';
   next();
 });
 
 
 router.all('*', function(req, res, next) {
-  const template = req.context.template || 'index'
+  const template = req.context.template || 'Home';
 
   if (req.accepts('text/html')) {
-    res.render(template, req.context);
+    const component = require('../components/' + template);
+    req.context.reactHtml = ReactRender(React.createElement(component, req.context.data));
+    res.render('index', req.context);
   } else {
     res.json(req.context.data);
   }

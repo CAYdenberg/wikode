@@ -50,7 +50,7 @@ gulp.task('watch', function () {
     script: 'bin/www',
 
     // watch all js, hbs and scss files
-    watch: ['app.js', 'routes/**/*.js', 'models/**/*.js']
+    watch: ['app.js', 'routes/**/*.js', 'models/**/*.js', 'components/**/*.js']
 
   })
   .once('start', function() {
