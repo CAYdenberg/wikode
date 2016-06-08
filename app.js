@@ -52,19 +52,21 @@ module.exports = function() {
 
     // set up sessions
     if (!req.session.user) {
-      req.session.user = new User({
+      new User({
         hash: randomstring(8)
-      }).save().then(next).catch((err) => {
+      }).save().then(user => {
+        req.session.user = user;
+        next();
+      }).catch((err) => {
         next(err);
       });
+    } else {
+      next();
     }
 
   });
 
   app.use(function(req, res, next) {
-
-    // set up data
-    req.context.data.userHash = req.session.user.hash;
 
     req.context = {
       stylesheets: [
@@ -73,6 +75,11 @@ module.exports = function() {
       scripts: [
         'main.js'
       ]
+    };
+
+    // set up data
+    req.context.data = {
+      userHash: req.session.user.hash
     };
     next();
 

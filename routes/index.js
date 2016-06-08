@@ -6,7 +6,7 @@ const Wikode = require('../models/Wikode');
 const User = require('../models/User');
 
 
-router.all('/:user/:slug?', function(req, res, next) {
+router.all('/:user/:slug', function(req, res, next) {
   // find the user specified in the URL by either their hash or their name
   User.findOne({
     $or: [
@@ -30,16 +30,17 @@ router.all('/:user/:slug?', function(req, res, next) {
 });
 
 
-
 router.post('/:user/:slug', function(req, res, next) {
   // check if the current user already has that document
   // if they don't create a new blank document
   // if they do send a warning
 });
 
+
 router.put('/:user/:slug', function(req, res, next) {
-  // check if the current user is signed in
-  // if yes, save
+  // check if the :user is the same as the session user
+  // if no, return a 400 or 401
+  // if yes, save the document
   const content = req.body;
   const wikode = new Wikode({
     user: req.params.user,
@@ -48,11 +49,9 @@ router.put('/:user/:slug', function(req, res, next) {
     content: content
   }).save().then(() => {
     next();
-  }).catch((err) => {
-    next(err);
-  });
-  // if no, offer to create a new document
+  }).catch(err => next(err));
 });
+
 
 router.all('/:user/:slug', function(req, res, next) {
 
@@ -66,7 +65,9 @@ router.all('/:user/:slug', function(req, res, next) {
     const wikode = results[0];
 
     if (results.length === 0) {
-      res.status(404).render('404');
+      var err = new Error('Not Found');
+      err.status = 404;
+      next(err);
     }
 
     req.context.data = {
@@ -80,13 +81,14 @@ router.all('/:user/:slug', function(req, res, next) {
 
 });
 
+
 router.post('/', function(req, res, next) {
   // generate a document with user:anonymous and string:random
   // save it to DB with empty array as content
   // redirect to the route for that document
 
   const wikode = new Wikode({
-    user: 'anon',
+    user: req.session.user.hash,
     datetime: new Date().toISOString(),
     slug: randomstring(8)
   }).save().then(wikode => {
@@ -95,11 +97,13 @@ router.post('/', function(req, res, next) {
 
 });
 
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   req.context.template = 'index';
   next();
 });
+
 
 router.all('*', function(req, res, next) {
   const template = req.context.template || 'index'
@@ -109,6 +113,8 @@ router.all('*', function(req, res, next) {
   } else {
     res.json(req.context.data);
   }
+
 });
+
 
 module.exports = router;
