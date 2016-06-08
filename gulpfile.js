@@ -41,7 +41,7 @@ gulp.task('js', function () {
 
 gulp.task('watch', function () {
 
-  gulp.watch(['src/**/*.js'], ['js']);
+  gulp.watch(['src/**/*.js', 'components/**/*.js'], ['js']);
   gulp.watch(['**/*.hbs'], browserSync.reload);
 
   return nodemon({
@@ -58,7 +58,7 @@ gulp.task('watch', function () {
       proxy: 'http://localhost:' + process.env.PORT,
       port: (parseInt(process.env.PORT, 10) + 1)
     });
-  });
+  }).on('restart', browserSync.reload);
 
 });
 
