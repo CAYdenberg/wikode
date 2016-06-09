@@ -20,9 +20,7 @@ module.exports = function() {
   var app = express();
 
   // view engine setup
-  app.engine('hbs', hbs.express3({
-    partialsDir: __dirname + '/views/partials'
-  }));
+  app.engine('hbs', hbs.express3());
   app.set('view engine', 'hbs');
   app.set('views', path.join(__dirname, 'views'));
   hbs.registerHelper('json', function(obj) {

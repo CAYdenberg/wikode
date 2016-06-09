@@ -1,11 +1,20 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 
+const templates = {
+  Home: require('../components/Home'),
+  Editor: require('../components/Editor')
+};
+
 const save = require('./save');
-const WikiEditor = require('../components/WikiEditor');
-const Home = require('../components/Home');
 
 const content = globals.content || null;
-// ReactDOM.render(<WikiEditor content={content} save={save} />, document.getElementById('editor'));
+const mountPoint = document.getElementById('mount-point');
+const template = templates[mountPoint.getAttribute('data-template')];
 
-ReactDOM.render(<Home />, document.getElementById('mount-point'));
+ReactDOM.render(React.createElement(template, {
+    content: content,
+    save: save}
+  ),
+  document.getElementById('mount-point')
+);

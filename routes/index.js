@@ -58,7 +58,7 @@ router.put('/:user/:slug', function(req, res, next) {
 
 router.all('/:user/:slug', function(req, res, next) {
 
-  req.context.template = 'editor';
+  req.context.template = 'Editor';
 
   Wikode.find({
     user: req.params.user,
