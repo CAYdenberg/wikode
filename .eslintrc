@@ -1,25 +1,27 @@
 {
-  "plugins": [
-    "react"
-  ],
-  "extends": ["eslint:recommended"],
-  "ecmaFeatures": {
-    "jsx": true
+  "plugins": ["react"],
+  "settings": {
+    "react": {
+      "pragma": "React",
+      "version": "15.1.0"
+    }
   },
-  "sourceType": "module",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
   "env": {
     "es6": true,
     "commonjs": true,
-    "browser": true,
     "node": true
   },
   "globals": {
-    "globals": true,
-    "console": true,
-    "process": true
+    "globals": true
   },
+  "extends": ["eslint:recommended", "plugin:react/recommended"],
   "rules": {
     "no-console": 0,
-    "no-unused-vars": 0
+    "no-unused-vars": [2, { "varsIgnorePattern" : "React" }]
   }
 }
