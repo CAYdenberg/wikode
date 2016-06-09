@@ -26,7 +26,7 @@ gulp.task('css', function() {
 
 gulp.task('lint', function() {
 
-  return gulp.src(['**/*.js','!node_modules/**', '!main.js'])
+  return gulp.src(['**/*.js','!node_modules/**', '!dist/**/*.js'])
     // eslint() attaches the lint output to the "eslint" property
     // of the file object so it can be used by other modules.
     .pipe(eslint())
@@ -53,6 +53,7 @@ gulp.task('js', function () {
 
 gulp.task('watch', function () {
 
+  gulp.watch(['src/**/*.scss'], ['css']);
   gulp.watch(['src/**/*.js', 'components/**/*.js'], ['js']);
   gulp.watch(['**/*.hbs'], browserSync.reload);
 
@@ -76,4 +77,4 @@ gulp.task('watch', function () {
 
 
 
-gulp.task('default', ['lint', 'js']);
+gulp.task('default', ['css', 'lint', 'js']);
