@@ -68,7 +68,7 @@ module.exports = function() {
 
     req.context = {
       stylesheets: [
-
+        '//fonts.googleapis.com/css?family=Open+Sans:400,700,700italic,400italic'
       ],
       scripts: [
         'main.js'

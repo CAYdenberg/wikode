@@ -4,6 +4,8 @@ const path = require('path');
 
 const gulp = require('gulp');
 const gutil = require('gulp-util');
+const rename = require('gulp-rename');
+const sass = require('gulp-sass');
 const eslint = require('gulp-eslint');
 const browserify = require('browserify');
 const source = require('vinyl-source-stream');
@@ -11,6 +13,16 @@ const buffer = require('vinyl-buffer');
 
 const browserSync = require('browser-sync');
 const nodemon = require('gulp-nodemon');
+
+gulp.task('css', function() {
+  gulp.src('./src/_main.scss')
+    .pipe(rename('style.css'))
+    .pipe(sass())
+    .on('error', gutil.log)
+    .pipe(gulp.dest('./dist'))
+    .pipe(browserSync.stream());
+});
+
 
 gulp.task('lint', function() {
 
