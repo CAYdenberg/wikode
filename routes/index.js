@@ -45,7 +45,7 @@ router.put('/:user/:slug', function(req, res, next) {
   // if no, return a 400 or 401
   // if yes, save the document
   const content = req.body;
-  const wikode = new Wikode({
+  new Wikode({
     user: req.params.user,
     slug: req.params.slug,
     datetime: new Date().toISOString(), //TODO: move this into a save hook on the Model
@@ -90,13 +90,13 @@ router.post('/', function(req, res, next) {
   // save it to DB with empty array as content
   // redirect to the route for that document
 
-  const wikode = new Wikode({
+  new Wikode({
     user: req.session.user.hash,
     datetime: new Date().toISOString(),
     slug: randomstring(8)
   }).save().then(wikode => {
     res.redirect('/' + wikode.user + '/' + wikode.slug + '/');
-  });
+  }).catch(err => {next(err)});
 
 });
 
@@ -108,7 +108,7 @@ router.get('/', function(req, res, next) {
 });
 
 
-router.all('*', function(req, res, next) {
+router.all('*', function(req, res) {
   const template = req.context.template || 'Home';
 
   if (req.accepts('text/html')) {

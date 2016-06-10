@@ -19,7 +19,7 @@
   "globals": {
     "globals": true
   },
-  "extends": ["eslint:recommended", "plugin:react/recommended"],
+  "extends": ["eslint:recommended"],
   "rules": {
     "no-console": 0,
     "no-unused-vars": [2, { "varsIgnorePattern" : "React" }]

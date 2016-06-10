@@ -3,6 +3,9 @@
   <head>
     <meta charset="utf-8">
     <title>Wikode</title>
+    {{#each stylesheets}}
+      <link rel="stylesheet" href="{{ this }}" type="text/css">
+    {{/each}}
   </head>
 
   <body>
@@ -13,7 +16,9 @@
     <script type="text/javascript">
       window.globals = {{{json data}}}
     </script>
-    <script src="/main.js" type="text/javascript"></script>
+    {{#each scripts}}
+      <script src="{{ this }}" type="text/javascript"></script>
+    {{/each}}
 
   </body>
 </html>
