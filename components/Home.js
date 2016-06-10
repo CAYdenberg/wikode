@@ -3,23 +3,27 @@ const React = require('react');
 module.exports = () => {
   return (
     <div>
-      <div className="top-bar">
-        <div className="top-bar-left">
-          <ul className="dropdown menu" data-dropdown-menu>
-            <li><a href="/">LOGO</a></li>
-          </ul>
+      <nav className="top-bar">
+        <div class="top-bar-title">
+          <a href="/">Site Title</a>
         </div>
-        <div className="top-bar-right">
-          <ul className="vertical medium-horizontal menu">
-            <li><input type="text" placeholder="Username or email" /></li>
-            <li><input type="password"  placeholder="Placeholder" /></li>
-            <li>
-              <button type="submit" className="button primary">Submit</button>
-              <a href="#" className="button warning">Create an account</a>
-            </li>
-          </ul>
+        <ul className="menu align-right">
+          <li><button type="submit" className="button success">Sign In</button></li>
+          <li><a href="#" className="button warning">Create an account</a></li>
+        </ul>
+      </nav>
+
+      <div className="reveal-overlay" style={{display: "block"}}>
+        <div className="reveal" style={{display: "block"}}>
+          <h2>The sign up form</h2>
+          <form>
+          </form>
+        </div>
+        <div className="reveal">
+          <h2>The sign in form</h2>
         </div>
       </div>
+
       <div className="column row">
         <h1>Home/splash page</h1>
         <form action="." method="POST">
