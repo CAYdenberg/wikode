@@ -14,7 +14,7 @@ const template = templates[mountPoint.getAttribute('data-template')];
 
 ReactDOM.render(React.createElement(template, {
     content: content,
-    save: save}
-  ),
+    save: save
+  }),
   document.getElementById('mount-point')
 );
