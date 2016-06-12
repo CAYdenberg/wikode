@@ -4,7 +4,7 @@ module.exports = () => {
   return (
     <div>
       <nav className="top-bar">
-        <div class="top-bar-title">
+        <div className="top-bar-title">
           <a href="/">Site Title</a>
         </div>
         <ul className="menu align-right">
@@ -13,14 +13,41 @@ module.exports = () => {
         </ul>
       </nav>
 
-      <div className="reveal-overlay" style={{display: "block"}}>
-        <div className="reveal" style={{display: "block"}}>
-          <h2>The sign up form</h2>
+      <div className="reveal-overlay">
+        <div className="reveal">
+          <h2>Sign Up</h2>
+          <hr />
           <form>
+            <label>
+              Username
+              <input type="text" name="signup-username" />
+            </label>
+            <label>
+              Email Address
+              <input type="email" name="signup-email" />
+            </label>
+            <label>
+              Password
+              <input type="password" name="signup-password" />
+            </label>
+            <button className="button success">Sign Up</button>
+            <hr />
+            <button className="button default">I already have an account</button>
           </form>
         </div>
         <div className="reveal">
-          <h2>The sign in form</h2>
+          <h2>Sign In</h2>
+          <form>
+            <label>
+              Username or Email
+              <input type="text" name="signin username" />
+            </label>
+            <label>
+              Password
+              <input type="password" name="signin-password" />
+            </label>
+            <button className="button success">Sign In</button>
+          </form>
         </div>
       </div>
 

@@ -52,16 +52,19 @@ gulp.task('js', function () {
 gulp.task('watch', function () {
 
   gulp.watch(['src/**/*.scss'], ['css']);
+  // watch CLIENT SIDE JS
   gulp.watch(['src/**/*.js', 'components/**/*.js'], ['js']);
+  // trigger browserSync reload when HBS files change
   gulp.watch(['**/*.hbs'], browserSync.reload);
 
   return nodemon({
 
-    // nodemon our expressjs server
     script: 'bin/www',
 
-    // watch all js, hbs and scss files
-    watch: ['app.js', 'routes/**/*.js', 'models/**/*.js', 'components/**/*.js']
+    // watch SERVER SIDE files
+    // note we are NOT watching components even though most of these render
+    // server-side as well.
+    watch: ['app.js', 'routes/**/*.js', 'models/**/*.js']
 
   })
   .once('start', function() {
