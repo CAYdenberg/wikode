@@ -8,8 +8,7 @@ const EditorState = Draft.EditorState;
 const RichUtils = Draft.RichUtils;
 const DefaultDraftBlockRenderMap = Draft.DefaultDraftBlockRenderMap;
 
-const BlockStyleControls = require('./BlockStyleControls');
-const InlineStyleControls = require('./InlineStyleControls');
+const Controls = require('./Controls');
 
 const WikiEditor = React.createClass({
   getInitialState: function() {
@@ -62,7 +61,6 @@ const WikiEditor = React.createClass({
   _save: function() {
     const contentState = this.state.editorState.getCurrentContent();
     const content = Draft.convertToRaw(contentState);
-    console.log(content);
     this.props.save(globals.user, globals.slug, content);
   },
 
@@ -81,13 +79,11 @@ const WikiEditor = React.createClass({
 
     return (
       <div className="RichEditor-root">
-        <BlockStyleControls
-          editorState={editorState}
-          onToggle={this.toggleBlockType}
-        />
-        <InlineStyleControls
-          editorState={editorState}
-          onToggle={this.toggleInlineStyle}
+        <Controls
+          editorState={this.state.editorState}
+          toggleInlineStyle={this.toggleInlineStyle}
+          toggleBlockType={this.toggleBlockType}
+          save={this._save}
         />
         <div className={className} onClick={this.focus}>
           <Editor
@@ -100,7 +96,6 @@ const WikiEditor = React.createClass({
             spellCheck={true}
           />
         </div>
-        <button onClick={this._save}>Save</button>
       </div>
     );
   }
