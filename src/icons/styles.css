@@ -1,19 +1,19 @@
 @charset "UTF-8";
 
 @font-face {
-  font-family: "icons";
-  src:url("fonts/icons.eot");
-  src:url("fonts/icons.eot?#iefix") format("embedded-opentype"),
-    url("fonts/icons.woff") format("woff"),
-    url("fonts/icons.ttf") format("truetype"),
-    url("fonts/icons.svg#icons") format("svg");
+  font-family: "wikode";
+  src:url("fonts/wikode.eot");
+  src:url("fonts/wikode.eot?#iefix") format("embedded-opentype"),
+    url("fonts/wikode.woff") format("woff"),
+    url("fonts/wikode.ttf") format("truetype"),
+    url("fonts/wikode.svg#wikode") format("svg");
   font-weight: normal;
   font-style: normal;
 
 }
 
 [data-icon]:before {
-  font-family: "icons" !important;
+  font-family: "wikode" !important;
   content: attr(data-icon);
   font-style: normal !important;
   font-weight: normal !important;
@@ -27,7 +27,7 @@
 
 [class^="icon-"]:before,
 [class*=" icon-"]:before {
-  font-family: "icons" !important;
+  font-family: "wikode" !important;
   font-style: normal !important;
   font-weight: normal !important;
   font-variant: normal !important;
@@ -127,4 +127,13 @@
 }
 .icon-valid:before {
   content: "\e01d";
+}
+.icon-new-document:before {
+  content: "\e01e";
+}
+.icon-quote:before {
+  content: "\e01f";
+}
+.icon-flow-cascade:before {
+  content: "\e020";
 }
