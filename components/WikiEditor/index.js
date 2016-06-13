@@ -4,7 +4,6 @@ const Draft = require('draft-js');
 const Editor = Draft.Editor;
 const EditorState = Draft.EditorState;
 const RichUtils = Draft.RichUtils;
-const DefaultDraftBlockRenderMap = Draft.DefaultDraftBlockRenderMap;
 
 const BlockStyleControls = require('./BlockStyleControls');
 const InlineStyleControls = require('./InlineStyleControls');
