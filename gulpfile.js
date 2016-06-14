@@ -21,6 +21,11 @@ gulp.task('css', function() {
     .pipe(browserSync.stream());
 });
 
+gulp.task('fonts', function() {
+  return gulp.src('./src/icons/fonts/**')
+    .pipe(gulp.dest('./dist/fonts'))
+    .pipe(browserSync.stream());
+});
 
 gulp.task('lint', function() {
 
@@ -78,4 +83,4 @@ gulp.task('watch', function () {
 
 
 
-gulp.task('default', ['css', 'lint', 'js']);
+gulp.task('default', ['css', 'fonts', 'lint', 'js']);
