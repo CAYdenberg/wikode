@@ -15,7 +15,9 @@ module.exports = (props) => {
         editorState={props.editorState}
         onToggle={props.toggleInlineStyle}
       />
-      <button save={props.save}>Save</button>
+      <button save={props.save} className="editor-controls__save" aria-label="save">
+        <span className="icon-save-cloud"></span>
+      </button>
     </div>
 
   );

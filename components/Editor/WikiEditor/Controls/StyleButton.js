@@ -6,17 +6,13 @@ module.exports = (props) => {
     props.onToggle(props.style);
   }
 
-  const icon = () => {
-    if (props.icon) {
-      return (<span className={'icon-' + props.icon}></span>)
-    } else {
-      return (props.label);
-    }
-  };
+  const label = (props.icon) ?
+    (<span className={'icon-' + props.icon}></span>) :
+    (props.label);
 
   return (
     <button className="editor-controls__button" onMouseDown={onToggle} aria-pressed={props.active} aria-label={props.label}>
-      {icon}
+      {label}
     </button>
   );
 };

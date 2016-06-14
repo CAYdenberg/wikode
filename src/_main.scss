@@ -26,12 +26,21 @@
 .editor-controls__button {
   font-size: 1.5rem;
   padding: 5px;
+  line-height: 29px;
+  vertical-align: sub;
   background: $light-gray;
   border-radius: 5px;
-  margin: 0 5px;
+  margin: 0 5px 10px;
   color: map-get($foundation-palette, 'primary');
   &[aria-pressed="true"] {
     background: map-get($foundation-palette, 'primary');
     color: white;
   }
+}
+
+.editor-controls__save {
+  font-size: 3rem;
+  @extend .editor-controls__button;
+  background: map-get($foundation-palette, 'success');
+  color: white;
 }
