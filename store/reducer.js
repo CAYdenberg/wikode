@@ -10,11 +10,17 @@ State = {
   },
   ui: {
     editorControls {
-      save: 'AVAILABLE' | 'WORKING' | 'ERROR',
+      saveButton: 'AVAILABLE' | 'WORKING' | 'ERROR',
     },
     modal: false | 'signin' | 'createUser',
-    signinError: null | String,
-    createUserError: null | String
+    signinForm: {
+      submitButton: 'AVAILABLE' | 'WORKING' | 'ERROR',
+      error: null | String
+    },
+    signinForm: {
+      submitButton: 'AVAILABLE' | 'WORKING' | 'ERROR',
+      error: null | String
+    }
   }
 }
 */
@@ -35,8 +41,14 @@ module.exports = function(initialState, action) {
         saveBtn: 'AVAILABLE'
       },
       modal: '',
-      signinError: '',
-      createUserError: ''
+      signinForm: {
+        submitButton: 'AVAILABLE',
+        error: ''
+      },
+      createUserError: {
+        submitButton: 'AVAILABLE',
+        error: ''
+      }
     }
   }, initialState);
 
