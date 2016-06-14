@@ -10,11 +10,18 @@ const RichUtils = Draft.RichUtils;
 const Controls = require('./Controls');
 
 const WikiEditor = React.createClass({
+  contextTypes: {
+    store: React.PropTypes.object
+  },
+
   getInitialState: function() {
+
+    const state = this.context.store.getState();
+    console.log(state);
 
     var editorState;
     try {
-      editorState = EditorState.createWithContent(Draft.convertFromRaw(this.props.content));
+      editorState = EditorState.createWithContent(Draft.convertFromRaw(state.wikode.content));
     } catch(e) {
       editorState = EditorState.createEmpty();
     }
@@ -58,9 +65,7 @@ const WikiEditor = React.createClass({
   },
 
   _save: function() {
-    const contentState = this.state.editorState.getCurrentContent();
-    const content = Draft.convertToRaw(contentState);
-    this.props.save(globals.user, globals.slug, content);
+
   },
 
   render: function() {
@@ -82,7 +87,6 @@ const WikiEditor = React.createClass({
           editorState={this.state.editorState}
           toggleInlineStyle={this.toggleInlineStyle}
           toggleBlockType={this.toggleBlockType}
-          save={this._save}
         />
         <div className={className} onClick={this.focus}>
           <Editor

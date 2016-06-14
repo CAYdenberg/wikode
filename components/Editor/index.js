@@ -12,7 +12,7 @@ module.exports = (props) => {
 
       <div className="column row">
         <h1>Document Title</h1>
-        <WikiEditor content={props.content} save={props.save} />
+        <WikiEditor />
       </div>
 
       <Footer />

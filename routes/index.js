@@ -77,7 +77,7 @@ router.all('/:user/:slug', function(req, res, next) {
       next(err);
     }
 
-    req.context.wikode = {
+    req.context.state.wikode = {
       userHash: wikode.user,
       slug: wikode.slug,
       content: wikode.content

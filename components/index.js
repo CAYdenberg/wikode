@@ -3,14 +3,14 @@ const Provider = require('react-redux').Provider;
 
 module.exports = (templateName, store) => {
   const templates = {
-    Home: require('../components/Home'),
-    Editor: require('../components/Editor')
+    Home: require('./Home'),
+    Editor: require('./Editor')
   }
 
   const template = templates[templateName];
 
   return (
-    <Provider store={store} template={template}>
+    <Provider store={store}>
       {React.createElement(template)}
     </Provider>
   );
