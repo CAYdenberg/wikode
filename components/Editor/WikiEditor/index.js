@@ -7,6 +7,8 @@ const Editor = Draft.Editor;
 const EditorState = Draft.EditorState;
 const RichUtils = Draft.RichUtils;
 
+const actions = require('../../../store/actions');
+
 const Controls = require('./Controls');
 
 const WikiEditor = React.createClass({
@@ -27,9 +29,20 @@ const WikiEditor = React.createClass({
     }
 
     return ({
-      editorState: editorState
+      editorState: editorState,
+      saveState: state.ui.save
     });
 
+  },
+
+  componentWillMount: function() {
+    const store = this.context.store;
+    store.subscribe(() => {
+      console.log(store.getState());
+      this.setState({
+        saveState: store.getState().ui.save
+      });
+    });
   },
 
   onChange: function(editorState) {
@@ -65,7 +78,11 @@ const WikiEditor = React.createClass({
   },
 
   _save: function() {
-
+    const contentState = this.state.editorState.getCurrentContent();
+    const content = Draft.convertToRaw(contentState);
+    const store = this.context.store;
+    const wikode = store.getState().wikode;
+    store.dispatch(actions.saveContent(wikode.userHash, wikode.slug, content, store));
   },
 
   render: function() {
@@ -87,6 +104,7 @@ const WikiEditor = React.createClass({
           editorState={this.state.editorState}
           toggleInlineStyle={this.toggleInlineStyle}
           toggleBlockType={this.toggleBlockType}
+          save={this._save}
         />
         <div className={className} onClick={this.focus}>
           <Editor
