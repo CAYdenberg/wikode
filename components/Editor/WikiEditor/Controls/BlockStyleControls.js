@@ -7,9 +7,9 @@ const BLOCK_TYPES = [
   {label: 'H4', style: 'header-four'},
   {label: 'H5', style: 'header-five'},
   {label: 'H6', style: 'header-six'},
-  {label: 'Blockquote', style: 'blockquote'},
-  {label: 'UL', style: 'unordered-list-item'},
-  {label: 'OL', style: 'ordered-list-item'}
+  {label: 'Blockquote', style: 'blockquote', icon: 'quote'},
+  {label: 'UL', style: 'unordered-list-item', icon: 'list-ul'},
+  {label: 'OL', style: 'ordered-list-item', icon: 'list-ol'}
 ];
 
 module.exports = (props) => {
@@ -27,6 +27,7 @@ module.exports = (props) => {
           key={type.label}
           active={type.style === blockType}
           label={type.label}
+          icon={type.icon}
           onToggle={props.onToggle}
           style={type.style}
         />

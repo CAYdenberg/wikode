@@ -6,7 +6,7 @@ const InlineStyleControls = require('./InlineStyleControls');
 module.exports = (props) => {
   return (
 
-    <div>
+    <div className="editor-controls">
       <BlockStyleControls
         editorState={props.editorState}
         onToggle={props.toggleBlockType}

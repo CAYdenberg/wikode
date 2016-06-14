@@ -2,9 +2,9 @@ const React = require('react');
 const StyleButton = require('./StyleButton');
 
 const INLINE_STYLES = [
-  {label: 'Bold', style: 'BOLD'},
-  {label: 'Italic', style: 'ITALIC'},
-  {label: 'Underline', style: 'UNDERLINE'}
+  {label: 'Bold', style: 'BOLD', icon: 'bold'},
+  {label: 'Italic', style: 'ITALIC', icon: 'italic'},
+  {label: 'Underline', style: 'UNDERLINE', icon: 'underline'}
 ];
 
 module.exports = (props) => {
@@ -16,6 +16,7 @@ module.exports = (props) => {
           key={type.label}
           active={currentStyle.has(type.style)}
           label={type.label}
+          icon={type.icon}
           onToggle={props.onToggle}
           style={type.style}
         />

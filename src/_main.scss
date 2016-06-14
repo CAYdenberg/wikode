@@ -4,5 +4,34 @@
 
 @include foundation-everything;
 
+
 // include icons
-@include "./icons/style.css";
+@import "icons/styles.scss";
+
+
+
+
+
+
+
+
+.editor-controls {
+  float: right;
+  background: $medium-gray;
+  padding: 15px;
+  border-radius: 5px;
+  border: 1px solid (map-get($foundation-palette, 'primary'));
+}
+
+.editor-controls__button {
+  font-size: 1.5rem;
+  padding: 5px;
+  background: $light-gray;
+  border-radius: 5px;
+  margin: 0 5px;
+  color: map-get($foundation-palette, 'primary');
+  &[aria-pressed="true"] {
+    background: map-get($foundation-palette, 'primary');
+    color: white;
+  }
+}
