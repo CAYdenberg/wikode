@@ -3,6 +3,10 @@ var router = express.Router();
 const React = require('react');
 const ReactRender = require('react-dom/server').renderToString;
 
+const reducer = require('../store/reducer');
+const createStore = require('redux').createStore;
+const makeTemplate = require('../components');
+
 const randomstring = require('randomstring').generate;
 
 const Wikode = require('../models/Wikode');
@@ -26,7 +30,7 @@ router.all('/:user/:slug', function(req, res, next) {
     // check if the session user is the same as the user URL parameter.
     // if yes turn edit mode on
     if (req.session.user === user) {
-      req.context.data.editMode = true;
+      req.context.state.editMode = true;
     }
     next();
   }).catch(err => next(err));
@@ -73,8 +77,8 @@ router.all('/:user/:slug', function(req, res, next) {
       next(err);
     }
 
-    req.context.data = {
-      user: wikode.user,
+    req.context.wikode = {
+      userHash: wikode.user,
       slug: wikode.slug,
       content: wikode.content
     };
@@ -109,11 +113,12 @@ router.get('/', function(req, res, next) {
 
 
 router.all('*', function(req, res) {
-  const template = req.context.template || 'Home';
+  const store = createStore(reducer, req.context.state);
+  const templateName = req.context.template || 'Home';
+  const template = makeTemplate(templateName, store);
 
   if (req.accepts('text/html')) {
-    const component = require('../components/' + template);
-    req.context.reactHtml = ReactRender(React.createElement(component, req.context.data));
+    req.context.reactHtml = ReactRender(template);
     res.render('index', req.context);
   } else {
     res.json(req.context.data);

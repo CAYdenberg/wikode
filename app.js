@@ -77,7 +77,7 @@ module.exports = function() {
     };
 
     // set up data
-    req.context.data = {
+    req.context.state = {
       userHash: req.session.user.hash
     };
     next();

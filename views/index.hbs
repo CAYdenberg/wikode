@@ -9,12 +9,11 @@
   </head>
 
   <body>
-    <div id="mount-point" data-template="{{ template }}">
-      {{{ reactHtml }}}
-    </div>
+    <!-- Server-rendered React component must be inserted without any sorrounding whitespace -->
+    <div id="mount-point" data-template="{{ template }}">{{{ reactHtml }}}</div>
 
     <script type="text/javascript">
-      window.globals = {{{json data}}}
+      window.state = {{{json state}}}
     </script>
     {{#each scripts}}
       <script src="{{ this }}" type="text/javascript"></script>

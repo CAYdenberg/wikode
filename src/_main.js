@@ -1,20 +1,14 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
+const createStore = require('redux').createStore;
 
-const templates = {
-  Home: require('../components/Home'),
-  Editor: require('../components/Editor')
-};
-
+const reducer = require('../store/reducer');
 const save = require('./save');
 
-const content = globals.content || null;
-const mountPoint = document.getElementById('mount-point');
-const template = templates[mountPoint.getAttribute('data-template')];
+const store = createStore(reducer, window.state);
 
-ReactDOM.render(React.createElement(template, {
-    content: content,
-    save: save
-  }),
-  document.getElementById('mount-point')
-);
+const template = document.getElementById('mount-point').getAttribute('data-template');
+
+const component = require('../components')(template, store);
+
+ReactDOM.render(component, document.getElementById('mount-point'));
