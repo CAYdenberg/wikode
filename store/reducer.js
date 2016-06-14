@@ -9,7 +9,12 @@ State = {
     content: {EditorContent}
   },
   ui: {
-    save: 'AVAILABLE' | 'WORKING' | 'ERROR'
+    editorControls {
+      save: 'AVAILABLE' | 'WORKING' | 'ERROR',
+    },
+    modal: false | 'signin' | 'createUser',
+    signinError: null | String,
+    createUserError: null | String
   }
 }
 */
@@ -26,7 +31,12 @@ module.exports = function(initialState, action) {
       content: {}
     },
     ui: {
-      save: 'AVAILABLE'
+      editorControls: {
+        saveBtn: 'AVAILABLE'
+      },
+      modal: '',
+      signinError: '',
+      createUserError: ''
     }
   }, initialState);
 
