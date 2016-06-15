@@ -1,31 +1,18 @@
-/**
+const update = require('react-addons-update');
 
-State = {
-  userHash: String,
-  editMode = Boolean
-  wikode: {
-    userHash: String,
-    slug: String,
-    content: {EditorContent}
-  },
-  ui: {
-    editorControls {
-      saveButton: 'AVAILABLE' | 'WORKING' | 'ERROR',
-    },
-    modal: false | 'signin' | 'createUser',
-    signinForm: {
-      submitButton: 'AVAILABLE' | 'WORKING' | 'ERROR',
-      error: null | String
-    },
-    signinForm: {
-      submitButton: 'AVAILABLE' | 'WORKING' | 'ERROR',
-      error: null | String
-    }
+function ui(state, action) {
+  switch(action.type) {
+
+    case 'SAVING':
+      return update(state, {
+        $merge: {save: 'WORKING'}
+      });
+
+    default:
+      return state;
+
   }
 }
-*/
-
-const update = require('react-addons-update');
 
 module.exports = function(initialState, action) {
   const state = Object.assign({
@@ -34,32 +21,25 @@ module.exports = function(initialState, action) {
     wikode: {
       userHash: '',
       slug: '',
-      content: {}
+      content: {},
+      lastSave: ''
     },
     ui: {
-      editorControls: {
-        saveBtn: 'AVAILABLE'
-      },
       modal: '',
       signinForm: {
-        submitButton: 'AVAILABLE',
-        error: ''
+        errors: []
       },
-      createUserError: {
-        submitButton: 'AVAILABLE',
-        error: ''
+      createUserForm: {
+        errors: []
       }
     }
   }, initialState);
 
-  switch(action.type) {
-    case 'SAVING':
-      return update(state, {ui: {
-        $merge: {save: 'WORKING'}
-      }});
+  return update(state, {
 
-    default:
-      return state;
-  }
+
+    ui: {$merge: ui(state.ui, action)}
+  });
+
 
 }

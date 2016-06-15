@@ -1,6 +1,7 @@
 const popsicle = require('popsicle');
 
 module.exports = {
+
   saveContent: function(user, slug, data, store) {
     if (store) {
       popsicle.request({
@@ -22,6 +23,7 @@ module.exports = {
 
       default:
         return {type: 'SAVE_ERROR'};
+
     }
   }
 };

@@ -10,16 +10,3 @@ const template = document.getElementById('mount-point').getAttribute('data-templ
 const component = require('../components')(template, store);
 
 ReactDOM.render(component, document.getElementById('mount-point'));
-
-
-
-
-
-/**
- *
-   _save: function() {
-     const contentState = this.state.editorState.getCurrentContent();
-     const content = Draft.convertToRaw(contentState);
-     this.props.save(globals.user, globals.slug, content);
-   },
- */
