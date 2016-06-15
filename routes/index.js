@@ -54,7 +54,8 @@ router.put('/:user/:slug', function(req, res, next) {
     slug: req.params.slug,
     datetime: new Date().toISOString(), //TODO: move this into a save hook on the Model
     content: content
-  }).save().then(() => {
+  }).save().then(wikode => {
+    req.context.state.wikode = wikode;
     next();
   }).catch(err => next(err));
 });
@@ -121,7 +122,7 @@ router.all('*', function(req, res) {
     req.context.reactHtml = ReactRender(template);
     res.render('index', req.context);
   } else {
-    res.json(req.context.data);
+    res.json(req.context.state);
   }
 
 });

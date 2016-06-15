@@ -1,12 +1,17 @@
 const update = require('react-addons-update');
 
-function ui(state, action) {
+
+function wikode(state, action) {
   switch(action.type) {
 
-    case 'SAVING':
-      return update(state, {
-        $merge: {save: 'WORKING'}
-      });
+    case 'SAVED':
+
+
+  }
+}
+
+function ui(state, action) {
+  switch(action.type) {
 
     default:
       return state;
@@ -37,7 +42,7 @@ module.exports = function(initialState, action) {
 
   return update(state, {
 
-
+    wikode: {$merge: wikode(state.wikode, action)},
     ui: {$merge: ui(state.ui, action)}
   });
 

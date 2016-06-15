@@ -16,10 +16,11 @@ module.exports = {
   },
 
   saveResponse: function(res) {
+    console.log(res);
     switch(res.status) {
 
       case 200:
-        return {type: 'SAVED'};
+        return {type: 'SAVED', datetime: res.datetime};
 
       default:
         return {type: 'SAVE_ERROR'};
