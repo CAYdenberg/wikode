@@ -8,7 +8,7 @@ module.exports = () => {
           <a href="/">Site Title</a>
         </div>
         <ul className="menu align-right">
-          <li><button type="submit" className="button success">Sign In</button></li>
+          <li><a href="#" className="button success">Sign In</a></li>
           <li><a href="#" className="button warning">Create an account</a></li>
         </ul>
       </nav>
