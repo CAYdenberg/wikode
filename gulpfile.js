@@ -8,6 +8,7 @@ const eslint = require('gulp-eslint');
 const browserify = require('browserify');
 const source = require('vinyl-source-stream');
 const buffer = require('vinyl-buffer');
+const mocha = require('gulp-mocha');
 
 const browserSync = require('browser-sync');
 const nodemon = require('gulp-nodemon');
@@ -37,7 +38,14 @@ gulp.task('lint', function() {
     // Alternatively use eslint.formatEach() (see Docs).
     .pipe(eslint.format());
 
-})
+});
+
+
+gulp.task('test', function() {
+  return gulp.src(['test/**/*.js'], { read: false })
+    .pipe(mocha({ reporter: 'list' }))
+    .on('error', gutil.log);
+});
 
 gulp.task('js', function () {
   // set up the browserify instance on a task basis
@@ -80,7 +88,5 @@ gulp.task('watch', function () {
   }).on('restart', browserSync.reload);
 
 });
-
-
 
 gulp.task('default', ['css', 'fonts', 'lint', 'js']);
