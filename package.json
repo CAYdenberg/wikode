@@ -43,6 +43,7 @@
     "popsicle": "^6.2.0",
     "randomstring": "^1.1.5",
     "react": "^15.1.0",
+    "react-addons-update": "^15.1.0",
     "react-dom": "^15.1.0",
     "react-redux": "^4.4.5",
     "redux": "^3.5.2",
