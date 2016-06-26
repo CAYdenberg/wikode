@@ -9,6 +9,13 @@
 @import "icons/styles.scss";
 
 
+.reveal-overlay,
+.reveal {
+  display: none;
+  &[aria-hidden=false] {
+    display: block;
+  }
+}
 
 
 

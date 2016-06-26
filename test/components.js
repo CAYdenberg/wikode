@@ -30,42 +30,9 @@ function analyze(component, props) {
   });
 }
 
-describe('Home', function() {
-  const props = {};
-
-  it('displays the home page', function(done) {
-    analyze(Home, props).then(() => {
-      done();
-    });
-  });
-
-});
-
-describe('Header', function() {
-  const props = {};
-
-  it('displays a navigations bar with two buttons and a link to the homepage', function(done) {
-    analyze(Header, props).then((document) => {
-      const links = document.querySelectorAll('a');
-      assert.equal(links.length, 3);
-      assert.equal(links[0].href, '/');
-      done();
-    });
-  });
-});
-
-describe('Footer', function() {
-  const props = {};
-
-  it('Displays the site footer as well as hidden elements such as modals', function(done) {
-    analyze(Footer, props).then(() => {
-      done();
-    });
-  });
-})
 
 describe('Modal', function() {
-  it('displays a modal with a defined title and some inner text. An HR separates them', function(done) {
+  it('displays a modal with a defined title and some inner text. An HR separates them. aria-hidden is true by default.', function(done) {
 
     const props = {
       title: 'My Modal',
@@ -74,9 +41,22 @@ describe('Modal', function() {
     analyze(Modal, props).then((document) => {
       assert.equal(document.querySelector('h2').innerHTML, 'My Modal');
       assert.equal(document.querySelectorAll('hr').length, 1);
+      assert.equal(document.querySelector('.reveal').getAttribute('aria-hidden'), 'true');
       done();
     });
 
+  });
+
+  it('has an aria-hidden attribute of false when the visible property is set to true', function(done) {
+    const props = {
+      title: 'My Modal',
+      children: React.createElement('p'),
+      visible: true
+    }
+    analyze(Modal, props).then((document) => {
+      assert.equal(document.querySelector('.reveal').getAttribute('aria-hidden'), 'false');
+      done();
+    });
   });
 })
 

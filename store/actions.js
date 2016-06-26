@@ -26,5 +26,17 @@ module.exports = {
         return {type: 'SAVE_ERROR'};
 
     }
+  },
+
+  /**
+   * ACTIONS CONTROLLING UI
+   */
+  modal: function(modalName) {
+    return {type: 'MODAL', name: modalName}
+  },
+
+  hideModals: function() {
+    return {type: 'MODAL', name: null}
   }
+
 };

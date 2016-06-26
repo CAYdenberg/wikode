@@ -3,7 +3,7 @@ const React = require('react');
 const Modal = (props) => {
 
   return (
-    <div className="reveal">
+    <div className="reveal" aria-hidden={props.visible ? 'false' : 'true'}>
       <h2>{props.title}</h2>
       <hr />
       {props.children}
@@ -13,7 +13,8 @@ const Modal = (props) => {
 
 Modal.propTypes = {
   title: React.PropTypes.string.isRequired,
-  children: React.PropTypes.element.isRequired
+  children: React.PropTypes.element.isRequired,
+  visible: React.PropTypes.bool
 }
 
 module.exports = Modal;

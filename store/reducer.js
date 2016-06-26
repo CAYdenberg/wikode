@@ -5,13 +5,19 @@ function wikode(state, action) {
   switch(action.type) {
 
     case 'SAVED':
-
+    default:
+      return state;
 
   }
 }
 
 function ui(state, action) {
   switch(action.type) {
+
+    case 'MODAL':
+      return update(state, {
+        modal: {$set: action.name}
+      });
 
     default:
       return state;
@@ -30,7 +36,7 @@ module.exports = function(initialState, action) {
       lastSave: ''
     },
     ui: {
-      modal: '',
+      modal: null,
       signinForm: {
         errors: []
       },

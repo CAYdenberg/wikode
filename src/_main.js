@@ -1,7 +1,7 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
-const createStore = require('redux').createStore;
 
+const createStore = require('redux').createStore;
 const reducer = require('../store/reducer');
 const store = createStore(reducer, window.state);
 

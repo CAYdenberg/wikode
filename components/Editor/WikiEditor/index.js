@@ -19,7 +19,6 @@ const WikiEditor = React.createClass({
   getInitialState: function() {
 
     const state = this.context.store.getState();
-    console.log(state);
 
     var editorState;
     try {
@@ -38,7 +37,6 @@ const WikiEditor = React.createClass({
   componentWillMount: function() {
     const store = this.context.store;
     store.subscribe(() => {
-      console.log(store.getState());
       this.setState({
         saveState: store.getState().ui.save
       });
