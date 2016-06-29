@@ -1,9 +1,8 @@
 const React = require('react');
 
 const Modal = (props) => {
-
   return (
-    <div className="reveal" aria-hidden={props.visible ? 'false' : 'true'}>
+    <div className="reveal" aria-hidden={props.visible ? 'false' : 'true'} onClick={e => e.stopPropagation()}>
       <h2>{props.title}</h2>
       <hr />
       {props.children}

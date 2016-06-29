@@ -1,5 +1,7 @@
 const React = require('react');
 
+const hideModals = require('../../store/actions').hideModals;
+
 const Modal = require('../partials/Modal');
 const CreateUserForm = require('../CreateUserForm');
 const SigninForm = require('../SigninForm');
@@ -30,16 +32,19 @@ const ModalController = React.createClass({
   },
 
   modalIsVisible: function(modal) {
-    if (modal && modal.name) {
-      return (modal.name === this.state.modal.name);
+    if (modal) {
+      return (modal === this.state.modal);
     }
     return false;
   },
 
+  hideModals: function() {
+    this.context.store.dispatch(hideModals());
+  },
+
   render: function() {
-    console.log(this.state);
     return (
-      <div className="reveal-overlay" aria-hidden={this.state.modal ? 'false' : 'true'}>
+      <div className="reveal-overlay" aria-hidden={this.state.modal ? 'false' : 'true'} onClick={this.hideModals}>
         {MODALS.map(modal =>
           <Modal key={modal.name} title={modal.title} visible={this.modalIsVisible(modal.name)}>
             {modal.body}
