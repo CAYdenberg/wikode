@@ -6,7 +6,7 @@ module.exports = (props) => {
     <form>
       <label>
         Username or Email
-        <input type="text" name="signin username" />
+        <input type="text" name="signin-username" />
       </label>
       <label>
         Password
