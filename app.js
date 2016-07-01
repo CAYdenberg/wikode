@@ -1,3 +1,6 @@
+require('dotenv').config();
+require('node-jsx').install();
+
 var express = require('express');
 var path = require('path');
 var logger = require('morgan');
@@ -14,8 +17,9 @@ const randomstring = require('randomstring').generate;
 const User = require('./models/User');
 
 var routes = require('./routes/index');
+var userRoutes = require('./routes/users');
 
-module.exports = function() {
+module.exports = function(config) {
 
   var app = express();
 
@@ -28,7 +32,7 @@ module.exports = function() {
   });
 
   // database setup
-  mongoose.connect(process.env.DB_CONNECT);
+  mongoose.connect(config.test ? process.env.DB_CONNECT : process.env.TEST_DB_CONNECT);
 
   // basic middleware setup
   app.use(logger('dev'));
@@ -85,6 +89,7 @@ module.exports = function() {
   });
 
   //specify routes
+  app.use('/user', userRoutes);
   app.use('/', routes);
 
   // catch 404 and forward to error handler

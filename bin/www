@@ -1,9 +1,6 @@
 #!/usr/bin/env node
 
-require('dotenv').config();
-require('node-jsx').install();
-
-var app = require('../app')(false);
+var app = require('../app')({test: false});
 
 var server = app.listen(app.get('port'), function() {
   console.log('Express server listening on port ' + server.address().port);
