@@ -13,6 +13,14 @@ const mocha = require('gulp-mocha');
 const browserSync = require('browser-sync');
 const nodemon = require('gulp-nodemon');
 
+
+gulp.task('test', function() {
+  return gulp.src(['test/**/*.js'], { read: false })
+    .pipe(mocha({ reporter: 'list' }))
+    .on('error', gutil.log);
+});
+
+
 gulp.task('css', function() {
   gulp.src('./src/_main.scss')
     .pipe(rename('style.css'))
@@ -38,13 +46,6 @@ gulp.task('lint', function() {
     // Alternatively use eslint.formatEach() (see Docs).
     .pipe(eslint.format());
 
-});
-
-
-gulp.task('test', function() {
-  return gulp.src(['test/**/*.js'], { read: false })
-    .pipe(mocha({ reporter: 'list' }))
-    .on('error', gutil.log);
 });
 
 gulp.task('js', function () {

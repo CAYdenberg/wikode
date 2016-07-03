@@ -11,13 +11,14 @@ var hbs = require('express-hbs');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const SessionStore = require('connect-mongo')(session);
+var passport = require('passport');
 
 const randomstring = require('randomstring').generate;
 
 const User = require('./models/User');
 
 var routes = require('./routes/index');
-var userRoutes = require('./routes/users');
+var userRoutes = require('./routes/user');
 
 module.exports = function(config) {
 
@@ -32,7 +33,7 @@ module.exports = function(config) {
   });
 
   // database setup
-  mongoose.connect(config.test ? process.env.DB_CONNECT : process.env.TEST_DB_CONNECT);
+  mongoose.connect(config.test ? process.env.TEST_DB_CONNECT : process.env.DB_CONNECT);
 
   // basic middleware setup
   app.use(logger('dev'));
@@ -48,8 +49,11 @@ module.exports = function(config) {
     saveUninitialized: true,
     store: new SessionStore({mongooseConnection: mongoose.connection})
   }));
+  app.use(passport.initialize());
+  app.use(passport.session());
 
-  // basic setup - used across the entire app
+
+  // if the current user is anonymous, set up an anonymous session
   app.use(function(req, res, next) {
 
     // set up sessions
@@ -68,6 +72,7 @@ module.exports = function(config) {
 
   });
 
+  // set up the request context, used across the entire app
   app.use(function(req, res, next) {
 
     req.context = {
@@ -77,12 +82,10 @@ module.exports = function(config) {
       ],
       scripts: [
         '/main.js'
-      ]
-    };
-
-    // set up data
-    req.context.state = {
-      userHash: req.session.user.hash
+      ],
+      state: {
+        userHash: req.session.user.hash
+      }
     };
     next();
 

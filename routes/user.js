@@ -12,11 +12,7 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(hash, done) {
-  User.findOne({hash: hash}).then(user => {
-    done(null, user.hash);
-  }).catch(err => {
-    done(err, null);
-  });
+  User.findOne({hash: hash}).then((err, user) => done(err, user));
 });
 
 // passport/login.js
@@ -40,8 +36,8 @@ passport.use(new LocalStrategy({
 	}
 ));
 
-router.post('/new', function(err, req, res, next) {
-  User.findOne({hash: req.session.user}).then(user => {
+router.post('/new/', function(err, req, res, next) {
+  User.findOne({hash: req.params.hash}).then(user => {
     // check submitted information
     req.login(user);
     next();
@@ -71,11 +67,11 @@ router.get('/exists/:name', function(req, res, next) {
 });
 
 router.all('/*', function(req, res) {
-  var user = req.session.passport.user;
+  var user = req.session.passport ? req.session.passport.user : null;
   if (user) {
-    res.json({loggedIn: true, email: req.session.passport.user.email});
+    res.json({loggedIn: true, userHash: req.session.passport.user.hash});
   } else {
-    res.json({loggedIn: false, email: ''});
+    res.json({loggedIn: false, userHash: null});
   }
 });
 
