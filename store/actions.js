@@ -16,7 +16,6 @@ module.exports = {
   },
 
   saveResponse: function(res) {
-    console.log(res);
     switch(res.status) {
 
       case 200:

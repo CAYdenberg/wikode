@@ -8,11 +8,13 @@ var LocalStrategy = require('passport-local').Strategy;
 const User = require('../models/User');
 
 passport.serializeUser(function(user, done) {
-  done(null, user.hash);
+  done(null, user.id);
 });
 
-passport.deserializeUser(function(hash, done) {
-  User.findOne({hash: hash}).then((err, user) => done(err, user));
+passport.deserializeUser(function(id, done) {
+  User.findById(id, function(err, user) {
+    done(err, user);
+  });
 });
 
 // passport/login.js
@@ -36,16 +38,26 @@ passport.use(new LocalStrategy({
 	}
 ));
 
-router.post('/new/', function(err, req, res, next) {
-  User.findOne({hash: req.params.hash}).then(user => {
-    // check submitted information
-    req.login(user);
-    next();
+router.post('/new', function(req, res, next) {
+  User.findOne({hash: req.session.user.hash}).then(user => {
+    Object.assign(user, {
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password
+    });
+    user.save().then(user => {
+      req.login(user, next);
+    }).catch(err => {
+      res.status(401).json(err.message);
+    });
   });
 });
 
-router.post('/login', function(err, req, res, next) {
-  passport.authenticate('local', next);
+router.post('/login', passport.authenticate('local'), function(err, req, res, next) {
+  if (err) {
+    res.status(401).json({});
+  }
+  next();
 });
 
 router.get('/logout', function(req, res, next) {
@@ -67,9 +79,8 @@ router.get('/exists/:name', function(req, res, next) {
 });
 
 router.all('/*', function(req, res) {
-  var user = req.session.passport ? req.session.passport.user : null;
-  if (user) {
-    res.json({loggedIn: true, userHash: req.session.passport.user.hash});
+  if (req.user) {
+    res.json({loggedIn: true, userHash: req.user.hash});
   } else {
     res.json({loggedIn: false, userHash: null});
   }

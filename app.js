@@ -47,7 +47,9 @@ module.exports = function(config) {
     secret: process.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: true,
-    store: new SessionStore({mongooseConnection: mongoose.connection})
+    // in test mode, use memory store so that sessions will be cleared once the tests
+    // have run
+    store: config.test ? null : new SessionStore({mongooseConnection: mongoose.connection})
   }));
   app.use(passport.initialize());
   app.use(passport.session());
@@ -57,12 +59,11 @@ module.exports = function(config) {
   app.use(function(req, res, next) {
 
     // set up sessions
-    if (!req.session.user) {
+    if (!req.user) {
       new User({
         hash: randomstring(8)
       }).save().then(user => {
-        req.session.user = user;
-        next();
+        req.login(user, next);
       }).catch((err) => {
         next(err);
       });
@@ -84,7 +85,7 @@ module.exports = function(config) {
         '/main.js'
       ],
       state: {
-        userHash: req.session.user.hash
+        userHash: req.user.hash
       }
     };
     next();

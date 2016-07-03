@@ -7,7 +7,7 @@ const Schema = mongoose.Schema;
 
 var UserSchema = new Schema({
   hash: String,
-  name: {type: String, sparse: true}, // should be unique
+  name: {type: String, sparse: true, unique: true}, // should be unique
   email: {type: String, sparse: true}, // should be email
   password: {type: String, set: (password) => bcrypt.hashSync(password, salt)}
 });

@@ -29,7 +29,7 @@ router.all('/:user/:slug', function(req, res, next) {
 
     // check if the session user is the same as the user URL parameter.
     // if yes turn edit mode on
-    if (req.session.user === user) {
+    if (req.user === user) {
       req.context.state.editMode = true;
     }
     next();
@@ -96,7 +96,7 @@ router.post('/', function(req, res, next) {
   // redirect to the route for that document
 
   new Wikode({
-    user: req.session.user.hash,
+    user: req.user.hash,
     datetime: new Date().toISOString(),
     slug: randomstring(8)
   }).save().then(wikode => {
