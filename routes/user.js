@@ -30,7 +30,7 @@ passport.use(new LocalStrategy({
       if (user.checkPassword(password)) {
         done(null, user);
       } else {
-        done(null, false);
+        done(null, false, {message: 'Incorrect password'});
       }
     }).catch(err => {
       done(err, false);
@@ -38,31 +38,38 @@ passport.use(new LocalStrategy({
 	}
 ));
 
+router.post('/login', passport.authenticate('local'));
+
 router.post('/new', function(req, res, next) {
-  User.findOne({hash: req.session.user.hash}).then(user => {
+  // confirm that the session hash matches the submitted hash
+  if (req.user.hash !== req.body.hash) {
+    return res.status(400).send({});
+  }
+
+  User.findOne({hash: req.user.hash}).then(user => {
+
+    //check if this User has already been created
+    if (user.name || user.email || user.password) {
+      return res.status(401).json({error: 'User hash has already been assigned'});
+    }
+
     Object.assign(user, {
-      name: req.body.name,
-      email: req.body.email,
-      password: req.body.password
+      name: req.body['signup-username'],
+      email: req.body['signup-email'],
+      password: req.body['signup-password']
     });
     user.save().then(user => {
       req.login(user, next);
     }).catch(err => {
-      res.status(401).json(err.message);
+      res.status(401).json({error: 'User validation failed'});
     });
-  });
+
+  }).catch(err => next(err));
 });
 
-router.post('/login', passport.authenticate('local'), function(err, req, res, next) {
-  if (err) {
-    res.status(401).json({});
-  }
-  next();
-});
-
-router.get('/logout', function(req, res, next) {
+router.get('/logout', function(req, res) {
   req.logout();
-  next();
+  res.redirect('/');
 });
 
 
@@ -82,7 +89,7 @@ router.all('/*', function(req, res) {
   if (req.user) {
     res.json({loggedIn: true, userHash: req.user.hash});
   } else {
-    res.json({loggedIn: false, userHash: null});
+    res.json({loggedIn: false, userHash: req.user.hash});
   }
 });
 

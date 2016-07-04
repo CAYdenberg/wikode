@@ -12,11 +12,6 @@ describe('Users API', function(){
   before(function(done) {
     User.remove({}).then(() => {
 
-      const clearSessions = new Promise((resolve) => {
-        // find a way to delete all the sessions
-        resolve();
-      });
-
       const user1 = new Promise((resolve) => {
         new User({
           hash: 'abcd1234',
@@ -26,7 +21,7 @@ describe('Users API', function(){
         }).save(resolve);
       });
 
-      Promise.all([clearSessions, user1]).then(() => done());
+      Promise.all([user1]).then(() => done());
     });
   });
 
@@ -45,10 +40,10 @@ describe('Users API', function(){
       .end(done);
   });
 
-  var agent = request.agent(app);
+  var agent1 = request.agent(app);
 
   it('should log a user in and set a cookie', function(done) {
-    agent
+    agent1
       .post('/user/login/')
       .send({'signin-username': 'user', 'signin-password': 'password'})
       .expect(200, {loggedIn: true, userHash: 'abcd1234'})
@@ -57,7 +52,7 @@ describe('Users API', function(){
   });
 
   it('should send a cookie on subsequent requests', function(done) {
-    agent
+    agent1
       .get('/')
       .set('Accept', 'application/json')
       .expect(200)
@@ -66,38 +61,86 @@ describe('Users API', function(){
       })
       .end(done);
   });
-  //
-  // it('it should log a user out', function(done) {
-  //   agent
-  //     .get('/user/logout/')
-  //     .expect(200, {loggedIn: false, email: ''})
-  //     .end(done);
-  // });
-  //
-  // it('should not be able to log in if the password is wrong', function(done) {
-  //   request(app)
-  //     .post('/user/login/')
-  //     .send({email: 'user@gmail.com', password: 'wrong'})
-  //     .expect(401)
-  //     .end(done);
-  // });
 
-  // it('should return 401 if the user already exists', function(done) {
-  //   request(app)
-  //     .post('/user/new/')
-  //     .send({hash: 'hash2', name: 'user', email: 'user@gmail.com', password: 'password'})
-  //     .expect(401)
-  //     .end(done);
-  // });
-  //
-  // it('should create a user and log them in', function(done) {
-  //   request(app)
-  //     .post('/user/new/')
-  //     .send({hash: 'hash2', name: 'newuser', email: 'newuser@gmail.com', password: 'whatever'})
-  //     .expect(200, {loggedIn: true})
-  //     .expect('set-cookie', /[.]+/)
-  //     .end(done);
-  // });
-  //
+  it('it should log a user out and redirect them back to the homepage', function(done) {
+    agent1
+      .get('/user/logout/')
+      .expect(302)
+      .expect('Location', '/')
+      .end(done);
+  });
+
+  it('should not be able to log in if the password is wrong', function(done) {
+    agent1
+      .post('/user/login/')
+      .send({'signin-username': 'user', 'signin-password': 'wrong'})
+      .expect(401)
+      .end(done);
+  });
+
+  var agent2 = request.agent(app);
+  var agent2Hash;
+
+  it('should obtain a user hash even if the user is not logged in', function(done) {
+    agent2
+      .get('/')
+      .set('Accept', 'application/json')
+      .expect(200)
+      .expect(res => {
+        agent2Hash = res.body.userHash;
+        assert(agent2Hash);
+      })
+      .end(done);
+  });
+
+  it('should obtain the same hash on subsequent requests', function(done) {
+    agent2
+      .get('/')
+      .set('Accept', 'application/json')
+      .expect(200)
+      .expect(res => {
+        assert.equal(agent2Hash, res.body.userHash);
+      })
+      .end(done);
+  });
+
+  it('should not create a new user if the session hash does not match the submitted hash', function(done) {
+    agent2
+      .post('/user/new/')
+      .send({'hash': 'badhash', 'signup-username': 'user', 'signup-email': 'user@gmail.com', 'signup-password': 'whatever'})
+      .expect(400)
+      .end(done);
+  });
+
+  it('should not create a user if the username is not unique', function(done) {
+    agent2
+      .post('/user/new/')
+      .send({'hash': agent2Hash, 'signup-username': 'user', 'signup-email': 'user@gmail.com', 'signup-password': 'whatever'})
+      .expect(401)
+      .expect(res => {
+        assert.equal(res.body.error, 'User validation failed')
+      })
+      .end(done);
+  });
+
+  it('should be able to create a new user with a unique name', function(done) {
+    agent2
+      .post('/user/new/')
+      .send({'hash': agent2Hash, 'signup-username': 'newuser', 'signup-email': 'newuser@gmail.com', 'signup-password': 'whatever'})
+      .expect(200)
+      .expect({loggedIn: true, userHash: agent2Hash})
+      .end(done);
+  });
+
+  it('should not create a user if the hash has already been assigned', function(done) {
+    agent2
+      .post('/user/new/')
+      .send({'hash': agent2Hash, 'signup-username': 'user', 'signup-email': 'newuser@gmail.com', 'signup-password': 'whatever'})
+      .expect(401)
+      .expect(res => {
+        assert.equal(res.body.error, 'User hash has already been assigned');
+      })
+      .end(done);
+  });
 
 });
