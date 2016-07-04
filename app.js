@@ -55,18 +55,16 @@ module.exports = function(config) {
   app.use(passport.session());
 
 
-  // if the current user is anonymous, set up an anonymous session
+  // set up sessions
   app.use(function(req, res, next) {
 
-    // set up sessions
+    // if the current user is anonymous, set up an anonymous session
     if (!req.user) {
       new User({
         hash: randomstring(8)
       }).save().then(user => {
         req.login(user, next);
-      }).catch((err) => {
-        next(err);
-      });
+      }).catch(err => next(err));
     } else {
       next();
     }
