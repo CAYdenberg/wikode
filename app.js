@@ -42,7 +42,9 @@ module.exports = function(config) {
   app.use(cookieParser());
   app.use(express.static(path.join(__dirname, 'dist')));
 
-  // set up sessions
+  /*
+  ** SET UP SESSIONS
+  */
   app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: true,
@@ -54,11 +56,8 @@ module.exports = function(config) {
   app.use(passport.initialize());
   app.use(passport.session());
 
-
-  // set up sessions
   app.use(function(req, res, next) {
-
-    // if the current user is anonymous, set up an anonymous session
+    // if the current user is anonymous, create an anonymous user with just a hash
     if (!req.user) {
       new User({
         hash: randomstring(8)
@@ -68,12 +67,12 @@ module.exports = function(config) {
     } else {
       next();
     }
-
   });
+  //user routes
+  app.use('/user', userRoutes);
 
   // set up the request context, used across the entire app
   app.use(function(req, res, next) {
-
     req.context = {
       stylesheets: [
         '//fonts.googleapis.com/css?family=Open+Sans:400,700,700italic,400italic',
@@ -87,11 +86,8 @@ module.exports = function(config) {
       }
     };
     next();
-
   });
 
-  //specify routes
-  app.use('/user', userRoutes);
   app.use('/', routes);
 
   // catch 404 and forward to error handler
