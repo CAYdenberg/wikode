@@ -7,15 +7,11 @@ const WikiEditor = require('./WikiEditor');
 
 module.exports = (props) => {
   return (
-    <div>
-      <Header />
 
       <div className="column row">
         <h1>Document Title</h1>
         <WikiEditor />
       </div>
 
-      <Footer />
-    </div>
   );
 }

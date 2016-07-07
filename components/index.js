@@ -1,6 +1,9 @@
 const React = require('react');
 const Provider = require('react-redux').Provider;
 
+const Header = require('./layout/Header');
+const Footer = require('./layout/Footer');
+
 module.exports = (templateName, store) => {
   const templates = {
     Home: require('./Home'),
@@ -11,7 +14,13 @@ module.exports = (templateName, store) => {
 
   return (
     <Provider store={store}>
-      {React.createElement(template)}
+      <div>
+
+        <Header />
+        {React.createElement(template)}
+        <Footer />
+
+      </div>
     </Provider>
   );
 }
