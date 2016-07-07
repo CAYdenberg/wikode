@@ -46,7 +46,7 @@ describe('Users API', function(){
     agent1
       .post('/user/login/')
       .send({'signin-username': 'user', 'signin-password': 'password'})
-      .expect(200, {loggedIn: true, userHash: 'abcd1234'})
+      .expect(200, {loggedIn: true, userHash: 'abcd1234', username: 'user'})
       .expect('set-cookie', /[.]+/)
       .end(done);
   });
@@ -128,7 +128,7 @@ describe('Users API', function(){
       .post('/user/new/')
       .send({'hash': agent2Hash, 'signup-username': 'newuser', 'signup-email': 'newuser@gmail.com', 'signup-password': 'whatever'})
       .expect(200)
-      .expect({loggedIn: true, userHash: agent2Hash})
+      .expect({loggedIn: true, userHash: agent2Hash, username: 'newuser'})
       .end(done);
   });
 

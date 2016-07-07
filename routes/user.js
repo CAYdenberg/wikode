@@ -50,7 +50,7 @@ router.post('/new', function(req, res, next) {
 
     //check if this User has already been created
     if (user.name || user.email || user.password) {
-      return res.status(401).json({error: 'User hash has already been assigned'});
+      return res.status(401).json({error: 'A user is already logged in'});
     }
 
     Object.assign(user, {
@@ -61,7 +61,7 @@ router.post('/new', function(req, res, next) {
     user.save().then(user => {
       req.login(user, next);
     }).catch(err => {
-      res.status(401).json({error: 'User validation failed'});
+      res.status(401).json({error: 'User could not be created'});
     });
 
   }).catch(err => next(err));
@@ -87,9 +87,9 @@ router.get('/exists/:name', function(req, res, next) {
 
 router.all('/*', function(req, res) {
   if (req.user) {
-    res.json({loggedIn: true, userHash: req.user.hash});
+    res.json({loggedIn: true, userHash: req.user.hash, username: req.user.name});
   } else {
-    res.json({loggedIn: false, userHash: req.user.hash});
+    res.json({loggedIn: false, userHash: req.user.hash, username: req.user.name});
   }
 });
 
