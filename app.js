@@ -82,7 +82,10 @@ module.exports = function(config) {
         '/main.js'
       ],
       state: {
-        userHash: req.user.hash
+        user: {
+          hash: req.user.hash,
+          name: req.user.name
+        }
       }
     };
     next();

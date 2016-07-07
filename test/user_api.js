@@ -57,7 +57,7 @@ describe('Users API', function(){
       .set('Accept', 'application/json')
       .expect(200)
       .expect(function(res) {
-        assert.equal(res.body.userHash, 'abcd1234');
+        assert.equal(res.body.user.hash, 'abcd1234');
       })
       .end(done);
   });
@@ -87,7 +87,7 @@ describe('Users API', function(){
       .set('Accept', 'application/json')
       .expect(200)
       .expect(res => {
-        agent2Hash = res.body.userHash;
+        agent2Hash = res.body.user.hash;
         assert(agent2Hash);
       })
       .end(done);
@@ -99,7 +99,7 @@ describe('Users API', function(){
       .set('Accept', 'application/json')
       .expect(200)
       .expect(res => {
-        assert.equal(agent2Hash, res.body.userHash);
+        assert.equal(agent2Hash, res.body.user.hash);
       })
       .end(done);
   });
@@ -118,7 +118,7 @@ describe('Users API', function(){
       .send({'hash': agent2Hash, 'signup-username': 'user', 'signup-email': 'user@gmail.com', 'signup-password': 'whatever'})
       .expect(401)
       .expect(res => {
-        assert.equal(res.body.error, 'User validation failed')
+        assert.equal(res.body.error, 'User could not be created')
       })
       .end(done);
   });
@@ -138,7 +138,7 @@ describe('Users API', function(){
       .send({'hash': agent2Hash, 'signup-username': 'user', 'signup-email': 'newuser@gmail.com', 'signup-password': 'whatever'})
       .expect(401)
       .expect(res => {
-        assert.equal(res.body.error, 'User hash has already been assigned');
+        assert.equal(res.body.error, 'A user is already logged in');
       })
       .end(done);
   });
