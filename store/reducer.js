@@ -1,5 +1,16 @@
 const update = require('react-addons-update');
 
+function user(state, action) {
+  switch (action.type) {
+
+    case 'SWITCH_USER':
+      return {hash: action.hash, name: action.name}
+
+    default:
+      return state;
+
+  }
+}
 
 function wikode(state, action) {
   switch(action.type) {
@@ -14,9 +25,15 @@ function wikode(state, action) {
 function ui(state, action) {
   switch(action.type) {
 
-    case 'MODAL':
+    case 'SET_UI':
+      var updateObj = {};
+      updateObj[action.el] = {$set: action.value};
+      return update(state, updateObj);
+
+    case 'SWITCH_USER':
       return update(state, {
-        modal: {$set: action.name}
+        signinForm: {$set: null},
+        createUserForm: {$set: null}
       });
 
     default:
@@ -27,7 +44,10 @@ function ui(state, action) {
 
 module.exports = function(initialState, action) {
   const state = Object.assign({
-    userHash: '',
+    user: {
+      hash: null,
+      name: null
+    },
     editMode: false,
     wikode: {
       userHash: '',
@@ -37,17 +57,14 @@ module.exports = function(initialState, action) {
     },
     ui: {
       modal: null,
-      signinForm: {
-        errors: []
-      },
-      createUserForm: {
-        errors: []
-      }
+      signinForm: null,
+      createUserForm: null,
+      uniqueUsername: null
     }
   }, initialState);
 
   return update(state, {
-
+    user: {$set: user(state.user, action)},
     wikode: {$merge: wikode(state.wikode, action)},
     ui: {$merge: ui(state.ui, action)}
   });

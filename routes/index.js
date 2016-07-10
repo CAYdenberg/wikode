@@ -33,6 +33,7 @@ router.all('/:user/:slug', function(req, res, next) {
       req.context.state.editMode = true;
     }
     next();
+
   }).catch(err => next(err));
 });
 
