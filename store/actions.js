@@ -1,21 +1,24 @@
 const popsicle = require('popsicle');
 
-module.exports = {
+const actions = module.exports = {
 
   createUserSubmit: function(data, store) {
+    const responseHandler = actions.createUserSubmitResponse;
     if (store) {
       popsicle.request({
         method: 'POST',
         url: '/user/new/',
         body: data
       }).then(res => {
-        store.dispatch(this.createUserSubmitResponse(res));
+        store.dispatch(responseHandler(res));
       });
     }
     return null;
   },
 
   createUserSubmitResponse: function(res) {
+    console.log(res.body);
+
     switch (res.status) {
 
       case 200:

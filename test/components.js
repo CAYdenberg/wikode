@@ -60,6 +60,10 @@ describe('Modal', function() {
   });
 })
 
+describe.skip('TextField', function() {
+
+});
+
 describe.skip('Editor controls', function() {
   //we're either going to have to mock out the editorState or just pass the props
   //we need down to here

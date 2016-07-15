@@ -17,7 +17,7 @@ const TextField = (props) => {
       <label>
         {props.label}
         <input
-          type="text"
+          type={props.type || 'text'}
           name={props.name}
           id={props.name}
           value={getValue()}
@@ -31,8 +31,9 @@ const TextField = (props) => {
 }
 
 TextField.propTypes = {
-  name: React.PropTypes.string.isRequired,
   label: React.PropTypes.string.isRequired,
+  type: React.PropTypes.string,
+  name: React.PropTypes.string.isRequired,
   formData: React.PropTypes.object.isRequired,
   valid: React.PropTypes.string,
   change: React.PropTypes.func.isRequired,

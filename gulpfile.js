@@ -67,7 +67,7 @@ gulp.task('watch', function () {
 
   gulp.watch(['src/**/*.scss'], ['css']);
   // watch CLIENT SIDE JS
-  gulp.watch(['src/**/*.js', 'components/**/*.js'], ['js']);
+  gulp.watch(['src/**/*.js', 'components/**/*.js', 'store/**/*.js'], ['js']);
   // trigger browserSync reload when HBS files change
   gulp.watch(['**/*.hbs'], browserSync.reload);
 
@@ -78,7 +78,7 @@ gulp.task('watch', function () {
     // watch SERVER SIDE files
     // note we are NOT watching components even though most of these render
     // server-side as well.
-    watch: ['app.js', 'routes/**/*.js', 'models/**/*.js']
+    watch: ['app.js', 'routes/**/*.js', 'models/**/*.js', 'components/**/*.js', 'store/**/*.js']
 
   })
   .once('start', function() {
