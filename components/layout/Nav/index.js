@@ -8,6 +8,21 @@ const NavController = React.createClass({
     store: React.PropTypes.object
   },
 
+  getInitialState: function() {
+    return {
+      user: this.context.store.getState().user.name
+    }
+  },
+
+  componentWillMount: function() {
+    const store = this.context.store;
+    store.subscribe(() => {
+      this.setState({
+        user: store.getState().user.name
+      });
+    })
+  },
+
   showSignInModal: function(e) {
     e.preventDefault();
     this.context.store.dispatch(actions.modal('SIGNIN'));
@@ -20,7 +35,7 @@ const NavController = React.createClass({
 
   render: function() {
     return (
-      <Nav showSignInModal={this.showSignInModal} showCreateUserModal={this.showCreateUserModal} />
+      <Nav showSignInModal={this.showSignInModal} showCreateUserModal={this.showCreateUserModal} user={this.state.user} />
     );
   }
 });
