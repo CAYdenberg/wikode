@@ -33,7 +33,8 @@ function ui(state, action) {
     case 'SWITCH_USER':
       return update(state, {
         signinForm: {$set: null},
-        createUserForm: {$set: null}
+        createUserForm: {$set: null},
+        modal: {$set: null}
       });
 
     default:

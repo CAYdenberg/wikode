@@ -4,7 +4,13 @@ const React = require('react');
 const ReactRender = require('react-dom/server').renderToString;
 
 const reducer = require('../store/reducer');
-const createStore = require('redux').createStore;
+
+const redux = require('redux');
+const createStore = redux.createStore;
+const applyMiddleware = redux.applyMiddleware;
+
+const thunk = require('redux-thunk').default;
+
 const makeTemplate = require('../components');
 
 const randomstring = require('randomstring').generate;
@@ -115,7 +121,7 @@ router.get('/', function(req, res, next) {
 
 
 router.all('*', function(req, res) {
-  const store = createStore(reducer, req.context.state);
+  const store = createStore(reducer, req.context.state, applyMiddleware(thunk));
   const templateName = req.context.template || 'Home';
   const template = makeTemplate(templateName, store);
 

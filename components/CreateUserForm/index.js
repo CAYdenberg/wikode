@@ -5,7 +5,7 @@ const update = require('react-addons-update');
 const TextField = require('../partials/TextField');
 const HiddenField = require('../partials/HiddenField');
 
-const createUserSubmit = require('../../store/actions').createUserSubmit;
+const actions = require('../../store/actions');
 
 const CreateUserForm = React.createClass({
   contextTypes: {
@@ -21,7 +21,9 @@ const CreateUserForm = React.createClass({
         hash: appState.user.hash
       },
 
-      usernameMsg: appState.uniqueUsername || ''
+      usernameMsg: appState.uniqueUsername || '',
+
+      disabled: false
     };
   },
 
@@ -29,10 +31,9 @@ const CreateUserForm = React.createClass({
     const store = this.context.store;
     store.subscribe(() => {
       this.setState({
-        validationData: {
-          'signup-username': store.getState().uniqueUsername
-        },
-        formMsg: store.getState().createUserForm
+        usernameMsg: store.getState().ui.uniqueUsername,
+        formMsg: store.getState().ui.createUserForm,
+        disabled: false
       });
     });
   },
@@ -57,7 +58,12 @@ const CreateUserForm = React.createClass({
         }
       })()
     });
-    return !!this.state.username;
+    if (this.state.usernameMsg) {
+      return false;
+    } else {
+      this.context.store.dispatch(actions.checkUserExists(value));
+      return true;
+    }
   },
 
   checkEmail: function() {
@@ -72,13 +78,17 @@ const CreateUserForm = React.createClass({
 
   handleSubmit: function(e) {
     e.preventDefault();
+    this.setState({
+      disabled: true
+    });
     const store = this.context.store;
-    store.dispatch(createUserSubmit(this.state.formData, store));
+    store.dispatch(actions.createUser(this.state.formData));
   },
 
   render: function() {
     return (
       <form method="POST" action="/user/new/" onSubmit={this.handleSubmit}>
+        <h3>{this.state.formMsg}</h3>
         <HiddenField
           name="hash"
           formData={this.state.formData}
@@ -109,7 +119,7 @@ const CreateUserForm = React.createClass({
           valid={this.state.passwordMsg}
           check={this.checkPassword}
         />
-        <button className="button success">Sign Up</button>
+        <button className="button success" disabled={this.state.disabled}>Sign Up</button>
         <hr />
         <button className="button default">I already have an account</button>
       </form>

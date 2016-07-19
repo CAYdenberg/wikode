@@ -2,22 +2,11 @@ const popsicle = require('popsicle');
 
 const actions = module.exports = {
 
-  createUserSubmit: function(data, store) {
-    const responseHandler = actions.createUserSubmitResponse;
-    if (store) {
-      popsicle.request({
-        method: 'POST',
-        url: '/user/new/',
-        body: data
-      }).then(res => {
-        store.dispatch(responseHandler(res));
-      });
-    }
-    return null;
-  },
+  /**
+   * CREATING A USER
+   */
 
-  createUserSubmitResponse: function(res) {
-    console.log(res.body);
+  createUserResponse: function(res) {
 
     switch (res.status) {
 
@@ -30,6 +19,41 @@ const actions = module.exports = {
       default:
         return {type: 'SET_UI', el: 'createUserForm', value: 'User could not be created'}
 
+    }
+  },
+
+  createUser: function(data) {
+    return function(dispatch) {
+      popsicle.request({
+        method: 'POST',
+        url: '/user/new/',
+        body: data
+      }).then(res => {
+        dispatch(actions.createUserResponse(res));
+      });
+    }
+  },
+
+  /**
+   * CHECKING IF A USER EXISTS
+   */
+
+  checkUserExistsResponse: function(res) {
+    if (res.body.userExists) {
+      return {type: 'SET_UI', el: 'uniqueUsername', value: 'User already exists. Please choose a different name'}
+    } else {
+      return {type: 'SET_UI', el: 'uniqueUsername', value: ''}
+    }
+  },
+
+  checkUserExists: function(username) {
+    return function(dispatch) {
+      popsicle.request({
+        mehtod: 'GET',
+        url: '/user/exists/' + username
+      }).then(res => {
+        dispatch(actions.checkUserExistsResponse(res));
+      });
     }
   },
 
