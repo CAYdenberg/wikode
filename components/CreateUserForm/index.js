@@ -15,10 +15,10 @@ const CreateUserForm = React.createClass({
   getInitialState: function() {
     const appState = this.context.store.getState();
     return {
-      formMsg: appState.createUserForm || '',
+      formMsg: appState.ui.createUserForm || '',
 
       formData: {
-        hash: appState.user.hash
+        hash: appState.ui.user.hash
       },
 
       usernameMsg: appState.uniqueUsername || '',
