@@ -18,7 +18,7 @@ const CreateUserForm = React.createClass({
       formMsg: appState.ui.createUserForm || '',
 
       formData: {
-        hash: appState.ui.user.hash
+        hash: appState.user.hash
       },
 
       usernameMsg: appState.uniqueUsername || '',

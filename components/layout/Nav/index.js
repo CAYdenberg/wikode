@@ -3,6 +3,8 @@ const Nav = require('./Nav');
 
 const actions = require('../../../store/actions.js');
 
+// TODO: replace this with connect
+
 const NavController = React.createClass({
   contextTypes: {
     store: React.PropTypes.object
