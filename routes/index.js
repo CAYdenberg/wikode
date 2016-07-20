@@ -20,6 +20,10 @@ const User = require('../models/User');
 
 
 router.all('/:user/:slug', function(req, res, next) {
+
+  // populate date for the Editor view
+  req.context.template = 'Editor';
+
   // find the user specified in the URL by either their hash or their name
   User.findOne({
     $or: [
@@ -30,7 +34,7 @@ router.all('/:user/:slug', function(req, res, next) {
     // check if the user parameter is a hash for a user who already is registered
     // if so redirect (301) to the page within the user's profile
     if (user.name && user.name !== req.params.user) {
-      res.status(301).redirect('/' + user.name + '/' + req.params.slug);
+      return res.status(301).redirect('/' + user.name + '/' + req.params.slug);
     }
 
     // check if the session user is the same as the user URL parameter.
@@ -38,8 +42,29 @@ router.all('/:user/:slug', function(req, res, next) {
     if (req.user === user) {
       req.context.state.editMode = true;
     }
-    next();
 
+    // find the CURRENT LATEST Wikode (we may generate a new version before we send)
+    Wikode.find({
+      user: user.hash,
+      slug: req.params.slug
+    }).sort({datetime: -1}).limit(1).then(results => {
+
+      const wikode = results[0];
+
+      if (results.length === 0) {
+        var err = new Error('Not Found');
+        err.status = 404;
+        next(err);
+      }
+
+      req.context.state.wikode = {
+        userHash: wikode.user,
+        slug: wikode.slug,
+        content: wikode.content
+      };
+
+      next();
+    });
   }).catch(err => next(err));
 });
 
@@ -65,35 +90,6 @@ router.put('/:user/:slug', function(req, res, next) {
     req.context.state.wikode = wikode;
     next();
   }).catch(err => next(err));
-});
-
-
-router.all('/:user/:slug', function(req, res, next) {
-
-  req.context.template = 'Editor';
-
-  Wikode.find({
-    user: req.params.user,
-    slug: req.params.slug
-  }).sort({datetime: -1}).limit(1).then(results => {
-
-    const wikode = results[0];
-
-    if (results.length === 0) {
-      var err = new Error('Not Found');
-      err.status = 404;
-      next(err);
-    }
-
-    req.context.state.wikode = {
-      userHash: wikode.user,
-      slug: wikode.slug,
-      content: wikode.content
-    };
-
-    next();
-  });
-
 });
 
 

@@ -1,7 +1,5 @@
 const React = require('react');
 
-const CreateUserForm = require('../CreateUserForm');
-
 const TextField = require('../partials/TextField');
 const HiddenField = require('../partials/HiddenField');
 
