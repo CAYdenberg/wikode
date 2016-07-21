@@ -97,12 +97,12 @@ const actions = module.exports = {
     }
   },
 
-  save: function(user, slug, content) {
+  save: function(url, content) {
     return function(dispatch) {
       dispatch(actions.saveRequest());
       popsicle.request({
         method: 'PUT',
-        url: '/' + user + '/' + slug + '/',
+        url: url,
         body: content
       }).then((res) => {
         dispatch(actions.saveResponse(res));

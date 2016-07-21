@@ -57,12 +57,7 @@ router.all('/:user/:slug', function(req, res, next) {
         next(err);
       }
 
-      req.context.state.wikode = {
-        userHash: user.hash,
-        username: user.name,
-        slug: wikode.slug,
-        content: wikode.content
-      };
+      req.context.state.wikode = wikode;
 
       next();
     });
@@ -84,14 +79,14 @@ router.put('/:user/:slug', function(req, res, next) {
 
   // check if the session user is the owner of the document
   // if no, return a 400 or 401
-  if (req.user.hash !== req.context.state.wikode.userHash) {
+  if (req.user.hash !== req.context.state.wikode.user) {
     return res.status(401).send({});
   }
 
   // if yes, save the document
   const content = req.body;
   new Wikode({
-    user: req.context.state.wikode.userHash,
+    user: req.context.state.wikode.user,
     slug: req.context.state.wikode.slug,
     datetime: new Date().toISOString(), //TODO: move this into a save hook on the Model
     content: content

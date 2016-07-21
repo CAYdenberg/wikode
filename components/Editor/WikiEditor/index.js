@@ -78,10 +78,14 @@ const WikiEditor = React.createClass({
   _save: function() {
     const contentState = this.state.editorState.getCurrentContent();
     const content = Draft.convertToRaw(contentState);
-    const appState = this.context.store.getState();
-    const wikode = appState.wikode;
-    const username = wikode.username || wikode.userHash;
-    this.context.store.dispatch(actions.save(username, wikode.slug, content));
+    // we're going to send a PUT request to the current URL.
+    // make sure we are browser side or we'll crash the server.
+    try {
+      const location = window ? window.location.href : null;
+      this.context.store.dispatch(actions.save(location, content));
+    } catch(e) {
+      throw new Error('Attempting to access current page URL on server');
+    }
   },
 
   render: function() {
