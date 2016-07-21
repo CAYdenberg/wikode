@@ -78,21 +78,10 @@ const actions = module.exports = {
     }
   },
 
-
-
   /**
    *  SAVING A DOCUMENT
    */
-  save: function(user, slug, data, store) {
-    if (store) {
-      popsicle.request({
-        method: 'PUT',
-        url: '/' + user + '/' + slug + '/',
-        body: data
-      }).then((res) => {
-        store.dispatch(this.saveResponse(res));
-      });
-    }
+  saveRequest: function() {
     return {type: 'SAVING'}
   },
 
@@ -105,6 +94,19 @@ const actions = module.exports = {
       default:
         return {type: 'SAVE_ERROR'};
 
+    }
+  },
+
+  save: function(user, slug, content) {
+    return function(dispatch) {
+      dispatch(actions.saveRequest());
+      popsicle.request({
+        method: 'PUT',
+        url: '/' + user + '/' + slug + '/',
+        body: content
+      }).then((res) => {
+        dispatch(actions.saveResponse(res));
+      });
     }
   },
 
