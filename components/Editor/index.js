@@ -1,8 +1,5 @@
 const React = require('react');
 
-const Header = require('../layout/Header');
-const Footer = require('../layout/Footer');
-
 const WikiEditor = require('./WikiEditor');
 
 module.exports = (props) => {

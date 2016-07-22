@@ -29,16 +29,15 @@ const WikiEditor = React.createClass({
 
     return ({
       editorState: editorState,
-      saveState: state.ui.save
+      editMode: state.editMode
     });
-
   },
 
   componentWillMount: function() {
     const store = this.context.store;
     store.subscribe(() => {
       this.setState({
-        saveState: store.getState().ui.save
+        editMode: store.getState().editMode
       });
     });
   },
@@ -88,6 +87,15 @@ const WikiEditor = React.createClass({
     }
   },
 
+  _fork: function() {
+    try {
+      const location = window ? window.location.href : null;
+      this.context.store.dispatch(actions.fork(location));
+    } catch(e) {
+      throw new Error('Attempting to access current page URL on server');
+    }
+  },
+
   render: function() {
     const editorState = this.state.editorState;
 
@@ -101,7 +109,7 @@ const WikiEditor = React.createClass({
       }
     }
 
-    return (
+    return this.state.editMode ? (
       <div className="RichEditor-root">
         <Controls
           editorState={this.state.editorState}
@@ -120,6 +128,19 @@ const WikiEditor = React.createClass({
             spellCheck={true}
           />
         </div>
+      </div>
+    ) : (
+      <div className="RichEditor-root">
+        <div className={className}>
+          <Editor contenteditable="false"
+            readOnly="true"
+            editorState={editorState}
+            placeholder=""
+            ref="editor"
+            spellCheck={false}
+          />
+        </div>
+        <button onClick={this._fork}>Fork this document</button>
       </div>
     );
   }

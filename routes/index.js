@@ -18,6 +18,7 @@ const randomstring = require('randomstring').generate;
 const Wikode = require('../models/Wikode');
 const User = require('../models/User');
 
+
 /**
  * populate date for the Editor view
  */
@@ -40,9 +41,7 @@ router.all('/:user/:slug', function(req, res, next) {
 
     // check if the session user is the same as the user URL parameter.
     // if yes turn edit mode on
-    if (req.user === user) {
-      req.context.state.editMode = true;
-    }
+    req.context.state.editMode = (req.user === user);
 
     // find the CURRENT LATEST Wikode (we may generate a new version before we send)
     Wikode.find({
@@ -64,12 +63,6 @@ router.all('/:user/:slug', function(req, res, next) {
   }).catch(err => next(err));
 });
 
-
-router.post('/:user/:slug', function(req, res, next) {
-  // check if the current user already has that document
-  // if they don't create a new blank document
-  // if they do send a warning
-});
 
 /**
  * Save an existing Wikode.
@@ -98,19 +91,55 @@ router.put('/:user/:slug', function(req, res, next) {
 });
 
 
-router.post('/', function(req, res, next) {
-  // generate a document with user:anonymous and string:random
-  // save it to DB with empty array as content
-  // redirect to the route for that document
+/**
+ * Fork a wikode, if the current user does not already have a wikode with that title
+ */
+router.post('/:user/:slug', function(req, res, next) {
 
+  // check if the current user already has that document
+  Wikode.findOne({
+    user: req.user.hash,
+    slug: req.context.state.wikode.slug
+  }).then(duplicate => {
+
+    // if they do send them over to it
+    if (duplicate) {
+      return res.redirect('/' + duplicate.user + '/' + duplicate.slug + '/');
+
+    // if they don't create a new blank document
+    } else {
+      new Wikode({
+        user: req.user.hash,
+        slug: req.context.state.wikode.slug,
+        content: req.context.state.wikode.content,
+        datetime: new Date().toISOString()
+      }).save().then(wikode => {
+
+        // and redirect the user to their new document
+        return res.redirect('/' + wikode.user + '/' + wikode.slug + '/');
+
+      }).catch(err => {next(err)});
+    }
+  });
+});
+
+
+/**
+ * Creates a new (blank) document assigned to the current user.
+ */
+router.post('/', function(req, res, next) {
+
+  // generate a document with user:anonymous and string:random
   new Wikode({
     user: req.user.hash,
     datetime: new Date().toISOString(),
     slug: randomstring(8)
   }).save().then(wikode => {
-    res.redirect('/' + wikode.user + '/' + wikode.slug + '/');
-  }).catch(err => {next(err)});
 
+    // redirect to the new document
+    return res.redirect('/' + wikode.user + '/' + wikode.slug + '/');
+
+  }).catch(err => {next(err)});
 });
 
 
@@ -128,9 +157,9 @@ router.all('*', function(req, res) {
 
   if (req.accepts('text/html')) {
     req.context.reactHtml = ReactRender(template);
-    res.render('index', req.context);
+    return res.render('index', req.context);
   } else {
-    res.json(req.context.state);
+    return res.json(req.context.state);
   }
 
 });
