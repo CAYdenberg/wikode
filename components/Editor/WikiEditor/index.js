@@ -3,9 +3,8 @@
 const React = require('react');
 
 const Draft = require('draft-js');
-const Editor = Draft.Editor;
-const EditorState = Draft.EditorState;
-const RichUtils = Draft.RichUtils;
+const {Editor, EditorState, RichUtils, getDefaultKeyBinding, KeyBindingUtil} = Draft;
+const {hasCommandModifier} = KeyBindingUtil;
 
 const actions = require('../../../store/actions');
 
@@ -47,6 +46,10 @@ const WikiEditor = React.createClass({
   },
 
   handleKeyCommand: function(command) {
+    if (command === 'save') {
+      this._save();
+      return true;
+    }
     const editorState = this.state.editorState;
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
@@ -112,6 +115,7 @@ const WikiEditor = React.createClass({
           <Editor
             blockStyleFn={getBlockStyle}
             editorState={editorState}
+            keyBindingFn={getKeyBinding}
             handleKeyCommand={this.handleKeyCommand}
             onChange={this.onChange}
             placeholder=""
@@ -144,6 +148,13 @@ function getBlockStyle(block) {
     case 'blockquote': return 'RichEditor-blockquote';
     default: return null;
   }
+}
+
+function getKeyBinding(e) {
+  if (e.keyCode === 83 && hasCommandModifier(e)) { // ctrl + S
+    return 'save';
+  }
+  return getDefaultKeyBinding(e);
 }
 
 module.exports = WikiEditor;
