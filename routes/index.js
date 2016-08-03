@@ -20,7 +20,7 @@ const User = require('../models/User');
 
 
 /**
- * populate date for the Editor view
+ * populate data for the Editor view
  */
 router.all('/:user/:slug', function(req, res, next) {
 
@@ -41,7 +41,7 @@ router.all('/:user/:slug', function(req, res, next) {
 
     // check if the session user is the same as the user URL parameter.
     // if yes turn edit mode on
-    req.context.state.editMode = (req.user === user);
+    req.context.state.editMode = (req.user.hash === user.hash);
 
     // find the CURRENT LATEST Wikode (we may generate a new version before we send)
     Wikode.find({
@@ -118,9 +118,9 @@ router.post('/:user/:slug', function(req, res, next) {
         // and redirect the user to their new document
         return res.redirect('/' + wikode.user + '/' + wikode.slug + '/');
 
-      }).catch(err => {next(err)});
+      });
     }
-  });
+  }).catch(err => {next(err)});
 });
 
 

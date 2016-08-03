@@ -87,15 +87,6 @@ const WikiEditor = React.createClass({
     }
   },
 
-  _fork: function() {
-    try {
-      const location = window ? window.location.href : null;
-      this.context.store.dispatch(actions.fork(location));
-    } catch(e) {
-      throw new Error('Attempting to access current page URL on server');
-    }
-  },
-
   render: function() {
     const editorState = this.state.editorState;
 
@@ -140,7 +131,9 @@ const WikiEditor = React.createClass({
             spellCheck={false}
           />
         </div>
-        <button onClick={this._fork}>Fork this document</button>
+        <form method="POST" action=".">
+          <button type="submit">Fork this document</button>
+        </form>
       </div>
     );
   }
