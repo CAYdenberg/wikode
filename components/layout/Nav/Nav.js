@@ -12,6 +12,7 @@ module.exports = (props) => {
       <ul className="menu align-right">
         <li><a href="#" className="button success" onClick={props.showSignInModal}>Sign In</a></li>
         <li><a href="#" className="button warning" onClick={props.showCreateUserModal}>Create an account</a></li>
+        <li><a href="#" className="button info" onClick={props.showNewWikodeModal}>Create a new document</a></li>
       </ul>
     )
 

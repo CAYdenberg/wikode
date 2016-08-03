@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 
 var WikodeSchema = new Schema({
   user: String,
+  title: String,
   slug: String,
   datetime: String,
   content: {

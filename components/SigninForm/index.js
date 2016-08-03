@@ -1,5 +1,7 @@
 const React = require('react');
 
+// TODO: bring render down a layer and replace with connect
+
 const TextField = require('../partials/TextField');
 const HiddenField = require('../partials/HiddenField');
 

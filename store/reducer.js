@@ -64,6 +64,7 @@ module.exports = function(initialState, action) {
     editMode: false,
     wikode: {
       userHash: '',
+      title: '',
       slug: '',
       content: {},
       lastSave: ''

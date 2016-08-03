@@ -2,18 +2,14 @@ var express = require('express');
 var router = express.Router();
 const React = require('react');
 const ReactRender = require('react-dom/server').renderToString;
+const {createStore, applyMiddleware} = require('redux');
+const thunk = require('redux-thunk').default;
+const randomstring = require('randomstring').generate;
+const slug = require('slug');
 
 const reducer = require('../store/reducer');
 
-const redux = require('redux');
-const createStore = redux.createStore;
-const applyMiddleware = redux.applyMiddleware;
-
-const thunk = require('redux-thunk').default;
-
 const makeTemplate = require('../components');
-
-const randomstring = require('randomstring').generate;
 
 const Wikode = require('../models/Wikode');
 const User = require('../models/User');
@@ -129,11 +125,17 @@ router.post('/:user/:slug', function(req, res, next) {
  */
 router.post('/', function(req, res, next) {
 
+  const title = req.body['new-wikode-title'];
+
   // generate a document with user:anonymous and string:random
+
+  // TODO: prevent overwrites
+
   new Wikode({
     user: req.user.hash,
     datetime: new Date().toISOString(),
-    slug: randomstring(8)
+    title: title,
+    slug: slug(title).toLowerCase() // TODO: move this into save hook on the model
   }).save().then(wikode => {
 
     // redirect to the new document

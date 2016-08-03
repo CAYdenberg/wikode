@@ -1,14 +1,26 @@
 const React = require('react');
+const View = require('./view');
 
-const WikiEditor = require('./WikiEditor');
+// TODO: replace with connect
 
-module.exports = (props) => {
-  return (
+const Editor = React.createClass({
+  contextTypes: {
+    store: React.PropTypes.object
+  },
 
-      <div className="column row">
-        <h1>Document Title</h1>
-        <WikiEditor />
-      </div>
+  getInitialState: function() {
+    return {
+      title: this.context.store.getState().wikode.title
+    };
+  },
 
-  );
-}
+  render: function() {
+    return (
+      <View
+        title={this.state.title}
+      />
+    );
+  }
+});
+
+module.exports = Editor;

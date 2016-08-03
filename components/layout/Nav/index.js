@@ -35,9 +35,19 @@ const NavController = React.createClass({
     this.context.store.dispatch(actions.modal('CREATE_USER'));
   },
 
+  showNewWikodeModal: function(e) {
+    e.preventDefault(e);
+    this.context.store.dispatch(actions.modal('NEW_WIKODE'));
+  },
+
   render: function() {
     return (
-      <Nav showSignInModal={this.showSignInModal} showCreateUserModal={this.showCreateUserModal} user={this.state.user} />
+      <Nav
+        showSignInModal={this.showSignInModal}
+        showCreateUserModal={this.showCreateUserModal}
+        showNewWikodeModal={this.showNewWikodeModal}
+        user={this.state.user}
+      />
     );
   }
 });
