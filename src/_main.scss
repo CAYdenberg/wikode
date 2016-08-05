@@ -17,9 +17,13 @@
   }
 }
 
-
-
-
+.menu>li>a,
+.top-bar-title>a {
+  color: white;
+  &:hover {
+    color: darken(white, 50%);
+  }
+}
 
 
 .editor-controls {
