@@ -3,6 +3,9 @@
   <head>
     <meta charset="utf-8">
     <title>Wikode</title>
+
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+
     {{#each stylesheets}}
       <link rel="stylesheet" href="{{ this }}" type="text/css">
     {{/each}}
@@ -10,7 +13,7 @@
 
   <body>
     <!-- Server-rendered React component must be inserted without any sorrounding whitespace -->
-    <div id="mount-point" data-template="{{ template }}">{{{ reactHtml }}}</div>
+    <div id="mount-point" data-view="{{ view }}">{{{ reactHtml }}}</div>
 
     <script type="text/javascript">
       window.state = {{{json state}}}

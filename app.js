@@ -11,14 +11,16 @@ var hbs = require('express-hbs');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const SessionStore = require('connect-mongo')(session);
-var passport = require('passport');
-
-const randomstring = require('randomstring').generate;
 
 const User = require('./models/User');
 
-var routes = require('./routes/index');
-var userRoutes = require('./routes/user');
+const React = require('react');
+const {createStore} = require('redux');
+const reducer = require('./store/reducer');
+const routes = require('./routes/index');
+
+const ReactRender = require('react-dom/server').renderToString;
+const components = require('./components');
 
 module.exports = function(config) {
 
@@ -53,23 +55,24 @@ module.exports = function(config) {
     // have run
     store: config.test ? null : new SessionStore({mongooseConnection: mongoose.connection})
   }));
-  app.use(passport.initialize());
-  app.use(passport.session());
+  // app.use(passport.initialize());
+  // app.use(passport.session());
 
   app.use(function(req, res, next) {
+
     // if the current user is anonymous, create an anonymous user with just a hash
-    if (!req.user) {
-      new User({
-        hash: randomstring(8)
-      }).save().then(user => {
-        req.login(user, next);
-      }).catch(err => next(err));
-    } else {
-      next();
+    if (!req.session.user) {
+      const user = {
+        hash: 'abcd1234',
+        name: 'User Name'
+      };
+      req.session.user = user;
+
     }
+
+    next();
+
   });
-  //user routes
-  app.use('/user', userRoutes);
 
   // set up the request context, used across the entire app
   app.use(function(req, res, next) {
@@ -83,24 +86,29 @@ module.exports = function(config) {
       ],
       state: {
         user: {
-          hash: req.user.hash,
-          name: req.user.name
+          hash: 'abcd1234',
+          name: 'User Name'
         }
       }
     };
+
     next();
   });
 
   app.use('/', routes);
 
-  // catch 404 and forward to error handler
-  app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
+  app.all('*', function(req, res) {
+    var store = createStore(reducer, req.context.state);
+
+    if (req.accepts('text/html')) {
+      req.context.reactHtml = ReactRender(components(req.context.view, store));
+      return res.render('index', req.context);
+    } else {
+      return res.json(req.context.state);
+    }
+
   });
 
-  // error handlers
 
   // development error handler
   // will print stacktrace

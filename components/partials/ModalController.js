@@ -5,13 +5,9 @@ const hideModals = require('../../store/actions').hideModals;
 // TODO: replace this with connect
 
 const Modal = require('../partials/Modal');
-const CreateUserForm = require('../CreateUserForm');
-const SigninForm = require('../SigninForm');
 const NewWikodeForm = require('../NewWikodeForm');
 
 const MODALS = [
-  {name: 'CREATE_USER', title: 'Create your account', body: (<CreateUserForm />)},
-  {name: 'SIGNIN', title: 'Sign in to your account', body: (<SigninForm />)},
   {name: 'NEW_WIKODE', title: 'Create a new Wikode', body: (<NewWikodeForm />)}
 ]
 

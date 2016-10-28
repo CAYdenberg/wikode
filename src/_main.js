@@ -10,8 +10,8 @@ const thunk = require('redux-thunk').default;
 const reducer = require('../store/reducer');
 const store = createStore(reducer, window.state, applyMiddleware(thunk));
 
-const template = document.getElementById('mount-point').getAttribute('data-template');
+const mountPoint = document.getElementById('mount-point');
 
-const component = require('../components')(template, store);
+const component = require('../components')(mountPoint.getAttribute('data-view'), store);
 
-ReactDOM.render(component, document.getElementById('mount-point'));
+ReactDOM.render(component, mountPoint);

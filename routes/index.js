@@ -1,15 +1,8 @@
 var express = require('express');
 var router = express.Router();
 const React = require('react');
-const ReactRender = require('react-dom/server').renderToString;
-const {createStore, applyMiddleware} = require('redux');
-const thunk = require('redux-thunk').default;
-const randomstring = require('randomstring').generate;
+
 const slug = require('slug');
-
-const reducer = require('../store/reducer');
-
-const makeTemplate = require('../components');
 
 const Wikode = require('../models/Wikode');
 const User = require('../models/User');
@@ -20,7 +13,7 @@ const User = require('../models/User');
  */
 router.all('/:user/:slug', function(req, res, next) {
 
-  req.context.template = 'Editor';
+  req.context.view = 'Editor';
 
   // find the user specified in the URL by either their hash or their name
   User.findOne({
@@ -37,7 +30,7 @@ router.all('/:user/:slug', function(req, res, next) {
 
     // check if the session user is the same as the user URL parameter.
     // if yes turn edit mode on
-    req.context.state.editMode = (req.user.hash === user.hash);
+    req.context.state.editMode = (req.session.user.hash === user.hash);
 
     // find the CURRENT LATEST Wikode (we may generate a new version before we send)
     Wikode.find({
@@ -47,7 +40,7 @@ router.all('/:user/:slug', function(req, res, next) {
       const wikode = results[0];
 
       if (results.length === 0) {
-        var err = new Error('Not Found');
+        var err = Error('Not Found');
         err.status = 404;
         next(err);
       }
@@ -68,7 +61,7 @@ router.put('/:user/:slug', function(req, res, next) {
 
   // check if the session user is the owner of the document
   // if no, return a 400 or 401
-  if (req.user.hash !== req.context.state.wikode.user) {
+  if (req.session.user.hash !== req.context.state.wikode.user) {
     return res.status(401).send({});
   }
 
@@ -94,7 +87,7 @@ router.post('/:user/:slug', function(req, res, next) {
 
   // check if the current user already has that document
   Wikode.findOne({
-    user: req.user.hash,
+    user: req.session.user.hash,
     slug: req.context.state.wikode.slug
   }).then(duplicate => {
 
@@ -105,7 +98,7 @@ router.post('/:user/:slug', function(req, res, next) {
     // if they don't create a new blank document
     } else {
       new Wikode({
-        user: req.user.hash,
+        user: req.session.user.hash,
         slug: req.context.state.wikode.slug,
         content: req.context.state.wikode.content,
         datetime: new Date().toISOString()
@@ -132,7 +125,7 @@ router.post('/', function(req, res, next) {
   // TODO: prevent overwrites
 
   new Wikode({
-    user: req.user.hash,
+    user: req.session.user.hash,
     datetime: new Date().toISOString(),
     title: title,
     slug: slug(title).toLowerCase() // TODO: move this into save hook on the model
@@ -147,23 +140,8 @@ router.post('/', function(req, res, next) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  req.context.template = 'Home';
+  req.context.view = 'Home';
   next();
-});
-
-
-router.all('*', function(req, res) {
-  const store = createStore(reducer, req.context.state, applyMiddleware(thunk));
-  const templateName = req.context.template || 'Home';
-  const template = makeTemplate(templateName, store);
-
-  if (req.accepts('text/html')) {
-    req.context.reactHtml = ReactRender(template);
-    return res.render('index', req.context);
-  } else {
-    return res.json(req.context.state);
-  }
-
 });
 
 
