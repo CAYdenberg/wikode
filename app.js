@@ -10,13 +10,10 @@ var hbs = require('express-hbs');
 
 var mongoose = require('mongoose');
 mongoose.Promise = Promise;
+
 var session = require('express-session');
 var SessionStore = require('connect-mongo')(session);
 var passport = require('passport');
-
-const randomstring = require('randomstring').generate;
-
-const User = require('./models/User');
 
 var routes = require('./routes/index');
 var userRoutes = require('./routes/user');

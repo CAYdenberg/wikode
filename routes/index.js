@@ -1,15 +1,17 @@
 var express = require('express');
 var router = express.Router();
+
 const React = require('react');
 const ReactRender = require('react-dom/server').renderToString;
 const {createStore, applyMiddleware} = require('redux');
+
 const thunk = require('redux-thunk').default;
-const randomstring = require('randomstring').generate;
+
 const slug = require('slug');
 
 const reducer = require('../store/reducer');
 
-const makeTemplate = require('../components');
+const components = require('../components');
 
 const Wikode = require('../models/Wikode');
 const User = require('../models/User');
@@ -24,16 +26,9 @@ router.all('/:user/:slug', function(req, res, next) {
 
   // find the user specified in the URL by either their hash or their name
   User.findOne({
-    $or: [
-      {hash: req.params.user},
-      {name: req.params.user}
-    ]
+    hash: req.params.user
+
   }).then(user => {
-    // check if the user parameter is a hash for a user who already is registered
-    // if so redirect (301) to the page within the user's profile
-    if (user.name && user.name !== req.params.user) {
-      return res.redirect(301, '/' + user.name + '/' + req.params.slug);
-    }
 
     // check if the session user is the same as the user URL parameter.
     // if yes turn edit mode on
@@ -44,7 +39,6 @@ router.all('/:user/:slug', function(req, res, next) {
       user: user.hash,
       slug: req.params.slug
     }).sort({datetime: -1}).limit(1).then(results => {
-      const wikode = results[0];
 
       if (results.length === 0) {
         var err = new Error('Not Found');
@@ -52,7 +46,7 @@ router.all('/:user/:slug', function(req, res, next) {
         next(err);
       }
 
-      req.context.state.wikode = wikode;
+      req.context.state.wikode = results[0];
 
       next();
     });
