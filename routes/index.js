@@ -1,20 +1,9 @@
 var express = require('express');
 var router = express.Router();
 
-const React = require('react');
-const ReactRender = require('react-dom/server').renderToString;
-const {createStore, applyMiddleware} = require('redux');
-
-const thunk = require('redux-thunk').default;
-
 const slug = require('slug');
 
-const reducer = require('../store/reducer');
-
-const components = require('../components');
-
 const Wikode = require('../models/Wikode');
-const User = require('../models/User');
 
 
 /**
@@ -22,35 +11,25 @@ const User = require('../models/User');
  */
 router.all('/:user/:slug', function(req, res, next) {
 
-  req.context.template = 'Editor';
+  req.context.view = 'Editor';
 
-  // find the user specified in the URL by either their hash or their name
-  User.findOne({
-    hash: req.params.user
+  // find the CURRENT LATEST Wikode (we may generate a new version before we send)
+  Wikode.find({
+    user: req.params.user,
+    slug: req.params.slug
+  }).sort({datetime: -1}).limit(1).then(results => {
 
-  }).then(user => {
+    if (results.length === 0) {
+      var err = new Error('Not Found');
+      err.status = 404;
+      next(err);
+    }
 
-    // check if the session user is the same as the user URL parameter.
-    // if yes turn edit mode on
-    req.context.state.editMode = (req.user.hash === user.hash);
+    req.context.state.wikode = results[0];
 
-    // find the CURRENT LATEST Wikode (we may generate a new version before we send)
-    Wikode.find({
-      user: user.hash,
-      slug: req.params.slug
-    }).sort({datetime: -1}).limit(1).then(results => {
-
-      if (results.length === 0) {
-        var err = new Error('Not Found');
-        err.status = 404;
-        next(err);
-      }
-
-      req.context.state.wikode = results[0];
-
-      next();
-    });
+    next();
   }).catch(err => next(err));
+
 });
 
 
@@ -141,23 +120,8 @@ router.post('/', function(req, res, next) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  req.context.template = 'Home';
+  req.context.view = 'Home';
   next();
-});
-
-
-router.all('*', function(req, res) {
-  const store = createStore(reducer, req.context.state, applyMiddleware(thunk));
-  const templateName = req.context.template || 'Home';
-  const template = makeTemplate(templateName, store);
-
-  if (req.accepts('text/html')) {
-    req.context.reactHtml = ReactRender(template);
-    return res.render('index', req.context);
-  } else {
-    return res.json(req.context.state);
-  }
-
 });
 
 

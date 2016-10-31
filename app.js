@@ -18,6 +18,14 @@ var passport = require('passport');
 var routes = require('./routes/index');
 var userRoutes = require('./routes/user');
 
+const React = require('react');
+const ReactRender = require('react-dom/server').renderToString;
+const {createStore} = require('redux');
+
+const components = require('./components');
+
+const reducer = require('./store/reducer');
+
 module.exports = function(config) {
 
   var app = express();
@@ -55,6 +63,9 @@ module.exports = function(config) {
   app.use(passport.session());
 
   app.use(function(req, res, next) {
+    if (!req.user) {
+      req.user = null;
+    }
     next();
   });
 
@@ -73,8 +84,8 @@ module.exports = function(config) {
       ],
       state: {
         user: {
-          hash: req.user.hash,
-          name: req.user.name
+          hash: req.user.hash || null,
+          name: req.user.name || null
         }
       }
     };
@@ -82,6 +93,18 @@ module.exports = function(config) {
   });
 
   app.use('/', routes);
+
+  app.all('*', function(req, res) {
+    var store = createStore(reducer, req.context.state);
+
+    if (req.accepts('text/html')) {
+      req.context.reactHtml = ReactRender(components(req.context.view, store));
+      return res.render('index', req.context);
+    } else {
+      return res.json(req.context.state);
+    }
+
+  });
 
   // catch 404 and forward to error handler
   app.use(function(req, res, next) {

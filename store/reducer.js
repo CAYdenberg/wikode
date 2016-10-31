@@ -12,18 +12,6 @@ function user(state, action) {
   }
 }
 
-function editMode(state, action) {
-  switch (action.type) {
-
-    case 'SWITCH_USER':
-      return (action.hash === state.wikode.userHash);
-
-    default:
-      return state;
-
-  }
-}
-
 function wikode(state, action) {
   switch(action.type) {
 
@@ -61,7 +49,6 @@ module.exports = function(initialState, action) {
       hash: null,
       name: null
     },
-    editMode: false,
     wikode: {
       userHash: '',
       title: '',
@@ -79,8 +66,8 @@ module.exports = function(initialState, action) {
 
   return update(state, {
     user: {$set: user(state.user, action)},
-    editMode: {$set: editMode(state.editMode, action)},
     wikode: {$merge: wikode(state.wikode, action)},
     ui: {$merge: ui(state.ui, action)}
   });
+
 }

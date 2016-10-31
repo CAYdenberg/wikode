@@ -1,8 +1,15 @@
 /* eslint-env mocha, node */
 
 const assert = require('assert');
-
 const reducer = require('../store/reducer');
+
+const {
+  SWITCH_USER,
+  SET_UI,
+  CLEAR_USER,
+  UPDATE_WIKODE
+} = require('./constants');
+
 
 describe('Reducer', function() {
 
@@ -21,7 +28,7 @@ describe('Reducer', function() {
   });
 
   it('should be able to change the user', function() {
-    const state = reducer({}, {type: 'SWITCH_USER', hash: 'abcd1234', name: 'user1'});
+    const state = reducer({}, {type: SWITCH_USER, hash: 'abcd1234', name: 'user1'});
     assert.equal(state.user.hash, 'abcd1234');
     assert.equal(state.user.name, 'user1');
   });
