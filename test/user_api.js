@@ -14,7 +14,6 @@ describe('Users API', function(){
 
       const user1 = new Promise((resolve) => {
         new User({
-          hash: 'abcd1234',
           name: 'user',
           email: 'user@gmail.com',
           password: 'password'
@@ -46,7 +45,7 @@ describe('Users API', function(){
     agent1
       .post('/user/login/')
       .send({'signin-username': 'user', 'signin-password': 'password'})
-      .expect(200, {loggedIn: true, userHash: 'abcd1234', username: 'user'})
+      .expect(200, {loggedIn: true, userHash: 'user', username: 'user'})
       .expect('set-cookie', /[.]+/)
       .end(done);
   });
@@ -57,7 +56,7 @@ describe('Users API', function(){
       .set('Accept', 'application/json')
       .expect(200)
       .expect(function(res) {
-        assert.equal(res.body.user.hash, 'abcd1234');
+        assert.equal(res.body.user.hash, 'user');
       })
       .end(done);
   });
@@ -103,11 +102,11 @@ describe('Users API', function(){
       .end(done);
   });
 
-  it('should not create a user if the hash has already been assigned', function(done) {
+  it('should not create a user if the information is incomplete', function(done) {
     agent2
       .post('/user/new/')
-      .send({'signup-username': 'newuser', 'signup-email': 'newuser@gmail.com', 'signup-password': 'whatever'})
-      .expect(401)
+      .send({'signup-username': 'newuser', 'signup-email': 'newuser@gmail.com', 'signup-password': ''})
+      .expect(400)
       .expect(res => {
         assert.equal(res.body.error, 'User could not be created');
       })
