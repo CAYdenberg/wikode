@@ -81,66 +81,38 @@ describe('Users API', function(){
   var agent2 = request.agent(app);
   var agent2Hash;
 
-  it('should obtain a user hash even if the user is not logged in', function(done) {
+  it('should be able to create a new user with a unique name', function(done) {
     agent2
-      .get('/')
-      .set('Accept', 'application/json')
+      .post('/user/new/')
+      .send({'signup-username': 'newuser', 'signup-email': 'newuser@gmail.com', 'signup-password': 'whatever'})
       .expect(200)
       .expect(res => {
-        agent2Hash = res.body.user.hash;
-        assert(agent2Hash);
+        assert.equal(res.body.loggedIn, true);
+        assert.equal(res.body.username, 'newuser');
+        agent2Hash = res.body.userHash;
       })
       .end(done);
   });
 
   it('should obtain the same hash on subsequent requests', function(done) {
     agent2
-      .get('/')
+      .get('/user/')
       .set('Accept', 'application/json')
       .expect(200)
-      .expect(res => {
-        assert.equal(agent2Hash, res.body.user.hash);
-      })
-      .end(done);
-  });
-
-  it('should not create a new user if the session hash does not match the submitted hash', function(done) {
-    agent2
-      .post('/user/new/')
-      .send({'hash': 'badhash', 'signup-username': 'user', 'signup-email': 'user@gmail.com', 'signup-password': 'whatever'})
-      .expect(400)
-      .end(done);
-  });
-
-  it('should not create a user if the username is not unique', function(done) {
-    agent2
-      .post('/user/new/')
-      .send({'hash': agent2Hash, 'signup-username': 'user', 'signup-email': 'user@gmail.com', 'signup-password': 'whatever'})
-      .expect(401)
-      .expect(res => {
-        assert.equal(res.body.error, 'User could not be created')
-      })
-      .end(done);
-  });
-
-  it('should be able to create a new user with a unique name', function(done) {
-    agent2
-      .post('/user/new/')
-      .send({'hash': agent2Hash, 'signup-username': 'newuser', 'signup-email': 'newuser@gmail.com', 'signup-password': 'whatever'})
-      .expect(200)
-      .expect({loggedIn: true, userHash: agent2Hash, username: 'newuser'})
+      .expect({loggedIn: true, username: 'newuser', userHash: agent2Hash})
       .end(done);
   });
 
   it('should not create a user if the hash has already been assigned', function(done) {
     agent2
       .post('/user/new/')
-      .send({'hash': agent2Hash, 'signup-username': 'user', 'signup-email': 'newuser@gmail.com', 'signup-password': 'whatever'})
+      .send({'signup-username': 'newuser', 'signup-email': 'newuser@gmail.com', 'signup-password': 'whatever'})
       .expect(401)
       .expect(res => {
-        assert.equal(res.body.error, 'A user is already logged in');
+        assert.equal(res.body.error, 'User could not be created');
       })
       .end(done);
   });
+
 
 });

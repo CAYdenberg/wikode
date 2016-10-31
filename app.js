@@ -8,9 +8,10 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var hbs = require('express-hbs');
 
-const mongoose = require('mongoose');
-const session = require('express-session');
-const SessionStore = require('connect-mongo')(session);
+var mongoose = require('mongoose');
+mongoose.Promise = Promise;
+var session = require('express-session');
+var SessionStore = require('connect-mongo')(session);
 var passport = require('passport');
 
 const randomstring = require('randomstring').generate;
@@ -57,17 +58,9 @@ module.exports = function(config) {
   app.use(passport.session());
 
   app.use(function(req, res, next) {
-    // if the current user is anonymous, create an anonymous user with just a hash
-    if (!req.user) {
-      new User({
-        hash: randomstring(8)
-      }).save().then(user => {
-        req.login(user, next);
-      }).catch(err => next(err));
-    } else {
-      next();
-    }
+    next();
   });
+
   //user routes
   app.use('/user', userRoutes);
 

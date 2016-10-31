@@ -4,8 +4,9 @@ var router = express.Router();
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
-
 const User = require('../models/User');
+
+const { slugify } = require('../lib');
 
 passport.serializeUser(function(user, done) {
   done(null, user.id);
@@ -41,30 +42,23 @@ passport.use(new LocalStrategy({
 router.post('/login', passport.authenticate('local'));
 
 router.post('/new', function(req, res, next) {
-  // confirm that the session hash matches the submitted hash
-  if (req.user.hash !== req.body.hash) {
-    return res.status(400).send({});
-  }
 
-  User.findOne({hash: req.user.hash}).then(user => {
+  const name = req.body['signup-username'];
 
-    //check if this User has already been created
-    if (user.name || user.email || user.password) {
-      return res.status(401).json({error: 'A user is already logged in'});
-    }
+  new User({
+    name: name,
+    email: req.body['signup-email'],
+    password: req.body['signup-password'],
+    hash: slugify(name)
 
-    Object.assign(user, {
-      name: req.body['signup-username'],
-      email: req.body['signup-email'],
-      password: req.body['signup-password']
-    });
-    user.save().then(user => {
-      req.login(user, next);
-    }).catch(err => {
-      res.status(401).json({error: 'User could not be created'});
-    });
+  }).save().then(user => {
+    req.login(user, next);
 
-  }).catch(err => next(err));
+  }).catch(err => {
+    console.log(err);
+    res.status(401).json({error: 'User could not be created'});
+
+  });
 });
 
 router.get('/logout', function(req, res) {
