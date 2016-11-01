@@ -20,11 +20,9 @@ var userRoutes = require('./routes/user');
 
 const React = require('react');
 const ReactRender = require('react-dom/server').renderToString;
-const {createStore} = require('redux');
 
+const getStore = require('./store');
 const components = require('./components');
-
-const reducer = require('./store/reducer');
 
 module.exports = function(config) {
 
@@ -82,20 +80,23 @@ module.exports = function(config) {
       scripts: [
         '/main.js'
       ],
-      state: {
-        user: {
-          hash: req.user.hash || null,
-          name: req.user.name || null
-        }
-      }
+      state: {}
     };
+
+    if (req.user) {
+      req.state.user = {
+        hash: req.user.hash,
+        name: req.user.name
+      }
+    }
+
     next();
   });
 
   app.use('/', routes);
 
   app.all('*', function(req, res) {
-    var store = createStore(reducer, req.context.state);
+    const store = getStore(req.context.state);
 
     if (req.accepts('text/html')) {
       req.context.reactHtml = ReactRender(components(req.context.view, store));
