@@ -31,7 +31,6 @@ const CreateUserForm = React.createClass({
     const store = this.context.store;
     store.subscribe(() => {
       this.setState({
-        usernameMsg: store.getState().ui.uniqueUsername,
         formMsg: store.getState().ui.createUserForm,
         disabled: false
       });
@@ -58,12 +57,6 @@ const CreateUserForm = React.createClass({
         }
       })()
     });
-    if (this.state.usernameMsg) {
-      return false;
-    } else {
-      this.context.store.dispatch(actions.checkUserExists(value));
-      return true;
-    }
   },
 
   checkEmail: function() {

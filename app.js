@@ -84,7 +84,7 @@ module.exports = function(config) {
     };
 
     if (req.user) {
-      req.state.user = {
+      req.context.state.user = {
         hash: req.user.hash,
         name: req.user.name
       }

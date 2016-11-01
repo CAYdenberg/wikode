@@ -41,7 +41,7 @@ function ui(state, action) {
       updateObj[action.el] = {$set: action.value};
       return update(state, updateObj);
 
-    case 'SWITCH_USER':
+    case LOGIN:
       return update(state, {
         signinForm: {$set: null},
         createUserForm: {$set: null},
@@ -70,8 +70,7 @@ module.exports = function(initialState, action) {
     ui: {
       modal: null,
       signinForm: null,
-      createUserForm: null,
-      uniqueUsername: null
+      createUserForm: null
     }
   }, initialState);
 

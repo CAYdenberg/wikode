@@ -1,41 +1,32 @@
 const popsicle = require('popsicle');
+const {
+  LOGIN,
+  LOGOUT,
+  SET_UI,
+  SAVE_WIKODE,
+  FORK_WIKODE,
+  NEW_WIKODE
+} = require('./constants');
+
 
 const actions = module.exports = {
 
-  checkUserExistsResponse: function(res) {
-    if (res.body.userExists) {
-      return {type: 'SET_UI', el: 'uniqueUsername', value: 'User already exists. Please choose a different name'}
-    } else {
-      return {type: 'SET_UI', el: 'uniqueUsername', value: ''}
-    }
-  },
-
-  checkUserExists: function(username) {
-    return function(dispatch) {
-      popsicle.request({
-        method: 'GET',
-        url: '/user/exists/' + username
-      }).then(res => {
-        dispatch(actions.checkUserExistsResponse(res));
-      });
-    }
-  },
 
   loginResponse: function(res) {
-
     switch (res.status) {
 
       case 200:
-        return {type: 'SWITCH_USER', hash: res.body.userHash, name: res.body.username};
+        return {type: LOGIN, hash: res.body.userHash, name: res.body.username};
 
       default:
-        return {type: 'SET_UI', el: 'signinForm', value: 'Username or password is incorrect'}
+        return {type: SET_UI, el: 'signinForm', value: 'Username or password is incorrect'}
 
     }
   },
 
   login: function(data) {
     return function(dispatch) {
+
       popsicle.request({
         method: 'POST',
         url: '/user/login/',
@@ -43,6 +34,7 @@ const actions = module.exports = {
       }).then(res => {
         dispatch(actions.loginResponse(res));
       });
+
     }
   },
 
@@ -55,19 +47,20 @@ const actions = module.exports = {
     switch (res.status) {
 
       case 200:
-        return {type: 'SWITCH_USER', hash: res.body.userHash, name: res.body.username};
+        return {type: LOGIN, hash: res.body.userHash, name: res.body.username};
 
-      case 401:
-        return {type: 'SET_UI', el: 'createUserForm', value: res.body.error};
+      case 400:
+        return {type: SET_UI, el: 'createUserForm', value: res.body.error};
 
       default:
-        return {type: 'SET_UI', el: 'createUserForm', value: 'User could not be created'}
+        return {type: SET_UI, el: 'createUserForm', value: 'User could not be created'}
 
     }
   },
 
   createUser: function(data) {
     return function(dispatch) {
+
       popsicle.request({
         method: 'POST',
         url: '/user/new/',
@@ -75,6 +68,7 @@ const actions = module.exports = {
       }).then(res => {
         dispatch(actions.createUserResponse(res));
       });
+
     }
   },
 

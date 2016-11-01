@@ -28,7 +28,10 @@ passport.use(new LocalStrategy({
     User.findOne({
       name: username
     }).then(user => {
-      if (user.checkPassword(password)) {
+      if (!user) {
+        done(null, false, {message: 'User does not exist'});
+      }
+      else if (user.checkPassword(password)) {
         done(null, user);
       } else {
         done(null, false, {message: 'Incorrect password'});
