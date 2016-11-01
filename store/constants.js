@@ -1,8 +1,10 @@
-const keymirror = require('react/lib/keyMirror');
+const keymirror = require('keymirror');
 
 module.exports = keymirror({
-  SWITCH_USER: null,
-  CLEAR_USER: null,
+  LOGIN: null,
+  LOGOUT: null,
   SET_UI: null,
-  UPDATE_WIKODE: null
+  SAVE_WIKODE: null,
+  FORK_WIKODE: null,
+  NEW_WIKODE: null
 });

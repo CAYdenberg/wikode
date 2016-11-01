@@ -1,10 +1,21 @@
 const update = require('react-addons-update');
+const {
+  LOGIN,
+  LOGOUT,
+  SET_UI,
+  SAVE_WIKODE,
+  FORK_WIKODE,
+  NEW_WIKODE
+} = require('./constants');
 
 function user(state, action) {
   switch (action.type) {
 
-    case 'SWITCH_USER':
+    case LOGIN:
       return {hash: action.hash, name: action.name}
+
+    case LOGOUT:
+      return {hash: null, name: null}
 
     default:
       return state;
@@ -25,7 +36,7 @@ function wikode(state, action) {
 function ui(state, action) {
   switch(action.type) {
 
-    case 'SET_UI':
+    case SET_UI:
       var updateObj = {};
       updateObj[action.el] = {$set: action.value};
       return update(state, updateObj);
