@@ -54,10 +54,8 @@ router.post('/new', function(req, res, next) {
   }).save().then(user => {
     req.login(user, next);
 
-  }).catch(err => {
-    console.log(err);
+  }).catch(() => {
     res.status(400).json({error: 'User could not be created'});
-
   });
 });
 
