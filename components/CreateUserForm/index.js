@@ -5,7 +5,7 @@ const update = require('react-addons-update');
 const TextField = require('../partials/TextField');
 const HiddenField = require('../partials/HiddenField');
 
-const actions = require('../../store/actions');
+const {createUser} = require('../../actions/user');
 
 const CreateUserForm = React.createClass({
   contextTypes: {
@@ -75,7 +75,7 @@ const CreateUserForm = React.createClass({
       disabled: true
     });
     const store = this.context.store;
-    store.dispatch(actions.createUser(this.state.formData));
+    store.dispatch(createUser(this.state.formData));
   },
 
   render: function() {

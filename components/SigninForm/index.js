@@ -1,13 +1,12 @@
 const React = require('react');
+const update = require('react-addons-update');
 
 // TODO: bring render down a layer and replace with connect
 
 const TextField = require('../partials/TextField');
 const HiddenField = require('../partials/HiddenField');
 
-const actions = require('../../store/actions');
-
-const update = require('react-addons-update');
+const {login} = require('../../actions/user');
 
 const SigninForm = React.createClass({
   contextTypes: {
@@ -53,7 +52,7 @@ const SigninForm = React.createClass({
       disabled: true
     });
     const store = this.context.store;
-    store.dispatch(actions.login(this.state.formData));
+    store.dispatch(login(this.state.formData));
   },
 
   render: function() {
