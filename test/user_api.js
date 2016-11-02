@@ -14,7 +14,7 @@ describe('Users API', function(){
 
       const user1 = new Promise((resolve) => {
         new User({
-          name: 'user',
+          name: 'existinguser',
           email: 'user@gmail.com',
           password: 'password'
         }).save(resolve);
@@ -27,7 +27,7 @@ describe('Users API', function(){
 
   it('should be able to tell us if a user exists', function(done) {
     request(app)
-      .get('/user/exists/'+encodeURI('user'))
+      .get('/user/exists/'+encodeURI('existinguser'))
       .expect(200, {userExists: true})
       .end(done);
   });
@@ -44,8 +44,8 @@ describe('Users API', function(){
   it('should log a user in and set a cookie', function(done) {
     agent1
       .post('/user/login/')
-      .send({'signin-username': 'user', 'signin-password': 'password'})
-      .expect(200, {loggedIn: true, userHash: 'user', username: 'user'})
+      .send({'signin-username': 'existinguser', 'signin-password': 'password'})
+      .expect(200, {loggedIn: true, userHash: 'existinguser', username: 'existinguser'})
       .expect('set-cookie', /[.]+/)
       .end(done);
   });
@@ -56,7 +56,7 @@ describe('Users API', function(){
       .set('Accept', 'application/json')
       .expect(200)
       .expect(function(res) {
-        assert.equal(res.body.user.hash, 'user');
+        assert.equal(res.body.user.hash, 'existinguser');
       })
       .end(done);
   });
@@ -72,7 +72,7 @@ describe('Users API', function(){
   it('should not be able to log in if the password is wrong', function(done) {
     agent1
       .post('/user/login/')
-      .send({'signin-username': 'user', 'signin-password': 'wrong'})
+      .send({'signin-username': 'existinguser', 'signin-password': 'wrong'})
       .expect(401)
       .end(done);
   });
@@ -105,13 +105,29 @@ describe('Users API', function(){
   it('should not create a user if the information is incomplete', function(done) {
     agent2
       .post('/user/new/')
-      .send({'signup-username': 'newuser', 'signup-email': 'newuser@gmail.com', 'signup-password': ''})
+      .send({'signup-username': 'anothernewuser', 'signup-email': 'anothernewuser@gmail.com', 'signup-password': ''})
+      .expect(400)
+      .end(done);
+  });
+
+  it('should not create a new user if the username is "local"', function(done) {
+    request(app)
+      .post('/user/new/')
+      .send({'signup-username': 'local', 'signup-email': 'newuser@gmail.com', 'signup-password': 'whatever'})
       .expect(400)
       .expect(res => {
-        assert.equal(res.body.error, 'User could not be created');
+        assert.equal(res.body.error, 'local is not allowed as a user name')
       })
       .end(done);
   });
 
+  it('should still create a user if the username is not unique but the slug should be unique', function(done) {
+    request(app)
+      .post('/user/new/')
+      .send({'signup-username': 'newuser', 'signup-email': 'newuser@gmail.com', 'signup-password': 'whatever'})
+      .expect(200)
+      .expect({loggedIn: true, username: 'newuser', userHash: 'newuser-2'})
+      .end(done);
+  });
 
 });

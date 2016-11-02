@@ -7,9 +7,25 @@ const slugify = require('mongoose-url-slugs');
 
 const Schema = mongoose.Schema;
 
+var nameValidation = {
+  validator: function(name) {
+
+    // disallow certain values
+    const notAllowed = ['local', 'user'];
+    if (notAllowed.indexOf(name) !== -1) {
+      return false;
+    }
+    return true;
+
+  },
+
+  message: '{VALUE} is not allowed as a user name'
+}
+
+
 var UserSchema = new Schema({
-  hash: {type: String, unique: true},
-  name: {type: String, required: true}, // should be unique
+  hash: {type: String},
+  name: {type: String, required: true, validate: nameValidation}, // should be unique
   email: {type: String}, // should be email
   password: {type: String, required: true, set: (password) => bcrypt.hashSync(password, salt)}
 });

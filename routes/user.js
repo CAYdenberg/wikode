@@ -6,8 +6,6 @@ var LocalStrategy = require('passport-local').Strategy;
 
 const User = require('../models/User');
 
-const { slugify } = require('../lib');
-
 passport.serializeUser(function(user, done) {
   done(null, user.id);
 });
@@ -19,14 +17,16 @@ passport.deserializeUser(function(id, done) {
 });
 
 // passport/login.js
-passport.use(new LocalStrategy({
+passport.use('login', new LocalStrategy({
     passReqToCallback : true,
 		usernameField : 'signin-username',
 		passwordField : 'signin-password'
   },
   function(req, username, password, done) {
+
     User.findOne({
       name: username
+
     }).then(user => {
       if (!user) {
         done(null, false, {message: 'User does not exist'});
@@ -36,31 +36,40 @@ passport.use(new LocalStrategy({
       } else {
         done(null, false, {message: 'Incorrect password'});
       }
+
     }).catch(err => {
       done(err, false);
+
     });
 	}
 ));
+router.post('/login', passport.authenticate('login'));
 
-router.post('/login', passport.authenticate('local'));
+passport.use('signup', new LocalStrategy({
+    passReqToCallback: true,
+    usernameField: 'signup-username',
+    passwordField: 'signup-password'
+  },
+  function(req, username, password, done) {
 
-router.post('/new', function(req, res, next) {
+    new User({
+      name: username,
+      email: req.body['signup-email'],
+      password: password
 
-  const name = req.body['signup-username'];
+    })
+    .save((err, user) => {
+      if (err) {
+        done(null, false, {message: 'Invalid information supplied'});
+      } else {
+        done(null, user);
+      }
+    })
 
-  new User({
-    name: name,
-    email: req.body['signup-email'],
-    password: req.body['signup-password'],
-    hash: slugify(name)
+  }
+));
+router.post('/new', passport.authenticate('signup'));
 
-  }).save().then(user => {
-    req.login(user, next);
-
-  }).catch(() => {
-    res.status(400).json({error: 'User could not be created'});
-  });
-});
 
 router.get('/logout', function(req, res) {
   req.logout();

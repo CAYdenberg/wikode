@@ -9,7 +9,7 @@ var bodyParser = require('body-parser');
 var hbs = require('express-hbs');
 
 var mongoose = require('mongoose');
-mongoose.Promise = Promise;
+mongoose.Promise = global.Promise;
 
 var session = require('express-session');
 var SessionStore = require('connect-mongo')(session);
