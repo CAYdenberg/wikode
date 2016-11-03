@@ -8,8 +8,7 @@ const {
   LOGOUT,
   SET_UI,
   SAVE_WIKODE,
-  FORK_WIKODE,
-  NEW_WIKODE
+  POPULATE_WIKODE
 } = require('../store/constants');
 
 
@@ -46,10 +45,27 @@ describe('Reducer', function() {
     assert.equal(state.user.name, null);
   });
 
-  it('should save a wikode by updating the time of last save');
+  it('should save a wikode by updating the time of last save', function() {
+    const state = reducer({
+      wikode: {
+        user: 'user-name',
+        title: 'My Wikode',
+        slug: 'my-wikode',
+        content: 'Some content goes here',
+        datetime: 1000
+      }
+    }, {type: SAVE_WIKODE, datetime: 2000});
+    assert.equal(state.wikode.datetime, 2000);
+  });
 
-  it('should fork a wikode by assigning it to the current user or to an anonymous user');
-
-  it('should create a new wikode with a title and user');
+  it('should get a local wikode based on slug', function() {
+    const state = reducer({
+      wikode: {
+        user: 'local',
+        slug: 'my-local-wikode'
+      }
+    }, {type: POPULATE_WIKODE, title: 'My Local Wikode', content: 'Some content'});
+    assert.equal(state.wikode.content, 'Some content');
+  });
 
 });

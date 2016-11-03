@@ -114,10 +114,7 @@ describe('Users API', function(){
     request(app)
       .post('/user/new/')
       .send({'signup-username': 'local', 'signup-email': 'newuser@gmail.com', 'signup-password': 'whatever'})
-      .expect(400)
-      .expect(res => {
-        assert.equal(res.body.error, 'local is not allowed as a user name')
-      })
+      .expect(401)
       .end(done);
   });
 

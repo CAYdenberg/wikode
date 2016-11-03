@@ -5,6 +5,10 @@ const getStore = require('../store');
 
 const store = getStore(window.state);
 
+if (window.state.wikode.user === "local") {
+  // dispatch get local wikode to store
+}
+
 const view = document.getElementById('mount-point').getAttribute('data-view');
 
 const component = require('../components')(view, store);

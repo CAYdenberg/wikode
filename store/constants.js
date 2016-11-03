@@ -5,6 +5,5 @@ module.exports = keymirror({
   LOGOUT: null,
   SET_UI: null,
   SAVE_WIKODE: null,
-  FORK_WIKODE: null,
-  NEW_WIKODE: null
+  POPULATE_WIKODE: null
 });

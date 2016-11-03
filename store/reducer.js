@@ -4,8 +4,7 @@ const {
   LOGOUT,
   SET_UI,
   SAVE_WIKODE,
-  FORK_WIKODE,
-  NEW_WIKODE
+  POPULATE_WIKODE
 } = require('./constants');
 
 function user(state, action) {
@@ -26,7 +25,18 @@ function user(state, action) {
 function wikode(state, action) {
   switch(action.type) {
 
-    case 'SAVED':
+    case SAVE_WIKODE:
+      return update(state, {$merge: {
+        datetime: action.datetime
+      }});
+
+    case POPULATE_WIKODE:
+      return update(state, {$merge: {
+        datetime: action.datetime,
+        title: action.title,
+        content: action.content
+      }});
+
     default:
       return state;
 

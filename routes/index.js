@@ -13,6 +13,15 @@ router.all('/:user/:slug', function(req, res, next) {
 
   req.context.view = 'Editor';
 
+  // if we are local document instead of a user
+  if (req.params.user === "local") {
+    req.context.state.wikode = {
+      slug: req.params.slug,
+      user: "local"
+    }
+    next();
+  }
+
   // find the CURRENT LATEST Wikode (we may generate a new version before we send)
   Wikode.find({
     user: req.params.user,
