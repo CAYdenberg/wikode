@@ -80,15 +80,13 @@ module.exports = function(config) {
       scripts: [
         '/main.js'
       ],
-      state: {}
-    };
-
-    if (req.user) {
-      req.context.state.user = {
-        hash: req.user.hash,
-        name: req.user.name
+      state: {
+        user: req.user ? {
+          hash: req.user.hash,
+          name: req.user.name
+        } : null
       }
-    }
+    };
 
     next();
   });

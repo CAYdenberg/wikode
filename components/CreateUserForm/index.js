@@ -17,9 +17,7 @@ const CreateUserForm = React.createClass({
     return {
       formMsg: appState.ui.createUserForm || '',
 
-      formData: {
-        hash: appState.user.hash
-      },
+      formData: {},
 
       usernameMsg: appState.uniqueUsername || '',
 
@@ -82,10 +80,6 @@ const CreateUserForm = React.createClass({
     return (
       <form method="POST" action="/user/new/" onSubmit={this.handleSubmit}>
         <h3>{this.state.formMsg}</h3>
-        <HiddenField
-          name="hash"
-          formData={this.state.formData}
-        />
         <TextField
           label="Username"
           name="signup-username"

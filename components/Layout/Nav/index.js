@@ -10,17 +10,21 @@ const NavController = React.createClass({
     store: React.PropTypes.object
   },
 
+  getUserName: function() {
+    const user = this.context.store.getState().user;
+    return user ? user.name : null;
+  },
+
   getInitialState: function() {
     return {
-      user: this.context.store.getState().user.name
+      user: this.getUserName()
     }
   },
 
   componentWillMount: function() {
-    const store = this.context.store;
-    store.subscribe(() => {
+    this.context.store.subscribe(() => {
       this.setState({
-        user: store.getState().user.name
+        user: this.getUserName()
       });
     })
   },

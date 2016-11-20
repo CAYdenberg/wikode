@@ -19,9 +19,7 @@ const SigninForm = React.createClass({
 
       formMsg: appState.ui.SigninForm,
 
-      formData: {
-        hash: appState.user.hash
-      },
+      formData: {},
 
       disabled: false
 
@@ -59,10 +57,6 @@ const SigninForm = React.createClass({
     return (
       <form method="POST" action="/user/login/" onSubmit={this.handleSubmit}>
         <h3>{this.state.formMsg}</h3>
-        <HiddenField
-          name="hash"
-          formData={this.state.formData}
-        />
         <TextField
           label="Username"
           name="signin-username"
