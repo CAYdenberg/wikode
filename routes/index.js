@@ -1,8 +1,6 @@
 var express = require('express');
 var router = express.Router();
 
-const slug = require('slug');
-
 const Wikode = require('../models/Wikode');
 
 
@@ -13,7 +11,8 @@ router.all('/:user/:slug', function(req, res, next) {
 
   req.context.view = 'Editor';
 
-  // if we are local document instead of a user
+  // if we are local document instead of a user, bounce back to the browser
+  // to handle population of the data
   if (req.params.user === "local") {
     req.context.state.wikode = {
       slug: req.params.slug,
@@ -71,9 +70,14 @@ router.put('/:user/:slug', function(req, res, next) {
 
 
 /**
- * Fork a wikode, if the current user does not already have a wikode with that title
+ * Create a new Wikode for the currently authenticated user.
  */
 router.post('/:user/:slug', function(req, res, next) {
+
+  // check if the requested user is the same as the authenticated user, otherwise
+  // send back an error
+
+  // save ALL the data as a new document and send it back
 
   // check if the current user already has that document
   Wikode.findOne({
@@ -99,31 +103,6 @@ router.post('/:user/:slug', function(req, res, next) {
 
       });
     }
-  }).catch(err => {next(err)});
-});
-
-
-/**
- * Creates a new (blank) document assigned to the current user.
- */
-router.post('/', function(req, res, next) {
-
-  const title = req.body['new-wikode-title'];
-
-  // generate a document with user:anonymous and string:random
-
-  // TODO: prevent overwrites
-
-  new Wikode({
-    user: req.user.hash,
-    datetime: new Date().toISOString(),
-    title: title,
-    slug: slug(title).toLowerCase() // TODO: move this into save hook on the model
-  }).save().then(wikode => {
-
-    // redirect to the new document
-    return res.redirect('/' + wikode.user + '/' + wikode.slug + '/');
-
   }).catch(err => {next(err)});
 });
 

@@ -1,9 +1,11 @@
 const popsicle = require('popsicle');
 const {
   SET_UI,
+  NEW_WIKODE,
   SAVE_WIKODE
-} = require('./constants');
+} = require('../store/constants');
 
+const {slugify} = require('../lib/');
 
 const actions = module.exports = {
 
@@ -24,7 +26,7 @@ const actions = module.exports = {
 
   save: function(url, content) {
     return function(dispatch) {
-      dispatch(actions.saveRequest());
+      // dispatch(actions.saveRequest());
       popsicle.request({
         method: 'PUT',
         url: url,
@@ -33,6 +35,12 @@ const actions = module.exports = {
         dispatch(actions.saveResponse(res));
       });
     }
+  },
+
+  new: function(title, user) {
+    user = user || 'local';
+    window.triggerLocalNavigation('Editor', title, '/' + user + '/' + slugify(title));
+    return {type: NEW_WIKODE, user: user, title: title, slug: slugify(title)}
   }
 
 }

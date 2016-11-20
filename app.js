@@ -84,7 +84,10 @@ module.exports = function(config) {
         user: req.user ? {
           hash: req.user.hash,
           name: req.user.name
-        } : null
+        } : {
+          hash: null,
+          name: null
+        }
       }
     };
 

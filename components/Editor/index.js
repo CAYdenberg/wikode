@@ -14,6 +14,15 @@ const Editor = React.createClass({
     };
   },
 
+  componentWillMount: function() {
+    const store = this.context.store;
+    store.subscribe(() => {
+      this.setState({
+        title: store.getState().wikode.title
+      });
+    });
+  },
+
   render: function() {
     return (
       <View

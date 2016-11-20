@@ -28,7 +28,7 @@ const WikiEditor = React.createClass({
 
     return ({
       editorState: editorState,
-      editMode: (state.user.hash === state.wikode.user)
+      editMode: (state.wikode.user === state.user.hash) || (state.wikode.user === 'local')
     });
   },
 

@@ -7,6 +7,7 @@ const {
   LOGIN,
   LOGOUT,
   SET_UI,
+  NEW_WIKODE,
   SAVE_WIKODE,
   POPULATE_WIKODE
 } = require('../store/constants');
@@ -66,6 +67,17 @@ describe('Reducer', function() {
       }
     }, {type: POPULATE_WIKODE, title: 'My Local Wikode', content: 'Some content'});
     assert.equal(state.wikode.content, 'Some content');
+  });
+
+  it('should create a new wikode based on user and title', function() {
+    const state = reducer({
+      wikode: {
+        user: 'old user',
+        slug: 'old-wikode'
+      }
+    }, {type: NEW_WIKODE, title: 'New Wikode', user: 'new-user'});
+    assert.equal(state.wikode.slug, 'new-wikode');
+    assert.equal(state.wikode.user, 'new-user');
   });
 
 });

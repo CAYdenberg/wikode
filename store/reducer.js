@@ -3,9 +3,11 @@ const {
   LOGIN,
   LOGOUT,
   SET_UI,
+  NEW_WIKODE,
   SAVE_WIKODE,
   POPULATE_WIKODE
 } = require('./constants');
+const {slugify} = require('../lib');
 
 function user(state, action) {
   switch (action.type) {
@@ -36,6 +38,13 @@ function wikode(state, action) {
         title: action.title,
         content: action.content
       }});
+
+    case NEW_WIKODE:
+      return {
+        user: action.user,
+        title: action.title,
+        slug: action.slug
+      };
 
     default:
       return state;
@@ -71,7 +80,7 @@ module.exports = function(initialState, action) {
       name: null
     },
     wikode: {
-      userHash: '',
+      user: '',
       title: '',
       slug: '',
       content: {},
