@@ -4,6 +4,7 @@ const {
   LOGOUT,
   SET_UI,
   NEW_WIKODE,
+  FORK_WIKODE,
   SAVE_WIKODE,
   POPULATE_WIKODE
 } = require('./constants');
@@ -45,6 +46,11 @@ function wikode(state, action) {
         title: action.title,
         slug: action.slug
       };
+
+    case FORK_WIKODE:
+      return update(state, {$set: {
+        user: action.user
+      }});
 
     default:
       return state;

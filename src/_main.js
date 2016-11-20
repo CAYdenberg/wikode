@@ -13,13 +13,19 @@ if (!window.state.wikode || window.state.wikode.user === "local") {
 
 const view = document.getElementById('mount-point').getAttribute('data-view');
 
-window.triggerLocalNavigation = function(view, title, url) {
+window.changeView = function(view) {
   store.dispatch(hideModals());
   const component = require('../components')(view, store);
   ReactDOM.render(component, document.getElementById('mount-point'));
-  history.pushState({}, title, url);
 }
 
-window.triggerLocalNavigation(view);
+store.subscribe(() => {
+  const state = store.getState();
+  if (state.wikode.user && state.wikode.slug && state.wikode.title) {
+    history.pushState({}, state.wikode.title, '/' + state.wikode.user + '/' + state.wikode.slug);
+  }
+});
+
+window.changeView(view);
 
 window.store = store;

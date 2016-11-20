@@ -2,6 +2,7 @@ const popsicle = require('popsicle');
 const {
   SET_UI,
   NEW_WIKODE,
+  FORK_WIKODE,
   SAVE_WIKODE
 } = require('../store/constants');
 
@@ -37,10 +38,15 @@ const actions = module.exports = {
     }
   },
 
+  fork: function(user) {
+    user = user || 'local';
+    return {type: FORK_WIKODE, user: user};
+  },
+
   new: function(title, user) {
     user = user || 'local';
     const slug = slugify(title);
-    window.triggerLocalNavigation('Editor', title, '/' + user + '/' + slug);
+    window.changeView('Editor');
     return {type: NEW_WIKODE, user: user, title: title, slug: slug}
   }
 

@@ -6,7 +6,7 @@ const Draft = require('draft-js');
 const {Editor, EditorState, RichUtils, getDefaultKeyBinding, KeyBindingUtil} = Draft;
 const {hasCommandModifier} = KeyBindingUtil;
 
-const actions = require('../../../store/actions');
+const actions = require('../../../actions/wikode');
 
 const Controls = require('./Controls');
 
@@ -33,7 +33,7 @@ const WikiEditor = React.createClass({
   },
 
   onChange: function(editorState) {
-    this.setState({editorState});
+    this.setState({editorState: editorState});
   },
 
   handleKeyCommand: function(command) {
@@ -81,6 +81,15 @@ const WikiEditor = React.createClass({
     }
   },
 
+  _fork: function() {
+    const user = this.context.store.getState().user;
+    const hash = user ? user.hash : null;
+    this.context.store.dispatch(actions.fork(hash));
+    this.setState({
+      editMode: true
+    });
+  },
+
   render: function() {
     const editorState = this.state.editorState;
 
@@ -126,9 +135,7 @@ const WikiEditor = React.createClass({
             spellCheck={false}
           />
         </div>
-        <form method="POST" action=".">
-          <button type="submit">Fork this document</button>
-        </form>
+        <button onClick={this._fork}>Fork this document</button>
       </div>
     );
   }
