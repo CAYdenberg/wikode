@@ -39,8 +39,9 @@ const actions = module.exports = {
 
   new: function(title, user) {
     user = user || 'local';
-    window.triggerLocalNavigation('Editor', title, '/' + user + '/' + slugify(title));
-    return {type: NEW_WIKODE, user: user, title: title, slug: slugify(title)}
+    const slug = slugify(title);
+    window.triggerLocalNavigation('Editor', title, '/' + user + '/' + slug);
+    return {type: NEW_WIKODE, user: user, title: title, slug: slug}
   }
 
 }

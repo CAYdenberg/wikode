@@ -75,7 +75,7 @@ describe('Reducer', function() {
         user: 'old user',
         slug: 'old-wikode'
       }
-    }, {type: NEW_WIKODE, title: 'New Wikode', user: 'new-user'});
+    }, {type: NEW_WIKODE, title: 'New Wikode', user: 'new-user', slug: 'new-wikode'});
     assert.equal(state.wikode.slug, 'new-wikode');
     assert.equal(state.wikode.user, 'new-user');
   });
