@@ -57,6 +57,7 @@ router.put('/:user/:slug', function(req, res, next) {
   // if yes, save the document
   const content = req.body;
   new Wikode({
+    title: req.context.state.wikode.title,
     user: req.context.state.wikode.user,
     slug: req.context.state.wikode.slug,
     datetime: new Date().toISOString(), //TODO: move this into a save hook on the Model

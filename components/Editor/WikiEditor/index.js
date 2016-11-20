@@ -28,16 +28,7 @@ const WikiEditor = React.createClass({
 
     return ({
       editorState: editorState,
-      editMode: state.editMode
-    });
-  },
-
-  componentWillMount: function() {
-    const store = this.context.store;
-    store.subscribe(() => {
-      this.setState({
-        editMode: store.getState().editMode
-      });
+      editMode: (state.user.hash === state.wikode.user)
     });
   },
 

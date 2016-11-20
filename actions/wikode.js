@@ -1,6 +1,7 @@
 const popsicle = require('popsicle');
 const {
-  SET_UI
+  SET_UI,
+  SAVE_WIKODE
 } = require('./constants');
 
 
@@ -9,18 +10,14 @@ const actions = module.exports = {
   /**
    *  SAVING A DOCUMENT
    */
-  saveRequest: function() {
-    return {type: 'SAVING'}
-  },
-
   saveResponse: function(res) {
     switch(res.status) {
 
       case 200:
-        return {type: 'SAVED', datetime: res.datetime};
+        return {type: SAVE_WIKODE, datetime: res.datetime};
 
       default:
-        return {type: 'SAVE_ERROR'};
+        return {type: SET_UI, el: 'save-btn', value: 'The document could not be saved'};
 
     }
   },
@@ -36,17 +33,6 @@ const actions = module.exports = {
         dispatch(actions.saveResponse(res));
       });
     }
-  },
-
-  /**
-   * ACTIONS CONTROLLING UI
-   */
-  modal: function(modalName) {
-    return {type: SET_UI, el: 'modal', value: modalName}
-  },
-
-  hideModals: function() {
-    return {type: SET_UI, el: 'modal', value: null}
   }
 
-};
+}

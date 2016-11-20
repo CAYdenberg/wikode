@@ -5,7 +5,7 @@ const getStore = require('../store');
 
 const store = getStore(window.state);
 
-if (window.state.wikode.user === "local") {
+if (!window.state.wikode || window.state.wikode.user === "local") {
   // dispatch get local wikode to store
 }
 
