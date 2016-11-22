@@ -3,13 +3,48 @@ var router = express.Router();
 
 const Wikode = require('../models/Wikode');
 
+router.all('/:user:slug', function(req, res, next) {
+
+  req.context.view = 'Editor';
+  next();
+
+});
+
+/**
+ * Save a Wikode and return it in its current form
+ */
+router.post('/:user/:slug', function(req, res, next) {
+
+  // check if the requested user is the same as the authenticated user, otherwise
+  // send back an error
+  const user = req.user;
+  if (req.params.user !== user && req.params.user !== 'local') {
+    var err = new Error('Unauthorized');
+    err.status = 400;
+    next(err);
+  }
+
+  new Wikode({
+    user: user,
+    title: req.body.title,
+    slug: req.body.slug,
+    content: req.body.content,
+    datetime: new Date().toISOString() // move into a save hook on the model
+  }).save().then(wikode => {
+
+    // TODO: clean up and don't expose _id etc.
+    req.context.state.wikode = wikode;
+
+    next();
+  }).catch(err => {next(err)});
+});
+
 
 /**
  * populate data for the Editor view
  */
-router.all('/:user/:slug', function(req, res, next) {
+router.get('/:user/:slug', function(req, res, next) {
 
-  req.context.view = 'Editor';
 
   // if we are local document instead of a user, bounce back to the browser
   // to handle population of the data
@@ -33,78 +68,15 @@ router.all('/:user/:slug', function(req, res, next) {
       next(err);
     }
 
+    // TODO: clean up and don't expose _id etc.
     req.context.state.wikode = results[0];
 
     next();
   }).catch(err => next(err));
-
 });
 
 
-/**
- * Save an existing Wikode.
- * Creates a new record with the same title and user and a current datetime
- */
-router.put('/:user/:slug', function(req, res, next) {
 
-  // check if the session user is the owner of the document
-  // if no, return a 400 or 401
-  if (req.user.hash !== req.context.state.wikode.user) {
-    return res.status(401).send({});
-  }
-
-  // if yes, save the document
-  const content = req.body;
-  new Wikode({
-    title: req.context.state.wikode.title,
-    user: req.context.state.wikode.user,
-    slug: req.context.state.wikode.slug,
-    datetime: new Date().toISOString(), //TODO: move this into a save hook on the Model
-    content: content
-  }).save().then(wikode => {
-    req.context.state.wikode = wikode;
-    next();
-  }).catch(err => next(err));
-
-});
-
-
-/**
- * Create a new Wikode for the currently authenticated user.
- */
-router.post('/:user/:slug', function(req, res, next) {
-
-  // check if the requested user is the same as the authenticated user, otherwise
-  // send back an error
-
-  // save ALL the data as a new document and send it back
-
-  // check if the current user already has that document
-  Wikode.findOne({
-    user: req.user.hash,
-    slug: req.context.state.wikode.slug
-  }).then(duplicate => {
-
-    // if they do send them over to it
-    if (duplicate) {
-      return res.redirect('/' + duplicate.user + '/' + duplicate.slug + '/');
-
-    // if they don't create a new blank document
-    } else {
-      new Wikode({
-        user: req.user.hash,
-        slug: req.context.state.wikode.slug,
-        content: req.context.state.wikode.content,
-        datetime: new Date().toISOString()
-      }).save().then(wikode => {
-
-        // and redirect the user to their new document
-        return res.redirect('/' + wikode.user + '/' + wikode.slug + '/');
-
-      });
-    }
-  }).catch(err => {next(err)});
-});
 
 
 /* GET home page. */
