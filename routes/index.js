@@ -3,7 +3,7 @@ var router = express.Router();
 
 const Wikode = require('../models/Wikode');
 
-router.all('/:user:slug', function(req, res, next) {
+router.all('/:user/:slug', function(req, res, next) {
 
   req.context.view = 'Editor';
   next();
@@ -17,10 +17,10 @@ router.post('/:user/:slug', function(req, res, next) {
 
   // check if the requested user is the same as the authenticated user, otherwise
   // send back an error
-  const user = req.user;
+  const user = req.user.hash;
   if (req.params.user !== user && req.params.user !== 'local') {
     var err = new Error('Unauthorized');
-    err.status = 400;
+    err.status = 401;
     next(err);
   }
 
@@ -53,7 +53,7 @@ router.get('/:user/:slug', function(req, res, next) {
       slug: req.params.slug,
       user: "local"
     }
-    next();
+    return next();
   }
 
   // find the CURRENT LATEST Wikode (we may generate a new version before we send)

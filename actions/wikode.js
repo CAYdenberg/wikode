@@ -25,13 +25,17 @@ const actions = module.exports = {
     }
   },
 
-  save: function(url, content) {
+  save: function(wikode, content) {
+    console.log(content);
     return function(dispatch) {
-      // dispatch(actions.saveRequest());
       popsicle.request({
-        method: 'PUT',
-        url: url,
-        body: content
+        method: 'POST',
+        url: `/${wikode.user}/${wikode.slug}`,
+        body: {
+          title: wikode.title,
+          slug: wikode.slug,
+          content: content
+        }
       }).then((res) => {
         dispatch(actions.saveResponse(res));
       });
