@@ -7,10 +7,6 @@ const store = getStore(window.state);
 
 const {hideModals} = require('../store/actions');
 
-if (window.state.wikode.slug && window.state.wikode.user === "local") {
-  // dispatch get local wikode to store
-}
-
 const view = document.getElementById('mount-point').getAttribute('data-view');
 
 /**
