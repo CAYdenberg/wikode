@@ -76,7 +76,12 @@ const WikiEditor = React.createClass({
   },
 
   onURLChange: function(e) {
+    console.log(e);
     this.setState({urlValue: e.target.value})
+  },
+
+  hideURLInput: function() {
+    this.setState({showURLInput: false});
   },
 
   promptForLink: function(e) {
@@ -99,8 +104,6 @@ const WikiEditor = React.createClass({
       this.setState({
         showURLInput: true,
         urlValue: url
-      }, () => {
-        setTimeout(() => this.refs.url.focus(), 0);
       });
     }
   },
@@ -126,8 +129,6 @@ const WikiEditor = React.createClass({
       ),
       showURLInput: false,
       urlValue: ''
-    }, () => {
-      setTimeout(() => this.refs.editor.focus(), 0);
     });
   },
 
@@ -171,37 +172,18 @@ const WikiEditor = React.createClass({
       }
     }
 
-    const urlInput = this.state .showURLInput ?
-      (
-        <div>
-          <input
-            onChange={this.onURLChange}
-            ref="url"
-            type="text"
-            value={this.state.urlValue}
-            onKeyDown={this.onLinkInputKeyDown}
-          />
-          <button onMouseDown={this.confirmLink}>
-            Confirm
-          </button>
-        </div>
-      ) : null;
-
     return this.state.editMode ? (
       <div className="RichEditor-root">
-        <button
-          onMouseDown={this.promptForLink}
-          style={{marginRight: 10}}>
-          Add Link
-        </button>
-        <button onMouseDown={this.removeLink}>
-          Remove Link
-        </button>
-        {urlInput}
         <Controls
           editorState={this.state.editorState}
           toggleInlineStyle={this.toggleInlineStyle}
           toggleBlockType={this.toggleBlockType}
+          urlValue={this.urlValue}
+          onURLChange={this.onURLChange}
+          showURLInput={this.state.showURLInput}
+          promptForLink={this.promptForLink}
+          hideURLInput={this.hideURLInput}
+          confirmLink={this.confirmLink}
           save={this._save}
         />
         <div className={className} onClick={this.focus}>
