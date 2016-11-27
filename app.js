@@ -81,13 +81,7 @@ module.exports = function(config) {
         '/main.js'
       ],
       state: {
-        user: req.user ? {
-          hash: req.user.hash,
-          name: req.user.name
-        } : {
-          hash: null,
-          name: null
-        }
+        user: req.user ? req.user.name : null
       }
     };
 

@@ -5,10 +5,9 @@ const salt = bcrypt.genSaltSync(2);
 
 const Schema = mongoose.Schema;
 
-
 var UserSchema = new Schema({
-  hash: {type: String, unique: true},
-  email: {type: String, unique: true}, // should be email
+  name: {type: String, unique: true},
+  email: {type: String}, // should be email
   password: {type: String, required: true, set: (password) => bcrypt.hashSync(password, salt)}
 });
 

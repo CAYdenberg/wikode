@@ -25,7 +25,7 @@ passport.use('login', new LocalStrategy({
   function(req, username, password, done) {
 
     User.findOne({
-      hash: username
+      name: username
 
     }).then(user => {
       if (!user) {
@@ -53,22 +53,38 @@ passport.use('signup', new LocalStrategy({
   function(req, username, password, done) {
 
     new User({
-      hash: username,
+      name: username,
       email: req.body['signup-email'],
       password: password
 
     })
     .save((err, user) => {
       if (err) {
-        done(null, false, {message: 'Invalid information supplied'});
+        done(err, false);
       } else {
         done(null, user);
       }
-    })
-
+    });
   }
 ));
-router.post('/new', passport.authenticate('signup'));
+
+router.post('/new', function(req, res, next) {
+  if (req.body['signup-username'] === 'local') {
+    res.status(400).json({error: 'Username must be unique'});
+  }
+  passport.authenticate('signup', function(err, user) {
+    if (err && err.code === 11000) {
+      res.status(400).json({error: 'Username must be unique'});
+    } else if (err) {
+      next(err);
+    } else if (user) {
+      req.logIn(user, (err) => {next(err)});
+    } else {
+      res.status(400).json({error: 'Incomplete information supplied'});
+    }
+  })(req, res, next);
+});
+
 
 
 router.get('/logout', function(req, res) {
@@ -76,7 +92,9 @@ router.get('/logout', function(req, res) {
   res.redirect('/');
 });
 
-
+/**
+* This is a special route that just tells us whether a given user exists
+*/
 router.get('/exists/:name', function(req, res, next) {
   User.findOne({name : req.params.name}).then((user) => {
     if (user) {
@@ -91,9 +109,9 @@ router.get('/exists/:name', function(req, res, next) {
 
 router.all('/*', function(req, res) {
   if (req.user) {
-    res.json({loggedIn: true, userHash: req.user.hash, username: req.user.name});
+    res.json({user: req.user.name});
   } else {
-    res.json({loggedIn: false, userHash: req.user.hash, username: req.user.name});
+    res.json({user: null});
   }
 });
 

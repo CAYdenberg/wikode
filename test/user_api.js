@@ -27,14 +27,14 @@ describe('Users API', function(){
 
   it('should be able to tell us if a user exists', function(done) {
     request(app)
-      .get('/user/exists/'+encodeURI('existinguser'))
+      .get('/user/exists/existinguser')
       .expect(200, {userExists: true})
       .end(done);
   });
 
   it('should be able to tell us if a user does not exist', function(done) {
     request(app)
-      .get('/user/exists/'+encodeURI('nobody'))
+      .get('/user/exists/nobody')
       .expect(200, {userExists: false})
       .end(done);
   });
@@ -45,7 +45,7 @@ describe('Users API', function(){
     agent1
       .post('/user/login/')
       .send({'signin-username': 'existinguser', 'signin-password': 'password'})
-      .expect(200, {loggedIn: true, userHash: 'existinguser', username: 'existinguser'})
+      .expect(200, {user: 'existinguser'})
       .expect('set-cookie', /[.]+/)
       .end(done);
   });
@@ -56,7 +56,7 @@ describe('Users API', function(){
       .set('Accept', 'application/json')
       .expect(200)
       .expect(function(res) {
-        assert.equal(res.body.user.hash, 'existinguser');
+        assert.equal(res.body.user, 'existinguser');
       })
       .end(done);
   });
@@ -78,7 +78,7 @@ describe('Users API', function(){
   });
 
   var agent2 = request.agent(app);
-  var agent2Hash;
+  var agent2Name;
 
   it('should be able to create a new user with a unique name', function(done) {
     agent2
@@ -86,9 +86,19 @@ describe('Users API', function(){
       .send({'signup-username': 'newuser', 'signup-email': 'newuser@gmail.com', 'signup-password': 'whatever'})
       .expect(200)
       .expect(res => {
-        assert.equal(res.body.loggedIn, true);
-        assert.equal(res.body.username, 'newuser');
-        agent2Hash = res.body.userHash;
+        assert.equal(res.body.user, 'newuser');
+        agent2Name = res.body.user;
+      })
+      .end(done);
+  });
+
+  it('should not be able to create a user if the username is not unique', function(done) {
+    agent2
+      .post('/user/new/')
+      .send({'signup-username': 'existinguser', 'signup-email': 'email@hotmail.com', 'signup-password': 'password'})
+      .expect(400)
+      .expect(res => {
+        assert.equal(res.body.error, 'Username must be unique');
       })
       .end(done);
   });
@@ -98,7 +108,7 @@ describe('Users API', function(){
       .get('/user/')
       .set('Accept', 'application/json')
       .expect(200)
-      .expect({loggedIn: true, username: 'newuser', userHash: agent2Hash})
+      .expect({user: agent2Name})
       .end(done);
   });
 
@@ -114,16 +124,7 @@ describe('Users API', function(){
     request(app)
       .post('/user/new/')
       .send({'signup-username': 'local', 'signup-email': 'newuser@gmail.com', 'signup-password': 'whatever'})
-      .expect(401)
-      .end(done);
-  });
-
-  it('should still create a user if the username is not unique but the slug should be unique', function(done) {
-    request(app)
-      .post('/user/new/')
-      .send({'signup-username': 'newuser', 'signup-email': 'newuser@gmail.com', 'signup-password': 'whatever'})
-      .expect(200)
-      .expect({loggedIn: true, username: 'newuser', userHash: 'newuser-2'})
+      .expect(400)
       .end(done);
   });
 
