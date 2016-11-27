@@ -17,13 +17,16 @@ router.post('/:user/:slug', function(req, res, next) {
 
   // check if the requested user is the same as the authenticated user, otherwise
   // send back an error
-  const user = req.user.hash;
+  const user = req.user ? req.user.hash : null;
+
   if (req.params.user !== user && req.params.user !== 'local') {
     var err = new Error('Unauthorized');
     err.status = 401;
     next(err);
   }
 
+  // DECISION: what to do if this user already has a wikode with the same slug
+  console.log(user);
   new Wikode({
     user: user,
     title: req.body.title,

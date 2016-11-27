@@ -7,5 +7,5 @@ module.exports = keymirror({
   NEW_WIKODE: null,
   FORK_WIKODE: null,
   SAVE_WIKODE: null,
-  POPULATE_WIKODE: null
+  OPEN_WIKODE: null
 });

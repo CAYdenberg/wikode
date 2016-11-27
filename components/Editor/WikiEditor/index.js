@@ -145,9 +145,14 @@ const WikiEditor = React.createClass({
 
   _save: function() {
     const store = this.context.store;
+
     const contentState = this.state.editorState.getCurrentContent();
     const content = Draft.convertToRaw(contentState);
-    this.context.store.dispatch(actions.save(store.getState().wikode, content));
+
+    const user = store.getState().user;
+    const hash = user ? user.hash : null;
+    console.log(hash);
+    this.context.store.dispatch(actions.save(store.getState().wikode, content, hash));
   },
 
   _fork: function() {
