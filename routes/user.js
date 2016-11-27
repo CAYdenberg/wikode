@@ -70,7 +70,7 @@ passport.use('signup', new LocalStrategy({
 
 router.post('/new', function(req, res, next) {
   if (req.body['signup-username'] === 'local') {
-    res.status(400).json({error: 'Username must be unique'});
+    return res.status(400).json({error: 'Username must be unique'});
   }
   passport.authenticate('signup', function(err, user) {
     if (err && err.code === 11000) {

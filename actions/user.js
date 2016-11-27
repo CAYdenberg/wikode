@@ -12,7 +12,7 @@ const actions = module.exports = {
     switch (res.status) {
 
       case 200:
-        return {type: LOGIN, hash: res.body.userHash, name: res.body.username};
+        return {type: LOGIN, name: res.body.user};
 
       default:
         return {type: SET_UI, el: 'signinForm', value: 'Username or password is incorrect'}
@@ -45,7 +45,7 @@ const actions = module.exports = {
     switch (res.status) {
 
       case 200:
-        return {type: LOGIN, hash: res.body.userHash, name: res.body.username};
+        return {type: LOGIN, name: res.body.user};
 
       case 400:
         return {type: SET_UI, el: 'createUserForm', value: res.body.error};

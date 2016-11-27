@@ -10,8 +10,7 @@ const NewWikodeForm = React.createClass({
   },
 
   getUserHash: function() {
-    const user = this.context.store.getState().user;
-    return user ? user.hash : null;
+    return this.context.store.getState().user;
   },
 
   getInitalState: function() {

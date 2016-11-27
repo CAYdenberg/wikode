@@ -31,20 +31,17 @@ describe('Reducer', function() {
   });
 
   it('should log a user in', function() {
-    const state = reducer({}, {type: LOGIN, name: 'User Name', hash: 'user-name'});
-    assert.equal(state.user.hash, 'user-name');
-    assert.equal(state.user.name, 'User Name')
+    const state = reducer({}, {type: LOGIN, name: 'user-name'});
+    assert.equal(state.user, 'user-name');
   });
 
   it('should log a user out', function() {
     const state = reducer({
       user: {
-        hash: 'user-name',
-        name: 'User Name'
+        name: 'user-name'
       }
     }, {type: LOGOUT});
-    assert.equal(state.user.hash, null);
-    assert.equal(state.user.name, null);
+    assert.equal(state.user, null);
   });
 
   it('should save a wikode by updating the time of last save', function() {

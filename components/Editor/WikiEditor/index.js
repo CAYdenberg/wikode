@@ -35,7 +35,7 @@ const WikiEditor = React.createClass({
       editorState: editorState,
       showURLInput: false,
       urlValue: '',
-      editMode: (state.wikode.user === state.user.hash) || (state.wikode.user === 'local')
+      editMode: (state.wikode.user === state.user) || (state.wikode.user === 'local')
     });
   },
 
@@ -76,7 +76,6 @@ const WikiEditor = React.createClass({
   },
 
   onURLChange: function(e) {
-    console.log(e);
     this.setState({urlValue: e.target.value})
   },
 
@@ -150,9 +149,8 @@ const WikiEditor = React.createClass({
     const content = Draft.convertToRaw(contentState);
 
     const user = store.getState().user;
-    const hash = user ? user.hash : null;
 
-    this.context.store.dispatch(actions.save(store.getState().wikode, content, hash));
+    this.context.store.dispatch(actions.save(store.getState().wikode, content, user));
   },
 
   _fork: function() {

@@ -11,8 +11,7 @@ const NavController = React.createClass({
   },
 
   getUserName: function() {
-    const user = this.context.store.getState().user;
-    return user ? user.name : null;
+    return this.context.store.getState().user;
   },
 
   getInitialState: function() {

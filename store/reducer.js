@@ -13,10 +13,10 @@ function user(state, action) {
   switch (action.type) {
 
     case LOGIN:
-      return {hash: action.hash, name: action.hash}
+      return action.name;
 
     case LOGOUT:
-      return {hash: null, name: null}
+      return null;
 
     default:
       return state;
@@ -80,10 +80,7 @@ function ui(state, action) {
 
 module.exports = function(initialState, action) {
   const state = Object.assign({
-    user: {
-      hash: null,
-      name: null
-    },
+    user: null,
     wikode: {
       user: '',
       title: '',
