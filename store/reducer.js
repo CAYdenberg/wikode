@@ -13,7 +13,7 @@ function user(state, action) {
   switch (action.type) {
 
     case LOGIN:
-      return {hash: action.hash, name: action.name}
+      return {hash: action.hash, name: action.hash}
 
     case LOGOUT:
       return {hash: null, name: null}

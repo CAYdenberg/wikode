@@ -25,7 +25,7 @@ passport.use('login', new LocalStrategy({
   function(req, username, password, done) {
 
     User.findOne({
-      name: username
+      hash: username
 
     }).then(user => {
       if (!user) {
@@ -53,7 +53,7 @@ passport.use('signup', new LocalStrategy({
   function(req, username, password, done) {
 
     new User({
-      name: username,
+      hash: username,
       email: req.body['signup-email'],
       password: password
 
