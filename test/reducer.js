@@ -9,8 +9,8 @@ const {
   SET_UI,
   NEW_WIKODE,
   FORK_WIKODE,
-  SAVE_WIKODE,
-  POPULATE_WIKODE
+  OPEN_WIKODE,
+  SAVE_WIKODE
 } = require('../store/constants');
 
 
@@ -58,6 +58,7 @@ describe('Reducer', function() {
       }
     }, {type: SAVE_WIKODE, datetime: 2000});
     assert.equal(state.wikode.datetime, 2000);
+    assert.equal(state.wikode.title, 'My Wikode');
   });
 
   it('should get a local wikode based on slug', function() {
@@ -66,8 +67,9 @@ describe('Reducer', function() {
         user: 'local',
         slug: 'my-local-wikode'
       }
-    }, {type: POPULATE_WIKODE, title: 'My Local Wikode', content: 'Some content'});
+    }, {type: OPEN_WIKODE, title: 'My Local Wikode', content: 'Some content'});
     assert.equal(state.wikode.content, 'Some content');
+    assert.equal(state.wikode.user, 'local');
   });
 
   it('should create a new wikode based on user and title (and slug)', function() {

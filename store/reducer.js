@@ -6,9 +6,8 @@ const {
   NEW_WIKODE,
   FORK_WIKODE,
   SAVE_WIKODE,
-  POPULATE_WIKODE
+  OPEN_WIKODE
 } = require('./constants');
-const {slugify} = require('../lib');
 
 function user(state, action) {
   switch (action.type) {
@@ -28,18 +27,6 @@ function user(state, action) {
 function wikode(state, action) {
   switch(action.type) {
 
-    case SAVE_WIKODE:
-      return update(state, {$merge: {
-        datetime: action.datetime
-      }});
-
-    case POPULATE_WIKODE:
-      return update(state, {$merge: {
-        datetime: action.datetime,
-        title: action.title,
-        content: action.content
-      }});
-
     case NEW_WIKODE:
       return {
         user: action.user,
@@ -49,6 +36,18 @@ function wikode(state, action) {
 
     case FORK_WIKODE:
       return update(state, {$set: {
+        user: action.user
+      }});
+
+    case OPEN_WIKODE:
+      return update(state, {$merge: {
+        title: action.title,
+        content: action.content
+      }});
+
+    case SAVE_WIKODE:
+      return update(state, {$merge: {
+        datetime: action.datetime,
         user: action.user
       }});
 
