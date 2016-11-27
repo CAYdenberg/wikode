@@ -20,6 +20,7 @@
 .menu>li>a,
 .top-bar-title>a {
   color: white;
+  text-decoration: none;
   &:hover {
     color: darken(white, 50%);
   }

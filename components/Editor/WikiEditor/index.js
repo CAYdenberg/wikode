@@ -151,7 +151,7 @@ const WikiEditor = React.createClass({
 
     const user = store.getState().user;
     const hash = user ? user.hash : null;
-    console.log(hash);
+
     this.context.store.dispatch(actions.save(store.getState().wikode, content, hash));
   },
 
@@ -181,11 +181,11 @@ const WikiEditor = React.createClass({
       <div className="RichEditor-root">
         <Controls
           editorState={this.state.editorState}
+          urlValue={this.state.urlValue}
+          showURLInput={this.state.showURLInput}
           toggleInlineStyle={this.toggleInlineStyle}
           toggleBlockType={this.toggleBlockType}
-          urlValue={this.urlValue}
           onURLChange={this.onURLChange}
-          showURLInput={this.state.showURLInput}
           promptForLink={this.promptForLink}
           hideURLInput={this.hideURLInput}
           confirmLink={this.confirmLink}
