@@ -15,7 +15,6 @@ const actions = module.exports = {
    *  SAVING A DOCUMENT
    */
   saveResponse: function(res) {
-    console.log(res.body);
     switch(res.status) {
 
       case 200:

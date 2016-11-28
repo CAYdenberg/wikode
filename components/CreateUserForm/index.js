@@ -3,7 +3,6 @@ const React = require('react');
 const update = require('react-addons-update');
 
 const TextField = require('../partials/TextField');
-const HiddenField = require('../partials/HiddenField');
 
 const {createUser} = require('../../actions/user');
 

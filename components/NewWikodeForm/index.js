@@ -1,7 +1,5 @@
 const React = require('react');
 
-const TextField = require('../partials/TextField');
-
 const newWikode = require('../../actions/wikode').new;
 
 const NewWikodeForm = React.createClass({

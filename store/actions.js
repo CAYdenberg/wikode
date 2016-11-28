@@ -4,7 +4,7 @@ const {
 } = require('./constants');
 
 
-const actions = module.exports = {
+module.exports = {
 
   /**
    * ACTIONS CONTROLLING UI

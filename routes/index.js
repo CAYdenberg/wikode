@@ -34,8 +34,13 @@ router.post('/:user/:slug', function(req, res, next) {
     datetime: new Date().toISOString() // move into a save hook on the model
   }).save().then(wikode => {
 
-    // TODO: clean up and don't expose _id etc.
-    req.context.state.wikode = wikode;
+    req.context.state.wikode = {
+      user: wikode.user,
+      title: wikode.title,
+      slug: wikode.slug,
+      content: wikode.content,
+      datetime: wikode.datetime
+    }
 
     next();
   }).catch(err => {next(err)});
@@ -70,8 +75,14 @@ router.get('/:user/:slug', function(req, res, next) {
       return next(err);
     }
 
-    // TODO: clean up and don't expose _id etc.
-    req.context.state.wikode = results[0];
+    const wikode = results[0];
+    req.context.state.wikode = {
+      user: wikode.user,
+      title: wikode.title,
+      slug: wikode.slug,
+      content: wikode.content,
+      datetime: wikode.datetime
+    }
 
     next();
   }).catch(err => next(err));
