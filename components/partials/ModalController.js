@@ -4,7 +4,7 @@ const hideModals = require('../../store/actions').hideModals;
 
 // TODO: replace this with connect
 
-const Modal = require('../partials/Modal');
+const Modal = require('../../lib/UI/Modal');
 const CreateUserForm = require('../CreateUserForm');
 const SigninForm = require('../SigninForm');
 const NewWikodeForm = require('../NewWikodeForm');
@@ -48,9 +48,9 @@ const ModalController = React.createClass({
 
   render: function() {
     return (
-      <div className="reveal-overlay" aria-hidden={this.state.modal ? 'false' : 'true'} onClick={this.hideModals}>
+      <div>
         {MODALS.map(modal =>
-          <Modal key={modal.name} title={modal.title} visible={this.modalIsVisible(modal.name)}>
+          <Modal key={modal.name} title={modal.title} visible={this.modalIsVisible(modal.name)} hide={this.hideModals}>
             {modal.body}
           </Modal>
         )}

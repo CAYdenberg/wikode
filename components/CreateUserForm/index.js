@@ -1,8 +1,7 @@
 const React = require('react');
 
-const update = require('react-addons-update');
-
-const TextField = require('../partials/TextField');
+const Form = require('../../lib/UI/Form');
+const TextField = require('../../lib/UI/Field');
 
 const {createUser} = require('../../actions/user');
 
@@ -31,14 +30,6 @@ const CreateUserForm = React.createClass({
         formMsg: store.getState().ui.createUserForm,
         disabled: false
       });
-    });
-  },
-
-  update: function(e) {
-    var updateObj = {};
-    updateObj[e.target.id] = e.target.value;
-    this.setState({
-      formData: update(this.state.formData, {$merge: updateObj})
     });
   },
 
@@ -77,38 +68,9 @@ const CreateUserForm = React.createClass({
 
   render: function() {
     return (
-      <form method="POST" action="/user/new/" onSubmit={this.handleSubmit}>
-        <h3>{this.state.formMsg}</h3>
-        <TextField
-          label="Username"
-          name="signup-username"
-          formData={this.state.formData}
-          valid={this.state.usernameMsg}
-          change={this.update}
-          check={this.checkUsername}
-        />
-        <TextField
-          type="email"
-          label="Email"
-          name="signup-email"
-          formData={this.state.formData}
-          change={this.update}
-          valid={this.state.emailMsg}
-          check={this.checkEmail}
-        />
-        <TextField
-          type="password"
-          label="Password"
-          name="signup-password"
-          formData={this.state.formData}
-          change={this.update}
-          valid={this.state.passwordMsg}
-          check={this.checkPassword}
-        />
-        <button className="button success" disabled={this.state.disabled}>Sign Up</button>
-        <hr />
-        <button className="button default">I already have an account</button>
-      </form>
+      <Form>
+        <TextField name="signup-username" label="Username" />
+      </Form>
     );
   }
 });
