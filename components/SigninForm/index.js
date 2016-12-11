@@ -1,8 +1,7 @@
 const React = require('react');
-const update = require('react-addons-update');
 
-const TextField = require('../partials/TextField');
-
+const Field = require('../../lib/UI/Field');
+const createFieldControl = require('../../lib').createFieldControl;
 const {login} = require('../../actions/user');
 
 const SigninForm = React.createClass({
@@ -11,37 +10,27 @@ const SigninForm = React.createClass({
   },
 
   getInitialState: function() {
-    const appState = this.context.store.getState();
     return {
-
-      formMsg: appState.ui.SigninForm,
-
-      formData: {},
-
+      username: '',
+      password: '',
       disabled: false
-
     }
   },
 
   componentWillMount: function() {
     const store = this.context.store;
+
+    this.usernameControl = createFieldControl(this, 'username', '');
+    this.passwordControl = createFieldControl(this, 'password', '');
+
     store.subscribe(() => {
       this.setState({
-        formMsg: store.getState().ui.SigninForm,
         disabled: false
       });
-    })
-  },
-
-  update: function(e) {
-    var updateObj = {};
-    updateObj[e.target.id] = e.target.value;
-    this.setState({
-      formData: update(this.state.formData, {$merge: updateObj})
     });
   },
 
-  handleSubmit: function(e) {
+  _onSubmit: function(e) {
     e.preventDefault();
     this.setState({
       disabled: true
@@ -52,20 +41,19 @@ const SigninForm = React.createClass({
 
   render: function() {
     return (
-      <form method="POST" action="/user/login/" onSubmit={this.handleSubmit}>
-        <h3>{this.state.formMsg}</h3>
-        <TextField
+      <form method="POST" action="/user/login/" onSubmit={this._onSubmit}>
+        <Field
           label="Username"
           name="signin-username"
-          formData={this.state.formData}
-          change={this.update}
+          value={this.state.username}
+          handleChange={this.usernameControl.handleChange}
         />
-        <TextField
+        <Field
           type="password"
           label="Password"
           name="signin-password"
-          formData={this.state.formData}
-          change={this.update}
+          value={this.state.password}
+          handleChange={this.passwordControl.handleChange}
         />
         <button className="button success" type="submit" disabled={this.state.disabled}>Sign In</button>
       </form>

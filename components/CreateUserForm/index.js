@@ -1,9 +1,7 @@
 const React = require('react');
 
-const update = require('react-addons-update');
-
-const TextField = require('../partials/TextField');
-
+const Field = require('../../lib/UI/Field');
+const createFieldControl = require('../../lib').createFieldControl;
 const {createUser} = require('../../actions/user');
 
 const CreateUserForm = React.createClass({
@@ -12,61 +10,29 @@ const CreateUserForm = React.createClass({
   },
 
   getInitialState: function() {
-    const appState = this.context.store.getState();
     return {
-      formMsg: appState.ui.createUserForm || '',
-
-      formData: {},
-
-      usernameMsg: appState.uniqueUsername || '',
-
+      username: '',
+      email: '',
+      password: '',
       disabled: false
-    };
+    }
   },
 
   componentWillMount: function() {
     const store = this.context.store;
+
+    this.usernameControl = createFieldControl(this, 'username', '');
+    this.emailControl = createFieldControl(this, 'email', '');
+    this.passwordControl = createFieldControl(this, 'password', '');
+
     store.subscribe(() => {
       this.setState({
-        formMsg: store.getState().ui.createUserForm,
         disabled: false
       });
     });
   },
 
-  update: function(e) {
-    var updateObj = {};
-    updateObj[e.target.id] = e.target.value;
-    this.setState({
-      formData: update(this.state.formData, {$merge: updateObj})
-    });
-  },
-
-  checkUsername: function(value) {
-    this.setState({
-      usernameMsg: (() => {
-        if (!value) {
-          return 'Username is required'
-        } else if (value === 'user') {
-          return 'Username cannot be "user"'
-        } else {
-          return '';
-        }
-      })()
-    });
-  },
-
-  checkEmail: function() {
-    //TODO: validation this
-    return true;
-  },
-
-  checkPassword: function() {
-    //TODO: validate this
-    return true;
-  },
-
-  handleSubmit: function(e) {
+  _onSubmit: function(e) {
     e.preventDefault();
     this.setState({
       disabled: true
@@ -77,33 +43,26 @@ const CreateUserForm = React.createClass({
 
   render: function() {
     return (
-      <form method="POST" action="/user/new/" onSubmit={this.handleSubmit}>
-        <h3>{this.state.formMsg}</h3>
-        <TextField
+      <form method="POST" action="/user/new/" onSubmit={this._onSubmit}>
+        <Field
           label="Username"
           name="signup-username"
-          formData={this.state.formData}
-          valid={this.state.usernameMsg}
-          change={this.update}
-          check={this.checkUsername}
+          value={this.state.username}
+          handleChange={this.usernameControl.handleChange}
         />
-        <TextField
+        <Field
           type="email"
           label="Email"
           name="signup-email"
-          formData={this.state.formData}
-          change={this.update}
-          valid={this.state.emailMsg}
-          check={this.checkEmail}
+          value={this.state.email}
+          handleChange={this.emailControl.handleChange}
         />
-        <TextField
+        <Field
           type="password"
           label="Password"
           name="signup-password"
-          formData={this.state.formData}
-          change={this.update}
-          valid={this.state.passwordMsg}
-          check={this.checkPassword}
+          value={this.state.password}
+          handleChange={this.passwordControl.handleChange}
         />
         <button className="button success" disabled={this.state.disabled}>Sign Up</button>
         <hr />
