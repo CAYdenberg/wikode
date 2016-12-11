@@ -78,7 +78,7 @@ gulp.task('watch', function () {
     // watch SERVER SIDE files
     // note we are NOT watching components even though most of these render
     // server-side as well.
-    watch: ['app.js', 'routes/**/*.js', 'models/**/*.js', 'components/**/*.js', 'store/**/*.js']
+    watch: ['app.js', 'routes/**/*.js', 'models/**/*.js']
 
   })
   .once('start', function() {
