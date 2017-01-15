@@ -54,6 +54,7 @@ gulp.task('js', function () {
 
 });
 
+gulp.task('default', ['css', 'fonts', 'lint', 'js']);
 
 gulp.task('watch', function () {
 
@@ -81,5 +82,3 @@ gulp.task('watch', function () {
   }).on('restart', browserSync.reload);
 
 });
-
-gulp.task('default', ['css', 'fonts', 'lint', 'js']);
