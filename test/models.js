@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+/* eslint-env mocha */
+
 const {expect} = require('chai');
 const sinon = require('sinon');
 require('sinon-mongoose');

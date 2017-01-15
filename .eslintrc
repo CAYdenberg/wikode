@@ -25,6 +25,8 @@
   "rules": {
     "no-console": 1,
     "no-unused-vars": [2, { "varsIgnorePattern" : "React" }],
-    "react/jsx-uses-vars": 1
+    "react/jsx-uses-vars": 1,
+    'no-global-assign': 0,
+    'no-unsafe-negation': 0
   }
 }
