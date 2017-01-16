@@ -1,7 +1,6 @@
 
 const _ = require('lodash');
 const passport = require('passport');
-const request = require('request');
 const TwitterStrategy = require('passport-twitter').Strategy;
 const LocalStrategy = require('passport-local').Strategy;
 
@@ -70,7 +69,7 @@ passport.use(new TwitterStrategy({
           if (err) { return done(err); }
           user.twitter = profile.id;
           user.tokens.push({ kind: 'twitter', accessToken, tokenSecret });
-          user.profile.name = user.profile.name || '@' + profile._json.screen_name;
+          user.profile.name = user.profile.name || ('@' + profile._json.screen_name);
           user.profile.location = user.profile.location || profile._json.location;
           user.profile.picture = user.profile.picture || profile._json.profile_image_url_https;
           user.save((err) => {

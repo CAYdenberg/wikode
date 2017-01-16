@@ -23,7 +23,7 @@
   },
   "extends": ["eslint:recommended"],
   "rules": {
-    "no-console": 1,
+    "no-console": 0,
     "no-unused-vars": [2, { "varsIgnorePattern" : "React" }],
     "react/jsx-uses-vars": 1,
     'no-global-assign': 0,

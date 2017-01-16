@@ -32,8 +32,8 @@ dotenv.load();
  */
 const homeController = require('./controllers/home');
 const userController = require('./controllers/user');
-const apiController = require('./controllers/api');
 const contactController = require('./controllers/contact');
+const wikodeController = require('./controllers/wikode');
 
 /**
  * API keys and Passport configuration.
@@ -134,17 +134,15 @@ app.post('/account/delete', passportConfig.isAuthenticated, userController.postD
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
 
 /**
- * API examples routes.
- */
-app.get('/api', apiController.getApi);
-
-/**
  * OAuth authentication routes. (Sign in)
  */
 app.get('/auth/twitter', passport.authenticate('twitter'));
 app.get('/auth/twitter/callback', passport.authenticate('twitter', { failureRedirect: '/login' }), (req, res) => {
   res.redirect(req.session.returnTo || '/');
 });
+
+app.post('/wikode/:user/:slug', wikodeController.post);
+app.get('/wikode/:user/:slug', wikodeController.get);
 
 /**
  * Error Handler.
