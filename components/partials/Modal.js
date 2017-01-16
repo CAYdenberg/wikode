@@ -2,10 +2,12 @@ const React = require('react');
 
 const Modal = (props) => {
   return (
-    <div className="reveal" aria-hidden={props.visible ? 'false' : 'true'} onClick={e => e.stopPropagation()}>
-      <h2>{props.title}</h2>
-      <hr />
-      {props.children}
+    <div className="reveal-overlay" aria-hidden={props.visible ? 'false' : 'true'} onClick={props.hide}>
+      <div className="reveal" aria-hidden={props.visible ? 'false' : 'true'} onClick={e => e.stopPropagation()}>
+        <h2>{props.title}</h2>
+        <hr />
+        {props.children}
+      </div>
     </div>
   );
 };
@@ -13,6 +15,7 @@ const Modal = (props) => {
 Modal.propTypes = {
   title: React.PropTypes.string.isRequired,
   children: React.PropTypes.element.isRequired,
+  hide: React.PropTypes.func.isRequired,
   visible: React.PropTypes.bool
 }
 
