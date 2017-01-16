@@ -141,8 +141,15 @@ app.get('/auth/twitter/callback', passport.authenticate('twitter', { failureRedi
 app.post('/wikode/:user/:slug', wikodeController.post);
 app.get('/wikode/:user/:slug', wikodeController.get);
 
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
+});
+
 app.all('*', function(req, res) {
-  // const store = getStore(req.context.state);
+  const store = getStore(req.context.state);
 
   if (req.accepts('text/html')) {
     req.context.reactHtml = ReactRender(components(req.context.view));
@@ -152,13 +159,6 @@ app.all('*', function(req, res) {
   }
 });
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
-
 // error handlers
 
 // development error handler
@@ -166,10 +166,10 @@ app.use(function(req, res, next) {
 if (process.env.ENV === 'development') {
   app.use(function(err, req, res) {
     res.status(err.status || 500);
-      res.render('error', {
-        message: err.message,
-        error: err
-      });
+    res.render('error', {
+      message: err.message,
+      error: err
+    });
   });
 }
 
