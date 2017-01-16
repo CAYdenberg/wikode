@@ -1,4 +1,14 @@
 /**
+ * Load environment variables from .env file, where API keys and passwords are configured.
+ */
+require('dotenv').config();
+
+/**
+* Allow JSX is Node
+*/
+require('node-jsx').install();
+
+/**
  * Module dependencies.
  */
 const express = require('express');
@@ -8,7 +18,6 @@ const bodyParser = require('body-parser');
 const logger = require('morgan');
 const chalk = require('chalk');
 const lusca = require('lusca');
-const dotenv = require('dotenv');
 const MongoStore = require('connect-mongo')(session);
 const flash = require('express-flash');
 const path = require('path');
@@ -16,11 +25,9 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const expressValidator = require('express-validator');
 const expressStatusMonitor = require('express-status-monitor');
+const ReactRender = require('react-dom/server').renderToString;
 
-/**
- * Load environment variables from .env file, where API keys and passwords are configured.
- */
-dotenv.load();
+
 
 /**
  * Controllers (route handlers).
@@ -56,6 +63,9 @@ mongoose.connection.on('error', () => {
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+
+const components = require('./components');
+
 app.use(expressStatusMonitor());
 app.use(compression());
 
@@ -135,7 +145,7 @@ app.all('*', function(req, res) {
   // const store = getStore(req.context.state);
 
   if (req.accepts('text/html')) {
-    // req.context.reactHtml = ReactRender(components(req.context.view, store));
+    req.context.reactHtml = ReactRender(components(req.context.view));
     return res.render('index', req.context);
   } else {
     return res.json(req.context.state);
