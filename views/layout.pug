@@ -4,10 +4,9 @@ html
     meta(charset='utf-8')
     meta(http-equiv='X-UA-Compatible', content='IE=edge')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
-    meta(name='theme-color' content='#4DA5F4')
     meta(name='csrf-token', content=_csrf)
     title #{title} - Wikode Demo
-    link(rel='shortcut icon', href='/favicon.png')
+    link(rel='shortcut icon', href='data:image/x-icon' type='image/x-icon')
     link(rel='stylesheet', href='/style.css')
 
   body
@@ -18,5 +17,8 @@ html
       block content
 
     include partials/footer
+
+    script.
+      window.state = !{JSON.stringify(state)}
 
     script(src='/main.js')

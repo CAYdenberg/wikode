@@ -24,7 +24,8 @@ exports.post = (req, res, next) => {
     datetime: new Date().toISOString() // move into a save hook on the model
   }).save().then(wikode => {
 
-    req.context.state.wikode = {
+    res.locals.view = 'Editor';
+    res.locals.state.wikode = {
       user: wikode.user,
       title: wikode.title,
       slug: wikode.slug,
@@ -55,7 +56,7 @@ exports.get = (req, res, next) => {
     }
 
     const wikode = results[0];
-    req.context.state.wikode = {
+    res.locals.state.wikode = {
       user: wikode.user,
       title: wikode.title,
       slug: wikode.slug,
@@ -63,6 +64,7 @@ exports.get = (req, res, next) => {
       datetime: wikode.datetime
     }
 
+    res.locals.view = 'Editor';
     next();
   }).catch(err => next(err));
 };

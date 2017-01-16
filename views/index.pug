@@ -1,4 +1,4 @@
 extends layout
 
 block content
-  .mount-point= context.reactHtml
+  #mount-point.mount-point(data-view=view)!= reactHtml

@@ -26,7 +26,7 @@ const passport = require('passport');
 const expressValidator = require('express-validator');
 const expressStatusMonitor = require('express-status-monitor');
 const ReactRender = require('react-dom/server').renderToString;
-
+const getStore = require('./store');
 
 
 /**
@@ -67,7 +67,7 @@ app.set('view engine', 'pug');
 const components = require('./components');
 
 app.use(expressStatusMonitor());
-app.use(compression());
+// app.use(compression());
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -91,8 +91,10 @@ app.use(lusca.xframe('SAMEORIGIN'));
 app.use(lusca.xssProtection(true));
 app.use((req, res, next) => {
   res.locals.user = req.user;
+  res.locals.state = {};
   next();
 });
+
 app.use((req, res, next) => {
   // After successful login, redirect back to the intended page
   if (!req.user &&
@@ -142,20 +144,20 @@ app.post('/wikode/:user/:slug', wikodeController.post);
 app.get('/wikode/:user/:slug', wikodeController.get);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
+// app.use(function(req, res, next) {
+//   var err = new Error('Not Found');
+//   err.status = 404;
+//   next(err);
+// });
 
 app.all('*', function(req, res) {
-  const store = getStore(req.context.state);
+  const store = getStore(res.locals.state);
 
   if (req.accepts('text/html')) {
-    req.context.reactHtml = ReactRender(components(req.context.view));
-    return res.render('index', req.context);
+    res.locals.reactHtml = ReactRender(components(res.locals.view, store));
+    return res.render('index', res.locals);
   } else {
-    return res.json(req.context.state);
+    return res.json(res.locals.state);
   }
 });
 
