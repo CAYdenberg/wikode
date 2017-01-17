@@ -1,6 +1,6 @@
 const React = require('react');
 
-const newWikode = require('../../actions/wikode').new;
+const newWikode = require('../../store/actions').new;
 
 const NewWikodeForm = React.createClass({
   contextTypes: {

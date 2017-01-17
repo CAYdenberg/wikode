@@ -8,13 +8,12 @@ const User = require('../models/User');
  * GET /login
  * Login page.
  */
-exports.getLogin = (req, res) => {
+exports.getLogin = (req, res, next) => {
   if (req.user) {
     return res.redirect('/');
   }
-  res.render('account/login', {
-    title: 'Login'
-  });
+  res.locals.view = 'Login';
+  return next();
 };
 
 /**

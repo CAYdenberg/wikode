@@ -6,7 +6,7 @@ const Nav = require('./Nav');
 const Routes = {
   Home: require('./Home'),
   Editor: require('./Editor'),
-  Signin: require('./Signin'),
+  Login: require('./Login'),
   NewWikode: require('./NewWikode')
 }
 

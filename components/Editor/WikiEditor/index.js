@@ -6,7 +6,7 @@ const Draft = require('draft-js');
 const {Editor, EditorState, RichUtils, getDefaultKeyBinding, KeyBindingUtil, CompositeDecorator, Entity, Modifier} = Draft;
 const {hasCommandModifier} = KeyBindingUtil;
 
-const actions = require('../../../actions/wikode');
+const actions = require('../../../store/actions');
 
 const Controls = require('./Controls');
 

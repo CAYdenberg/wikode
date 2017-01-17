@@ -1,41 +1,19 @@
 const React = require('react');
-const Nav = require('./Nav');
 
-// TODO: replace this with connect
-
-const NavController = React.createClass({
-  contextTypes: {
-    store: React.PropTypes.object
-  },
-
-  getUserName: function() {
-    return this.context.store.getState().user;
-  },
-
-  getInitialState: function() {
-    return {
-      user: this.getUserName()
-    }
-  },
-
-  componentWillMount: function() {
-    this.context.store.subscribe(() => {
-      this.setState({
-        user: this.getUserName()
-      });
-    })
-  },
-
-  render: function() {
-    return (
-      <Nav
-        showSignInModal={this.showSignInModal}
-        showCreateUserModal={this.showCreateUserModal}
-        showNewWikodeModal={this.showNewWikodeModal}
-        user={this.state.user}
-      />
-    );
-  }
-});
-
-module.exports = NavController;
+module.exports = (props) => {
+  return (
+    <nav className="top-bar">
+      <div className="top-bar-title">
+        <a href="/">Wikode</a>
+      </div>
+      <ul className="vertical medium-horizontal menu align-right">
+        <li>
+          <a href="/login/">Login</a>
+        </li>
+        <li>
+          <a href="#" onClick={props.showNewWikodeModal}>New</a>
+        </li>
+      </ul>
+    </nav>
+  );
+}
