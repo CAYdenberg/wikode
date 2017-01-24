@@ -39,6 +39,9 @@ exports.post = (req, res, next) => {
   }).catch(err => {next(err)});
 };
 
+exports.put = (req, res, next) => {
+  
+};
 
 /**
  * populate data for the Editor view

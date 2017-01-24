@@ -121,7 +121,8 @@ app.get('/auth/twitter/callback', passport.authenticate('twitter', { failureRedi
   res.redirect(req.session.returnTo || '/');
 });
 
-app.post('/wikode/:user/:slug', wikodeController.post);
+app.post('/wikode/', wikodeController.post); // create a brand new Wikode
+app.put('/wikode/:slug', wikodeController.put); // save or fork a Wikode
 app.get('/wikode/:user/:slug', wikodeController.get);
 
 // catch 404 and forward to error handler
