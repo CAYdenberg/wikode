@@ -60,6 +60,7 @@
     "redux": "^3.6.0",
     "redux-thunk": "^2.2.0",
     "request": "^2.78.0",
+    "slug": "^0.9.1",
     "validator": "^6.1.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"

@@ -1,5 +1,7 @@
 const Wikode = require('../models/Wikode');
 
+const {slugify} = require('../lib');
+
 /**
  * Save a Wikode and return it in its current form
  */
@@ -19,8 +21,8 @@ exports.post = (req, res, next) => {
   new Wikode({
     user: user,
     title: req.body.title,
-    slug: req.body.slug,
-    content: req.body.content,
+    slug: req.body.slug || slugify(req.body.title), // move into a save hook on the model
+    content: req.body.content || null, // move into a save hook on the model
     datetime: new Date().toISOString() // move into a save hook on the model
   }).save().then(wikode => {
 
