@@ -42,6 +42,8 @@ exports.post = (req, res, next) => {
  * populate data for the Editor view
  */
 exports.get = (req, res, next) => {
+  // make sure we can get back here after a successful login
+  req.session.returnTo = req.path;
 
   // find the CURRENT LATEST Wikode (we may generate a new version before we send)
   Wikode.find({
