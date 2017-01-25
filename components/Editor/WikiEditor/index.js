@@ -9,6 +9,8 @@ const {hasCommandModifier} = KeyBindingUtil;
 const actions = require('../../../store/actions');
 
 const Controls = require('./Controls');
+const Modal = require('../../partials/Modal');
+const LoginForm = require('../../Login');
 
 const WikiEditor = React.createClass({
   contextTypes: {
@@ -35,7 +37,18 @@ const WikiEditor = React.createClass({
       editorState: editorState,
       showURLInput: false,
       urlValue: '',
-      editMode: (state.wikode.user === state.user) || (state.wikode.user === 'local')
+      editMode: (state.wikode.user === state.user),
+      loginModal: false
+    });
+  },
+
+  componentWillMount: function() {
+    const store = this.context.store;
+    this.context.store.subscribe(() => {
+      const state = store.getState();
+      this.setState({
+        editMode: (state.wikode.user === state.user)
+      });
     });
   },
 
@@ -144,21 +157,25 @@ const WikiEditor = React.createClass({
 
   _save: function() {
     const store = this.context.store;
-
     const contentState = this.state.editorState.getCurrentContent();
     const content = Draft.convertToRaw(contentState);
-
     const user = store.getState().user;
-
     this.context.store.dispatch(actions.save(store.getState().wikode, content, user));
+  },
+
+  _toggleLoginModal: function() {
+    this.setState({
+      loginModal: !this.state.loginModal
+    });
   },
 
   _fork: function() {
     const user = this.context.store.getState().user;
-    this.context.store.dispatch(actions.fork(user));
-    this.setState({
-      editMode: true
-    });
+    if (!user) {
+      this._toggleLoginModal();
+    } else {
+      this._save();
+    }
   },
 
   render: function() {
@@ -213,6 +230,11 @@ const WikiEditor = React.createClass({
           />
         </div>
         <button onClick={this._fork}>Fork this document</button>
+
+        <Modal title="Login to continue" hide={this._toggleLoginModal} visible={this.state.loginModal}>
+          <LoginForm />
+        </Modal>
+
       </div>
     );
   }

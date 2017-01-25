@@ -1,8 +1,22 @@
 const update = require('react-addons-update');
 const {
-  SAVE_WIKODE
+  SAVE_WIKODE,
+  SET_MODAL
 } = require('./constants');
 
+
+function ui(state, action) {
+  switch (action.type) {
+
+    case SET_MODAL:
+      return update(state, {$merge: {
+        modal: action.value
+      }});
+
+    default:
+      return state;
+  }
+}
 
 function wikode(state, action) {
   switch(action.type) {
@@ -15,12 +29,15 @@ function wikode(state, action) {
 
     default:
       return state;
-
   }
 }
 
 module.exports = function(initialState, action) {
   const state = Object.assign({
+    ui: {
+      modal: null,
+      flash: []
+    },
     user: null,
     wikode: {
       user: '',
@@ -32,6 +49,7 @@ module.exports = function(initialState, action) {
   }, initialState);
 
   return update(state, {
+    ui: {$merge: ui(state.ui, action)},
     wikode: {$merge: wikode(state.wikode, action)}
   });
 

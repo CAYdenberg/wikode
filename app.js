@@ -138,6 +138,7 @@ app.all('*', function(req, res) {
     res.locals.reactHtml = ReactRender(components(res.locals.view, store));
     return res.render('index', res.locals);
   } else {
+    res.set('Content-Type', 'application/json');
     return res.json(res.locals.state);
   }
 });

@@ -42,8 +42,7 @@ exports.put = (req, res, next) => {
   // check if the requested user is the same as the authenticated user, otherwise
   // send back an error
   const user = getUsername(req);
-
-  if (req.params.user !== user) {
+  if (!user) {
     var err = new Error('Unauthorized');
     err.status = 401;
     return next(err);
