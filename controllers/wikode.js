@@ -2,14 +2,46 @@ const Wikode = require('../models/Wikode');
 
 const {slugify} = require('../lib');
 
+function getUsername(req) {
+  return req.user ? req.user.profile.name : null;
+}
+
 /**
  * Save a Wikode and return it in its current form
  */
 exports.post = (req, res, next) => {
+  const user = getUsername(req);
+  if (!user) {
+    var err = new Error('Unauthorized');
+    err.status = 401;
+    return next(err);
+  }
 
+  new Wikode({
+    user: user,
+    title: req.body['new-wikode-title'],
+    slug: slugify(req.body['new-wikode-title']),
+    content: null,
+    datetime: new Date().toISOString() // move into a save hook on the model
+  }).save().then(wikode => {
+
+    // TODO: schedule the redirect and do it at final step
+    res.locals.state.wikode = {
+      user: wikode.user,
+      title: wikode.title,
+      slug: wikode.slug,
+      content: wikode.content,
+      datetime: wikode.datetime
+    }
+
+    res.redirect('/wikode/' + wikode.user + '/' + wikode.slug);
+  }).catch(err => {next(err)});
+};
+
+exports.put = (req, res, next) => {
   // check if the requested user is the same as the authenticated user, otherwise
   // send back an error
-  const user = req.user ? req.user.profile.name : null;
+  const user = getUsername(req);
 
   if (req.params.user !== user) {
     var err = new Error('Unauthorized');
@@ -21,8 +53,8 @@ exports.post = (req, res, next) => {
   new Wikode({
     user: user,
     title: req.body.title,
-    slug: req.body.slug || slugify(req.body.title), // move into a save hook on the model
-    content: req.body.content || null, // move into a save hook on the model
+    slug: req.body.slug,
+    content: req.body.content || null,
     datetime: new Date().toISOString() // move into a save hook on the model
   }).save().then(wikode => {
 
@@ -37,10 +69,6 @@ exports.post = (req, res, next) => {
 
     next();
   }).catch(err => {next(err)});
-};
-
-exports.put = (req, res, next) => {
-  
 };
 
 /**

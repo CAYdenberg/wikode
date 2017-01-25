@@ -155,8 +155,7 @@ const WikiEditor = React.createClass({
 
   _fork: function() {
     const user = this.context.store.getState().user;
-    const hash = user ? user.hash : null;
-    this.context.store.dispatch(actions.fork(hash));
+    this.context.store.dispatch(actions.fork(user));
     this.setState({
       editMode: true
     });
