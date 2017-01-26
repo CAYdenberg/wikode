@@ -35,10 +35,12 @@ const homeController = require('./controllers/home');
 const userController = require('./controllers/user');
 const wikodeController = require('./controllers/wikode');
 
+const components = require('./components');
+
 /**
  * API keys and Passport configuration.
  */
-const passportConfig = require('./config/passport');
+require('./config/passport');
 
 /**
  * Create Express server.
@@ -62,7 +64,6 @@ app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-const components = require('./components');
 
 app.use(compression());
 
