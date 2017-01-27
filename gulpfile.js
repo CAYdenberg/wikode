@@ -12,6 +12,7 @@ const buffer = require('vinyl-buffer');
 const browserSync = require('browser-sync');
 const nodemon = require('gulp-nodemon');
 
+const mocha = require('gulp-mocha');
 
 gulp.task('css', function() {
   gulp.src('./src/_main.scss')
@@ -81,4 +82,13 @@ gulp.task('watch', function () {
     });
   }).on('restart', browserSync.reload);
 
+});
+
+gulp.task('test', () => {
+  return gulp.src('test/**/*.js', {read: false})
+    .pipe(mocha({reporter: 'spec'}))
+});
+
+gulp.task('test-watch', () => {
+  gulp.watch(['**/*.js'], ['test']);
 });

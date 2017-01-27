@@ -17,13 +17,13 @@ exports.post = (req, res, next) => {
     return next(err);
   }
 
-  new Wikode({
+  Wikode.create({
     user: user,
     title: req.body['new-wikode-title'],
     slug: slugify(req.body['new-wikode-title']),
     content: null,
     datetime: new Date().toISOString() // move into a save hook on the model
-  }).save().then(wikode => {
+  }).then(wikode => {
 
     // TODO: schedule the redirect and do it at final step
     res.locals.state.wikode = {
@@ -49,13 +49,13 @@ exports.put = (req, res, next) => {
   }
 
   // DECISION: what to do if this user already has a wikode with the same slug
-  new Wikode({
+  Wikode.create({
     user: user,
     title: req.body.title,
     slug: req.body.slug,
     content: req.body.content || null,
     datetime: new Date().toISOString() // move into a save hook on the model
-  }).save().then(wikode => {
+  }).then(wikode => {
 
     res.locals.view = 'Editor';
     res.locals.state.wikode = {

@@ -3,7 +3,7 @@
 const React = require('react');
 
 const Draft = require('draft-js');
-const {Editor, EditorState, RichUtils, getDefaultKeyBinding, KeyBindingUtil, CompositeDecorator, Entity, Modifier} = Draft;
+const {Editor, EditorState, RichUtils, getDefaultKeyBinding, KeyBindingUtil} = Draft;
 const {hasCommandModifier} = KeyBindingUtil;
 
 const actions = require('../../../store/actions');
@@ -21,16 +21,11 @@ const WikiEditor = React.createClass({
 
     const state = this.context.store.getState();
 
-    const decorator = new CompositeDecorator([{
-      strategy: findLinkEntities,
-      component: Link
-    }]);
-
     var editorState;
     try {
-      editorState = EditorState.createWithContent(Draft.convertFromRaw(state.wikode.content), decorator);
+      editorState = EditorState.createWithContent(Draft.convertFromRaw(state.wikode.content));
     } catch(e) {
-      editorState = EditorState.createEmpty(decorator);
+      editorState = EditorState.createEmpty();
     }
 
     return ({
@@ -88,73 +83,6 @@ const WikiEditor = React.createClass({
     );
   },
 
-  onURLChange: function(e) {
-    this.setState({urlValue: e.target.value})
-  },
-
-  hideURLInput: function() {
-    this.setState({showURLInput: false});
-  },
-
-  promptForLink: function(e) {
-    e.preventDefault();
-    const {editorState} = this.state;
-    const selection = editorState.getSelection();
-    if (!selection.isCollapsed()) {
-      const contentState = editorState.getCurrentContent();
-      const startKey = editorState.getSelection().getStartKey();
-      const startOffset = editorState.getSelection().getStartOffset();
-      const blockWithLinkAtBeginning = contentState.getBlockForKey(startKey);
-      const linkKey = blockWithLinkAtBeginning.getEntityAt(startOffset);
-
-      let url = '';
-      if (linkKey) {
-        const linkInstance = contentState.getEntity(linkKey);
-        url = linkInstance.getData().url;
-      }
-
-      this.setState({
-        showURLInput: true,
-        urlValue: url
-      });
-    }
-  },
-
-  confirmLink: function(e) {
-    e.preventDefault();
-
-    const {editorState, urlValue} = this.state;
-    const contentState = editorState.getCurrentContent();
-    const entityKey = Entity.create(
-      'LINK',
-      'MUTABLE',
-      {url: urlValue}
-    );
-    const contentStateWithEntity = Modifier.applyEntity(contentState, editorState.getSelection(), entityKey);
-
-    const newEditorState = EditorState.set(editorState, { currentContent: contentStateWithEntity });
-    this.setState({
-      editorState: RichUtils.toggleLink(
-        newEditorState,
-        newEditorState.getSelection(),
-        entityKey
-      ),
-      showURLInput: false,
-      urlValue: ''
-    });
-  },
-
-  removeLink: function(e) {
-    e.preventDefault();
-    const {editorState} = this.state;
-    const selection = editorState.getSelection();
-    if (!selection.isCollapsed()) {
-      this.setState({
-        editorState: RichUtils.toggleLink(editorState, selection, null)
-      });
-    }
-  },
-
   _save: function() {
     const store = this.context.store;
     const contentState = this.state.editorState.getCurrentContent();
@@ -199,10 +127,6 @@ const WikiEditor = React.createClass({
           showURLInput={this.state.showURLInput}
           toggleInlineStyle={this.toggleInlineStyle}
           toggleBlockType={this.toggleBlockType}
-          onURLChange={this.onURLChange}
-          promptForLink={this.promptForLink}
-          hideURLInput={this.hideURLInput}
-          confirmLink={this.confirmLink}
           save={this._save}
         />
         <div className={className} onClick={this.focus}>
@@ -253,27 +177,5 @@ function getKeyBinding(e) {
   }
   return getDefaultKeyBinding(e);
 }
-
-function findLinkEntities(contentBlock, callback) {
-  contentBlock.findEntityRanges(
-    (character) => {
-      const entityKey = character.getEntity();
-      return (
-        entityKey !== null &&
-        Entity.get(entityKey).getType() === 'LINK'
-      );
-    },
-    callback
-  );
-}
-
-const Link = (props) => {
-  const {url} = Entity.get(props.entityKey).getData();
-  return (
-    <a href={url}>
-      {props.children}
-    </a>
-  );
-};
 
 module.exports = WikiEditor;

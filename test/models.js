@@ -3,8 +3,10 @@
 const {expect} = require('chai');
 const sinon = require('sinon');
 require('sinon-mongoose');
+require('sinon-as-promised');
 
 const User = require('../models/User');
+const Wikode = require('../models/Wikode');
 
 describe('User Model', () => {
   it('should create a new user', (done) => {
@@ -105,3 +107,20 @@ describe('User Model', () => {
     })
   });
 });
+
+describe('Wikode Model', () => {
+
+  it('should create a wikode', (done) => {
+    const wikodeMock = sinon.mock(Wikode);
+    wikodeMock.expects('create').resolves();
+
+    Wikode.create({
+      title: 'My Slug',
+      slug: 'my-slug',
+      nothing: []
+    }).then(done);
+
+  });
+
+
+})
