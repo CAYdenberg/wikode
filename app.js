@@ -28,12 +28,6 @@ const ReactRender = require('react-dom/server').renderToString;
 const getStore = require('./store');
 
 
-/**
- * Controllers (route handlers).
- */
-const homeController = require('./controllers/home');
-const userController = require('./controllers/user');
-const wikodeController = require('./controllers/wikode');
 
 const components = require('./components');
 
@@ -56,6 +50,15 @@ mongoose.connection.on('error', () => {
   console.log('%s MongoDB connection error. Please make sure MongoDB is running.', chalk.red('✗'));
   process.exit();
 });
+
+const WikodeModel = require('./models/wikode');
+
+/**
+ * Controllers (route handlers).
+ */
+const homeController = require('./controllers/home');
+const userController = require('./controllers/user');
+const wikodeController = require('./controllers/wikode')(WikodeModel);
 
 /**
  * Express configuration.

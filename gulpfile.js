@@ -86,7 +86,7 @@ gulp.task('watch', function () {
 
 gulp.task('test', () => {
   return gulp.src('test/**/*.js', {read: false})
-    .pipe(mocha({reporter: 'spec'}))
+    .pipe(mocha({reporter: 'spec'}));
 });
 
 gulp.task('test-watch', () => {

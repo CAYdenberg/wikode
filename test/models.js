@@ -118,7 +118,10 @@ describe('Wikode Model', () => {
       title: 'My Slug',
       slug: 'my-slug',
       nothing: []
-    }).then(done);
+    }).then(() => {
+      wikodeMock.restore();
+      done();
+    });
 
   });
 
