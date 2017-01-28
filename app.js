@@ -51,7 +51,7 @@ mongoose.connection.on('error', () => {
   process.exit();
 });
 
-const WikodeModel = require('./models/wikode');
+const WikodeModel = require('./models/Wikode');
 
 /**
  * Controllers (route handlers).

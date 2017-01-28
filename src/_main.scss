@@ -28,21 +28,24 @@
 
 
 .editor-controls {
-  float: right;
+  position: static;
   background: $medium-gray;
   padding: 15px;
   border-radius: 5px;
   border: 1px solid (map-get($foundation-palette, 'primary'));
 }
 
+.RichEditor-controls {
+  display: inline-block;
+}
+
 .editor-controls__button {
   font-size: 1.5rem;
   padding: 5px;
-  line-height: 29px;
-  vertical-align: sub;
+  line-height: 1;
   background: $light-gray;
   border-radius: 5px;
-  margin: 0 5px 10px;
+  margin: 0 5px;
   color: map-get($foundation-palette, 'primary');
   &[aria-pressed="true"] {
     background: map-get($foundation-palette, 'primary');
@@ -51,8 +54,11 @@
 }
 
 .editor-controls__save {
-  font-size: 3rem;
   @extend .editor-controls__button;
   background: map-get($foundation-palette, 'success');
   color: white;
+}
+
+.RichEditor-editor {
+  
 }
