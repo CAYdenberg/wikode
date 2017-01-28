@@ -29,14 +29,14 @@
 
 .editor-controls {
   position: static;
-  background: $medium-gray;
-  padding: 15px;
-  border-radius: 5px;
-  border: 1px solid (map-get($foundation-palette, 'primary'));
+  padding: 5px 0 0;
+  background: white;
+  border-top: 1px solid (map-get($foundation-palette, 'primary'));
+  border-bottom: 1px solid (map-get($foundation-palette, 'primary'));
 }
 
 .RichEditor-controls {
-  display: inline-block;
+  display: inline;
 }
 
 .editor-controls__button {
@@ -45,7 +45,7 @@
   line-height: 1;
   background: $light-gray;
   border-radius: 5px;
-  margin: 0 5px;
+  margin: 0 5px 5px;
   color: map-get($foundation-palette, 'primary');
   &[aria-pressed="true"] {
     background: map-get($foundation-palette, 'primary');
@@ -60,5 +60,5 @@
 }
 
 .RichEditor-editor {
-  
+
 }
