@@ -10,6 +10,7 @@ const actions = require('../../../store/actions');
 
 const Controls = require('./Controls');
 const Modal = require('../../partials/Modal');
+const Affix = require('../../partials/Affix');
 const LoginForm = require('../../Login');
 
 const WikiEditor = React.createClass({
@@ -121,14 +122,16 @@ const WikiEditor = React.createClass({
 
     return this.state.editMode ? (
       <div className="RichEditor-root">
-        <Controls
-          editorState={this.state.editorState}
-          urlValue={this.state.urlValue}
-          showURLInput={this.state.showURLInput}
-          toggleInlineStyle={this.toggleInlineStyle}
-          toggleBlockType={this.toggleBlockType}
-          save={this._save}
-        />
+        <Affix>
+          <Controls
+            editorState={this.state.editorState}
+            urlValue={this.state.urlValue}
+            showURLInput={this.state.showURLInput}
+            toggleInlineStyle={this.toggleInlineStyle}
+            toggleBlockType={this.toggleBlockType}
+            save={this._save}
+          />
+        </Affix>
         <div className={className} onClick={this.focus}>
           <Editor
             blockStyleFn={getBlockStyle}
@@ -144,6 +147,13 @@ const WikiEditor = React.createClass({
       </div>
     ) : (
       <div className="RichEditor-root">
+        <Affix>
+          <div className="editor-controls">
+            <button onClick={this._fork} className="editor-controls__save" aria-label="fork">
+              Fork this document
+            </button>
+          </div>
+        </Affix>
         <div className={className}>
           <Editor contenteditable="false"
             readOnly="true"
@@ -153,7 +163,6 @@ const WikiEditor = React.createClass({
             spellCheck={false}
           />
         </div>
-        <button onClick={this._fork}>Fork this document</button>
 
         <Modal title="Login to continue" hide={this._toggleLoginModal} visible={this.state.loginModal}>
           <LoginForm />
