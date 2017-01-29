@@ -6,8 +6,6 @@ const Draft = require('draft-js');
 const {Editor, EditorState, RichUtils, getDefaultKeyBinding, KeyBindingUtil} = Draft;
 const {hasCommandModifier} = KeyBindingUtil;
 
-const actions = require('../../../store/actions');
-
 const Controls = require('./Controls');
 const Modal = require('../../partials/Modal');
 const Affix = require('../../partials/Affix');
@@ -89,7 +87,7 @@ const WikiEditor = React.createClass({
     const contentState = this.state.editorState.getCurrentContent();
     const content = Draft.convertToRaw(contentState);
     const user = store.getState().user;
-    this.context.store.dispatch(actions.save(store.getState().wikode, content, user));
+    store.action("save", store.getState().wikode, content, user);
   },
 
   _toggleLoginModal: function() {

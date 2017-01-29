@@ -1,7 +1,5 @@
 const React = require('react');
 
-const newWikode = require('../../store/actions').new;
-
 const NewWikodeForm = () => {
   return (
     <form method="POST" action="/wikode/">
