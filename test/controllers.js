@@ -33,7 +33,7 @@ describe('Wikode Controller', () => {
     };
   });
 
-  it('should get a Wikode from the database', (done) => {
+  it('GET existing wikode', (done) => {
     const wikodeMock = sinon.mock(Wikode);
     const expectedWikode = {
       title: 'My Title',
@@ -58,7 +58,7 @@ describe('Wikode Controller', () => {
     });
   });
 
-  it('should produce 404 if the wikode does not exist', (done) => {
+  it('GET non-existing wikode (404)', (done) => {
     const wikodeMock = sinon.mock(Wikode);
     wikodeMock
       .expects('find')
@@ -75,7 +75,7 @@ describe('Wikode Controller', () => {
     })
   });
 
-  it('should save an existing wikode to the database', (done) => {
+  it('PUT existing wikode', (done) => {
     const wikodeMock = sinon.mock(Wikode);
     const expectedWikode = {
       user: '@AUser',
@@ -104,4 +104,39 @@ describe('Wikode Controller', () => {
       done();
     });
   });
+
+  it('PUT wikode when not logged in (401)', (done) => {
+    const wikodeMock = sinon.mock(Wikode);
+
+    const wikdoeController = require('../controllers/wikode')(Wikode);
+
+    req.user = null;
+    wikdoeController.put(req, res, (err) => {
+      assert(err.status, 401);
+      wikodeMock.restore();
+      done();
+    });
+  });
+
+  // it('POST new Wikode', (done) => {
+  //   const wikodeMock = sinon.mock(Wikode);
+  //   const expectedWikode = {
+  //     user: '@AUser',
+  //     title: 'My Title',
+  //     slug: 'my-title',
+  //     content: 'Some content',
+  //     datetime: '111'
+  //   };
+  //
+  //   const wikodeController = require('../controllers/wikode')(Wikode);
+  //
+  //   req.body = {
+  //     "new-wikode-title": 'My Title'
+  //   }
+  //   wikodeController.post(req, res, (err) => {
+  //     expect(err).to.be.undefined;
+  //     wikodeMock.restore();
+  //     done();
+  //   });
+  // });
 });

@@ -33,7 +33,7 @@ function Controller(model) {
         datetime: wikode.datetime
       }
 
-      res.redirect('/wikode/' + wikode.user + '/' + wikode.slug);
+      return res.redirect('/wikode/' + wikode.user + '/' + wikode.slug);
     }).catch(err => {next(err)});
   };
 
