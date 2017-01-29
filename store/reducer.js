@@ -1,20 +1,36 @@
 const update = require('react-addons-update');
 const {
   SAVE_WIKODE,
-  SET_MODAL
+  SET_MODAL,
+  SET_MESSAGE
 } = require('./constants');
 
+
+function message(state, action) {
+  switch (action.type) {
+    case SET_MESSAGE:
+      return action.message
+
+    case SAVE_WIKODE:
+      return 'The document was successfully saved';
+
+    default:
+      return state;
+  }
+}
 
 function ui(state, action) {
   switch (action.type) {
 
     case SET_MODAL:
       return update(state, {$merge: {
-        modal: action.value
+        modal: action.value,
       }});
 
     default:
-      return state;
+      return update(state, {$merge: {
+        message: message(state.message, action)
+      }});
   }
 }
 
@@ -36,7 +52,7 @@ module.exports = function(initialState, action) {
   const state = Object.assign({
     ui: {
       modal: null,
-      flash: []
+      message: ''
     },
     user: null,
     wikode: {

@@ -128,48 +128,52 @@ app.post('/wikode/', wikodeController.post); // create a brand new Wikode
 app.put('/wikode/:slug', wikodeController.put); // save or fork a Wikode
 app.get('/wikode/:user/:slug', wikodeController.get);
 
-// catch 404 and forward to error handler
-// app.use(function(req, res, next) {
-//   var err = new Error('Not Found');
-//   err.status = 404;
-//   next(err);
-// });
 
-app.all('*', function(req, res) {
+// main rendering function
+// serves HTML or JSON depending on req headers, and may also redirect
+app.use(function(req, res, next) {
   const store = getStore(res.locals.state);
 
-  if (req.accepts('text/html')) {
+  if (req.accepts('text/html') && res.locals.redirect) {
+    res.redirect(res.locals.redirect);
+
+  } else if (req.accepts('text/html') && res.locals.view) {
     res.locals.reactHtml = ReactRender(components(res.locals.view, store));
     return res.render('index', res.locals);
-  } else {
+
+  } else if (req.accepts('text/html')) {
+    var err = new Error('Page not found');
+    err.status = 404;
+    return next(err);
+
+  } else if (req.accepts('application/json')) {
     res.set('Content-Type', 'application/json');
     return res.json(res.locals.state);
+
+  } else {
+    res.status(400).send();
+
   }
 });
 
-// error handlers
-
-// development error handler
-// will print stacktrace
-if (process.env.ENV === 'development') {
-  app.use(function(err, req, res) {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
-    });
-  });
-}
-
-// production error handler
-// no stacktraces leaked to user
+// error handling render function
+// renders the error page (HTML) or
 app.use(function(err, req, res) {
   res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
+  const store = getStore({ui: {message: err.message}});
+
+  if (req.accepts('text/html')) {
+    res.locals.reactHtml = ReactRender(components('error', store));
+    res.render('index', res.locals);
+
+  } else {
+    res.set('Content-Type', 'application/json');
+    return res.json(err.message);
+
+  }
+
 });
+
 
 /**
  * Start Express server.
