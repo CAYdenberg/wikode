@@ -28,7 +28,7 @@
 
 .notification-wrapper {
   position: fixed;
-  bottom: 0;
+  top: 54px;
   left: 0;
   right: 0;
   text-align: center;
@@ -39,8 +39,6 @@
   padding: 0.25em 1em;
   display: inline-block;
   font-size: 1.5rem;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
   background: $warning-color;
   color: black;
   font-weight: 700;
@@ -95,4 +93,33 @@
 
   background: $success-color;
   color: white;
+}
+
+
+/** ****************************
+* MISC
+****************************  */
+
+.login-form {
+  text-align: center;
+}
+
+a.button {
+  text-decoration: initial;
+}
+
+.site-footer {
+  margin-top: 5rem;
+  border-top: 1px solid $primary-color;
+  padding-top: 2rem;
+}
+
+.social-button {
+  font-size: 2rem;
+  line-height: 1;
+  background: $light-gray;
+  color: $primary-color;
+  text-decoration: initial;
+  padding: 0 5px;
+  border-radius: 5px;
 }

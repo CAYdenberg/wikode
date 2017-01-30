@@ -22,11 +22,13 @@ const Message = React.createClass({
   },
 
   render: function() {
-    return (
+    return this.state.message ?
+    (
       <div className="notification-wrapper">
         <p className="notification">{this.state.message}</p>
       </div>
-    );
+    ) :
+    (<div />);
   }
 
 });
