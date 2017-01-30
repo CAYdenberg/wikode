@@ -29,9 +29,9 @@ const WikiEditor = React.createClass({
 
     return ({
       editorState: editorState,
+      editMode: (state.wikode.user === state.user),
       showURLInput: false,
       urlValue: '',
-      editMode: (state.wikode.user === state.user),
       loginModal: false
     });
   },
@@ -44,6 +44,10 @@ const WikiEditor = React.createClass({
         editMode: (state.wikode.user === state.user)
       });
     });
+  },
+
+  onEditorMount: function(domNode) {
+    domNode.focus();
   },
 
   onChange: function(editorState) {
@@ -130,7 +134,7 @@ const WikiEditor = React.createClass({
             save={this._save}
           />
         </Affix>
-        <div className={className} onClick={this.focus}>
+        <div className={className}>
           <Editor
             blockStyleFn={getBlockStyle}
             editorState={editorState}
@@ -138,7 +142,7 @@ const WikiEditor = React.createClass({
             handleKeyCommand={this.handleKeyCommand}
             onChange={this.onChange}
             placeholder=""
-            ref="editor"
+            ref={this.onEditorMount}
             spellCheck={true}
           />
         </div>

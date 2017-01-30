@@ -36,7 +36,7 @@ const Affix = React.createClass({
     });
   },
 
-  divMount: function(domNode) {
+  onDivMount: function(domNode) {
     if (window) {
       this.offsetTop = getCoords(domNode).top;
       window.addEventListener('scroll', this.handleScroll);
@@ -53,7 +53,7 @@ const Affix = React.createClass({
     return (
 
       <div
-        ref={this.divMount}
+        ref={this.onDivMount}
         style={this.state.fixed ?
           {position: "fixed", top: 0} : {position: "static"}}
         >
