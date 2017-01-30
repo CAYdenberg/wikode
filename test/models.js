@@ -17,7 +17,7 @@ describe('User Model', () => {
       .expects('save')
       .yields(null);
 
-    user.save(function (err, result) {
+    user.save(function (err) {
       UserMock.verify();
       UserMock.restore();
       expect(err).to.be.null;

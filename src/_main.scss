@@ -8,6 +8,48 @@
 // include icons
 @import "icons/styles.scss";
 
+/** ****************************
+* NAV
+****************************  */
+
+.menu > li > a,
+.top-bar-title > a {
+  color: white;
+  text-decoration: none;
+  &:hover {
+    color: darken(white, 50%);
+  }
+}
+
+
+/** ****************************
+* NOTIFICATIONS
+****************************  */
+
+.notification-wrapper {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+.notification {
+  margin: 0 auto;
+  padding: 0.25em 1em;
+  display: inline-block;
+  font-size: 1.5rem;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  background: $warning-color;
+  color: black;
+  font-weight: 700;
+}
+
+
+/** ****************************
+* MODALS
+****************************  */
 
 .reveal-overlay,
 .reveal {
@@ -17,15 +59,10 @@
   }
 }
 
-.menu>li>a,
-.top-bar-title>a {
-  color: white;
-  text-decoration: none;
-  &:hover {
-    color: darken(white, 50%);
-  }
-}
 
+/** ****************************
+* EDITOR
+****************************  */
 
 .editor-controls {
   position: static;
@@ -55,10 +92,7 @@
 
 .editor-controls__save {
   @extend .editor-controls__button;
-  background: map-get($foundation-palette, 'success');
+
+  background: $success-color;
   color: white;
-}
-
-.RichEditor-editor {
-
 }

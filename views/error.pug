@@ -11,12 +11,6 @@ html
     link(rel='stylesheet', href='/style.css')
 
   body
-    include partials/flash
-    #mount-point.mount-point(data-view=view)!= reactHtml
+    h1 #{message}
 
     include partials/footer
-
-    script.
-      window.state = !{JSON.stringify(state)}
-
-    script(src='/main.js')

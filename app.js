@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
  */
@@ -160,11 +162,10 @@ app.use(function(req, res, next) {
 // renders the error page (HTML) or
 app.use(function(err, req, res) {
   res.status(err.status || 500);
-  const store = getStore({ui: {message: err.message}});
+  res.locals.message = err.message;
 
   if (req.accepts('text/html')) {
-    res.locals.reactHtml = ReactRender(components('error', store));
-    res.render('index', res.locals);
+    res.render('error', res.locals);
 
   } else {
     res.set('Content-Type', 'application/json');

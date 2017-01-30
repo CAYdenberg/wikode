@@ -2,6 +2,7 @@ const React = require('react');
 const Provider = require('react-redux').Provider;
 
 const Nav = require('./Nav');
+const Messages = require('./Messages');
 
 const Routes = {
   Home: require('./Home'),
@@ -19,6 +20,7 @@ module.exports = (routeName, store) => {
           <Nav />
         </header>
         <Route />
+        <Messages />
       </div>
     </Provider>
   );
