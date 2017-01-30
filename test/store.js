@@ -2,6 +2,14 @@
 
 const assert = require('assert');
 const reducer = require('../store/reducer');
+const {expect} = require('chai');
+const popsicle = require('popsicle');
+
+const Actions = require('../store/Actions');
+
+
+const sinon = require('sinon');
+require('sinon-as-promised');
 
 const {
   SAVE_WIKODE,
@@ -44,3 +52,21 @@ describe('Reducer', function() {
   });
 
 });
+
+
+describe('Action creators', () => {
+  it('should create a SAVE_WIKODE action with a positive response code', () => {
+    const actions = Actions();
+    const res = {
+      status: 200,
+      body: JSON.stringify({wikode: {
+        datetime: 111,
+        user: '@AUser'
+      }})
+    };
+
+    const action = actions.saveResponse(res);
+    expect(action.type).to.equal(SAVE_WIKODE);
+  });
+
+})
