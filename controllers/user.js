@@ -13,6 +13,7 @@ exports.getLogin = (req, res, next) => {
     return res.redirect('/');
   }
   res.locals.view = 'Login';
+  res.locals.title = 'Login to continue';
   return next();
 };
 

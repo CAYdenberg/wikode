@@ -24,7 +24,6 @@ function Controller(model) {
       datetime: new Date().toISOString() // move into a save hook on the model
     }).then(wikode => {
 
-      // TODO: schedule the redirect and do it at final step
       res.locals.state.wikode = {
         user: wikode.user,
         title: wikode.title,
@@ -33,7 +32,7 @@ function Controller(model) {
         datetime: wikode.datetime
       }
 
-      return res.redirect('/wikode/' + wikode.user + '/' + wikode.slug);
+      res.locals.redirect = '/wikode/' + wikode.user + '/' + wikode.slug;
     }).catch(err => {next(err)});
   };
 
@@ -57,6 +56,7 @@ function Controller(model) {
     }).then(wikode => {
 
       res.locals.view = 'Editor';
+      res.locals.title = wikode.title;
       res.locals.state.wikode = {
         user: wikode.user,
         title: wikode.title,
@@ -86,6 +86,7 @@ function Controller(model) {
       }
 
       const wikode = results[0];
+      res.locals.title = wikode.title;
       res.locals.state.wikode = {
         user: wikode.user,
         title: wikode.title,

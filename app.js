@@ -27,10 +27,8 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const expressValidator = require('express-validator');
 const ReactRender = require('react-dom/server').renderToString;
+
 const getStore = require('./store');
-
-
-
 const components = require('./components');
 
 /**
