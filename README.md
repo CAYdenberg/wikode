@@ -22,7 +22,7 @@ The forkable Wiki.
 
 1. Install dependencies above.
 
-1. `git clone https://github.com/CAYdenberg/wikode.git` and then `cd monocle`
+1. `git clone https://github.com/CAYdenberg/wikode.git` and then `cd wikode`
 
 1. `npm install`
 
@@ -30,14 +30,10 @@ The forkable Wiki.
 
 1. `cp .env_example .env`
 
-1. Open .env in a text eidtor. Enter a port (usually 3000) and leave env as `development`. Enter a random secret key (I use one from https://api.wordpress.org/secret-key/1.1/salt/) and your Mongo connection information (e.g. `localhost:27017/data`).
+1. Open .env in a text editor. Enter a port (usually 3000) and leave env as `development`. Enter a random secret key (I use one from https://api.wordpress.org/secret-key/1.1/salt/) and your Mongo connection information (e.g. `localhost:27017/data`).
 
 1. Run `gulp` to build resources.
 
 1. Run `npm start`, open a browser and go to `http://localhost/3000` or whatever port you used above.
 
 1. To begin development with watch and automatic reloading, run `gulp watch`. A new browser tab should open at `localhost:3001`.
-
-### Tests ###
-
-1. Run tests with 
