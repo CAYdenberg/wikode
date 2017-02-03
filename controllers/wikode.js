@@ -33,6 +33,8 @@ function Controller(model) {
       }
 
       res.locals.redirect = '/wikode/' + wikode.user + '/' + wikode.slug;
+      next();
+
     }).catch(err => {next(err)});
   };
 
