@@ -6,7 +6,7 @@ const {
 } = require('./constants');
 
 
-function message(state, action) {
+function getMessage(action) {
   switch (action.type) {
     case SET_MESSAGE:
       return action.message
@@ -15,8 +15,18 @@ function message(state, action) {
       return 'The document was successfully saved';
 
     default:
-      return state;
+      return null;
   }
+}
+
+function messages(state, action) {
+  const message = getMessage(action);
+  if (!message) {
+    return state;
+  }
+  return update(state, {$push:
+    [{message: message, timestamp: Date.now()}]
+  });
 }
 
 function ui(state, action) {
@@ -29,7 +39,7 @@ function ui(state, action) {
 
     default:
       return update(state, {$merge: {
-        message: message(state.message, action)
+        messages: messages(state.messages, action)
       }});
   }
 }
@@ -52,7 +62,7 @@ module.exports = function(initialState, action) {
   const state = Object.assign({
     ui: {
       modal: null,
-      message: ''
+      messages: [] // {message: '', timestamp: 0}
     },
     user: null,
     wikode: {

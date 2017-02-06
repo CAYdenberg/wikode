@@ -28,7 +28,7 @@ describe('Reducer', function() {
     }, {type: SAVE_WIKODE, datetime: 2000});
     assert.equal(state.wikode.datetime, 2000);
     assert.equal(state.wikode.title, 'My Wikode');
-    assert.equal(state.ui.message, 'The document was successfully saved');
+    assert.equal(state.ui.messages[0].message, 'The document was successfully saved');
   });
 
   it('should set the value of the currently open modal', function() {
@@ -44,7 +44,7 @@ describe('Reducer', function() {
     const state = reducer({},
       {type: SET_MESSAGE, message: 'A new message for the user'}
     );
-    assert.equal(state.ui.message, 'A new message for the user');
+    assert.equal(state.ui.messages[0].message, 'A new message for the user');
   });
 
 });

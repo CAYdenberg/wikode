@@ -13,9 +13,17 @@ const Nav = React.createClass({
     const state = this.context.store.getState();
     return {
       user: state.user,
+      collapsed: true,
       newWikodeModal: false,
       loginModal: false
     };
+  },
+
+  _toggleCollapsed: function(e) {
+    e.preventDefault();
+    this.setState({
+      collapsed: !this.state.collapsed
+    })
   },
 
   _toggleNewWikodeModal: function(e) {
@@ -47,7 +55,10 @@ const Nav = React.createClass({
         <div className="top-bar-title">
           <a href="/">Wikode</a>
         </div>
-        <ul className="vertical medium-horizontal menu align-right">
+        <div className="align-right hide-for-medium">
+          <button onClick={this._toggleCollapsed}>MENU</button>
+        </div>
+        <ul className={'vertical medium-horizontal menu align-right medium-collapse ' + (this.state.collapsed ? '' : 'in')}>
           <li>
             {newDocument}
           </li>

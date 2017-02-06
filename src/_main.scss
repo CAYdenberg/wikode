@@ -8,6 +8,17 @@
 // include icons
 @import "icons/styles.scss";
 
+
+.medium-collapse {
+  transition: 0.3s ease-in-out max-height;
+  @include breakpoint(medium down) {
+    max-height: 0;
+  }
+  &.in {
+    max-height: 100vh;
+  }
+}
+
 /** ****************************
 * NAV
 ****************************  */
