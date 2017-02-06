@@ -111,19 +111,14 @@ describe('User Model', () => {
 describe('Wikode Model', () => {
 
   it('should create a wikode with a defined slug', (done) => {
-    const wikodeMock = sinon.mock(Wikode);
-    wikodeMock.expects('create').resolves({
 
-    });
-
-    Wikode.create({
+    const wikode = new Wikode({
       title: 'My Slug',
-      slug: 'my-slug',
-      nothing: []
-    }).then(() => {
-      wikodeMock.restore();
-      done();
+      slug: 'my-slug'
     });
+    wikode.validate();
+    expect(wikode.slug).to.equal('my-slug');
+    done();
 
   });
 
@@ -132,5 +127,7 @@ describe('Wikode Model', () => {
   it('should not create a wikode if neither the title nor the slug is provided');
 
   it('should not create a wikode if the user is not provided');
+
+  it('should not create a wikode if the combination of the user and the slug is not unique');
 
 })
