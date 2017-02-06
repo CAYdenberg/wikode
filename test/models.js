@@ -110,9 +110,11 @@ describe('User Model', () => {
 
 describe('Wikode Model', () => {
 
-  it('should create a wikode', (done) => {
+  it('should create a wikode with a defined slug', (done) => {
     const wikodeMock = sinon.mock(Wikode);
-    wikodeMock.expects('create').resolves();
+    wikodeMock.expects('create').resolves({
+
+    });
 
     Wikode.create({
       title: 'My Slug',
@@ -125,5 +127,10 @@ describe('Wikode Model', () => {
 
   });
 
+  it('should create a slug from the title if the slug is not provided');
+
+  it('should not create a wikode if neither the title nor the slug is provided');
+
+  it('should not create a wikode if the user is not provided');
 
 })

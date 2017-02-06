@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongooseHistory = require('mongoose-history');
 
 const Schema = mongoose.Schema;
 
@@ -14,5 +15,9 @@ var WikodeSchema = new Schema({
 }, {
   minimize: false
 });
+
+WikodeSchema.plugin(mongooseHistory, {metadata: [
+  {key: 'original', value: (original) => original}
+]});
 
 module.exports = mongoose.model('Wikode', WikodeSchema);

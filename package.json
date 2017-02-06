@@ -43,6 +43,7 @@
     "lodash": "^4.16.6",
     "lusca": "^1.4.1",
     "mongoose": "^4.6.6",
+    "mongoose-history": "^0.4.2",
     "morgan": "^1.7.0",
     "node-jsx": "^0.13.3",
     "nodemailer": "^2.6.4",
