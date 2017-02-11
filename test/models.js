@@ -110,23 +110,59 @@ describe('User Model', () => {
 
 describe('Wikode Model', () => {
 
-  it('should create a wikode with a defined slug', (done) => {
+  it('should create a wikode with a defined slug and datetime', (done) => {
 
     const wikode = new Wikode({
       title: 'My Slug',
-      slug: 'my-slug'
+      slug: 'my-slug',
+      user: '@AUser'
     });
-    wikode.validate();
-    expect(wikode.slug).to.equal('my-slug');
-    done();
+    wikode.validate((err) => {
+      expect(err).to.be.null;
+      expect(wikode.slug).to.equal('my-slug');
+      expect(wikode.datetime).to.be.ok;
+      done();
+    });
 
   });
 
-  it('should create a slug from the title if the slug is not provided');
+  it('should create a slug from the title if the slug is not provided', (done) => {
 
-  it('should not create a wikode if neither the title nor the slug is provided');
+    const wikode = new Wikode({
+      title: 'My Slug',
+      user: '@AUser'
+    });
+    wikode.validate((err) => {
+      expect(err).to.be.null;
+      expect(wikode.slug).to.equal('my-slug');
+      done();
+    });
 
-  it('should not create a wikode if the user is not provided');
+  });
+
+  it('should not create a wikode if the title is not provided', (done) => {
+
+    const wikode = new Wikode({
+      user: '@AUser'
+    });
+    wikode.validate((err) => {
+      expect(err.errors.title).to.be.ok;
+      done();
+    });
+
+  });
+
+  it('should not create a wikode if the user is not provided', (done) => {
+    const wikode = new Wikode({
+      title: 'My Title',
+      slug: 'my-slug'
+    });
+    wikode.validate((err) => {
+      expect(err.errors.user).to.be.ok;
+      done();
+    });
+
+  });
 
   it('should not create a wikode if the combination of the user and the slug is not unique');
 
