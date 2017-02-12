@@ -75,19 +75,17 @@ function Controller(model) {
     // make sure we can get back here after a successful login
     req.session.returnTo = req.path;
 
-    // find the CURRENT LATEST Wikode (we may generate a new version before we send)
-    this.model.find({
+    this.model.findOne({
       user: req.params.user,
       slug: req.params.slug
-    }).sort({datetime: -1}).limit(1).then(results => {
+    }).then(wikode => {
 
-      if (results.length === 0) {
+      if (!wikode) {
         var err = new Error('Not Found');
         err.status = 404;
         return next(err);
       }
 
-      const wikode = results[0];
       res.locals.title = wikode.title;
       res.locals.state.wikode = {
         user: wikode.user,

@@ -52,6 +52,11 @@ describe('Wikode Controller', () => {
       .resolves(expectedWikode);
 
     const wikodeController = require('../controllers/wikode')(Wikode);
+    req.path = '/wikode/@AnotherUser/my-slug',
+    req.params = {
+      user: '@AnotherUser',
+      slug: 'my-slug'
+    };
 
     wikodeController.get(req, res, (err) => {
       expect(err).to.be.undefined;
