@@ -45,9 +45,10 @@ describe('Wikode Controller', () => {
       user: '@AnotherUser'
     }
     wikodeMock
-      .expects('find')
-      .chain('sort').withArgs({datetime: -1})
-      .chain('limit').withArgs(1)
+      .expects('findOne').withArgs({
+        user: '@AnotherUser',
+        slug: 'my-slug'
+      })
       .resolves([expectedWikode]);
 
     const wikodeController = require('../controllers/wikode')(Wikode);
@@ -65,10 +66,8 @@ describe('Wikode Controller', () => {
   it('GET non-existing wikode (throw 404)', (done) => {
     const wikodeMock = sinon.mock(Wikode);
     wikodeMock
-      .expects('find')
-      .chain('sort').withArgs({datetime: -1})
-      .chain('limit').withArgs(1)
-      .resolves([]);
+      .expects('findOne')
+      .rejects();
 
     const wikodeController = require('../controllers/wikode')(Wikode);
 
@@ -122,6 +121,10 @@ describe('Wikode Controller', () => {
       datetime: 111,
       content: ['Some existing content']
     };
+    wikodeMock.expect('findOne').withArgs({
+      user: '@OldUser',
+      slug: 'my-slug'
+    })
     wikodeMock
       .expects('create').withArgs({
         title: 'My Title',
@@ -179,17 +182,25 @@ describe('Wikode Controller', () => {
 
   it('PUT wikode (update content)', (done) => {
     const wikodeMock = sinon.mock(Wikode);
-    const expectedWikode = {
+    const oldWikode = {
       title: 'My Title',
       user: '@AUser',
       slug: 'my-slug',
       datetime: 111,
+      content: ['Some old content']
+    }
+    const newWikode = {
+      title: 'My Title',
+      user: '@AUser',
+      slug: 'my-slug',
+      datetime: 222,
       content: ['Some new content']
     };
     wikodeMock
-      .expects('create').withArgs({
-        content: ['Some existing content']
-      }).resolves(expectedWikode);
+      .expects('findOne').withArgs({
+        user: '@AUser',
+        'slug': 'my-slug'
+      }).resolves(oldWikode);
 
     req.body = {
       content: ['Some new content']
@@ -199,7 +210,7 @@ describe('Wikode Controller', () => {
 
     wikodeController.put(req, res, (err) => {
       expect(err).to.be.undefined;
-      expect(res.locals.state.wikode).to.equal(expectedWikode);
+      expect(res.locals.state.wikode).to.equal(newWikode);
       wikodeMock.verify();
       done();
     })
