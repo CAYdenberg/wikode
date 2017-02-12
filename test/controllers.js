@@ -41,7 +41,7 @@ describe('Wikode Controller', () => {
       title: 'My Title',
       slug: 'my-slug',
       content: 'Some content',
-      datetime: '111',
+      datetime: 111,
       user: '@AnotherUser'
     }
     wikodeMock
@@ -49,7 +49,7 @@ describe('Wikode Controller', () => {
         user: '@AnotherUser',
         slug: 'my-slug'
       })
-      .resolves([expectedWikode]);
+      .resolves(expectedWikode);
 
     const wikodeController = require('../controllers/wikode')(Wikode);
 
@@ -102,7 +102,7 @@ describe('Wikode Controller', () => {
 
     const wikodeController = require('../controllers/wikode')(Wikode);
 
-    wikodeController.post(req, res, (err) => {
+    wikodeController.brandNew(req, res, (err) => {
       expect(err).to.be.undefined;
       expect(res.locals.state.wikode).to.equal(expectedWikode);
       expect(res.locals.redirect).to.equal('/wikode/@AUser/my-title');
@@ -142,7 +142,7 @@ describe('Wikode Controller', () => {
 
     const wikodeController = require('../controllers/wikode')(Wikode);
 
-    wikodeController.post(req, res, (err) => {
+    wikodeController.fork(req, res, (err) => {
       expect(err).to.be.undefined;
       expect(res.locals.state.wikode).to.equal(expectedWikode);
       expect(res.locals.redirect).to.equal('/wikode/@AUser/my-slug');
@@ -171,7 +171,7 @@ describe('Wikode Controller', () => {
 
     const wikodeController = require('../controllers/wikode')(Wikode);
 
-    wikodeController.post(req, res, (err) => {
+    wikodeController.fork(req, res, (err) => {
       expect(err.status).to.equal(400);
       expect(err.message).to.equal('Duplicate user + slug combination');
       wikodeMock.verify();
