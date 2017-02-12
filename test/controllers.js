@@ -13,6 +13,7 @@ describe('Wikode Controller', () => {
 
   var req, res;
 
+
   beforeEach(() => {
     req = {
       user: {
@@ -33,6 +34,7 @@ describe('Wikode Controller', () => {
     };
   });
 
+
   it('GET existing wikode', (done) => {
     const wikodeMock = sinon.mock(Wikode);
     const expectedWikode = {
@@ -50,15 +52,17 @@ describe('Wikode Controller', () => {
 
     const wikodeController = require('../controllers/wikode')(Wikode);
 
-    wikodeController.get(req, res, () => {
+    wikodeController.get(req, res, (err) => {
+      expect(err).to.be.undefined;
       assert(res.locals.view, 'Editor');
       assert(res.locals.state.wikode, expectedWikode);
-      wikodeMock.restore();
+      wikodeMock.verify();
       done();
     });
   });
 
-  it('GET non-existing wikode (404)', (done) => {
+
+  it('GET non-existing wikode (throw 404)', (done) => {
     const wikodeMock = sinon.mock(Wikode);
     wikodeMock
       .expects('find')
@@ -70,73 +74,134 @@ describe('Wikode Controller', () => {
 
     wikodeController.get(req, res, (err) => {
       assert.equal(err.status, 404);
-      wikodeMock.restore();
+      wikodeMock.verify();
       done();
     })
   });
 
-  it('PUT existing wikode', (done) => {
+
+  it('POST completely new Wikode', (done) => {
     const wikodeMock = sinon.mock(Wikode);
     const expectedWikode = {
-      user: '@AUser',
       title: 'My Title',
+      user: '@AUser',
       slug: 'my-title',
-      content: 'Some content',
-      datetime: '111'
+      datetime: 111,
+      content: []
     };
     wikodeMock
-      .expects('create')
-      .resolves(expectedWikode);
+      .expects('create').withArgs({
+        title: 'My Title',
+        user: '@AUser'
+      }).resolves(expectedWikode);
+
+    req.body = {
+      'new-wikode-title': 'My Title'
+    };
+    req.path = '/wikode/';
+    req.params = {};
 
     const wikodeController = require('../controllers/wikode')(Wikode);
 
-    req.path = '/wikode/my-title';
-    req.body = {
-      title: 'My Title',
-      slug: 'my-title',
-      content: 'Some content'
-    };
-    wikodeController.put(req, res, (err) => {
-      expect(res.locals.state.wikode).to.deep.equal(expectedWikode);
+    wikodeController.post(req, res, (err) => {
       expect(err).to.be.undefined;
-      expect(res.locals.view).to.equal('Editor');
-      wikodeMock.restore();
+      expect(res.locals.state.wikode).to.equal(expectedWikode);
+      expect(res.locals.redirect).to.equal('/wikode/@AUser/my-title');
+      wikodeMock.verify();
       done();
-    });
+    })
   });
 
-  it('PUT wikode when not logged in (401)', (done) => {
+
+  it('POST wikode that is a copy of another users wikode', (done) => {
     const wikodeMock = sinon.mock(Wikode);
+    const expectedWikode = {
+      title: 'My Title',
+      user: '@AUser',
+      slug: 'my-slug',
+      datetime: 111,
+      content: ['Some existing content']
+    };
+    wikodeMock
+      .expects('create').withArgs({
+        title: 'My Title',
+        user: '@AUser',
+        slug: 'my-slug',
+        content: ['Some existing content']
+      }).resolves(expectedWikode);
 
-    const wikdoeController = require('../controllers/wikode')(Wikode);
+    req.body = {};
+    req.path = '/wikode/@OldUser/my-slug';
+    req.params = {
+      user: '@OldUser',
+      slug: 'my-slug'
+    };
 
-    req.user = null;
-    wikdoeController.put(req, res, (err) => {
-      assert(err.status, 401);
-      wikodeMock.restore();
+    const wikodeController = require('../controllers/wikode')(Wikode);
+
+    wikodeController.post(req, res, (err) => {
+      expect(err).to.be.undefined;
+      expect(res.locals.state.wikode).to.equal(expectedWikode);
+      expect(res.locals.redirect).to.equal('/wikode/@AUser/my-slug');
+      wikodeMock.verify();
       done();
-    });
+    })
   });
 
-  // it('POST new Wikode', (done) => {
-  //   const wikodeMock = sinon.mock(Wikode);
-  //   const expectedWikode = {
-  //     user: '@AUser',
-  //     title: 'My Title',
-  //     slug: 'my-title',
-  //     content: 'Some content',
-  //     datetime: '111'
-  //   };
-  //
-  //   const wikodeController = require('../controllers/wikode')(Wikode);
-  //
-  //   req.body = {
-  //     "new-wikode-title": 'My Title'
-  //   }
-  //   wikodeController.post(req, res, (err) => {
-  //     expect(err).to.be.undefined;
-  //     wikodeMock.restore();
-  //     done();
-  //   });
-  // });
+
+  it('POST wikode that already exists (username + slug)', (done) => {
+    const wikodeMock = sinon.mock(Wikode);
+    wikodeMock
+      .expects('create').withArgs({
+        title: 'My Title',
+        user: '@AUser',
+        slug: 'my-slug',
+        content: ['Some existing content']
+      }).rejects();
+
+    req.body = {};
+    req.path = '/wikode/@OldUser/my-slug';
+    req.params = {
+      user: '@OldUser',
+      slug: 'my-slug'
+    };
+
+    const wikodeController = require('../controllers/wikode')(Wikode);
+
+    wikodeController.post(req, res, (err) => {
+      expect(err.status).to.equal(400);
+      expect(err.message).to.equal('Duplicate user + slug combination');
+      wikodeMock.verify();
+      done();
+    })
+  });
+
+
+  it('PUT wikode (update content)', (done) => {
+    const wikodeMock = sinon.mock(Wikode);
+    const expectedWikode = {
+      title: 'My Title',
+      user: '@AUser',
+      slug: 'my-slug',
+      datetime: 111,
+      content: ['Some new content']
+    };
+    wikodeMock
+      .expects('create').withArgs({
+        content: ['Some existing content']
+      }).resolves(expectedWikode);
+
+    req.body = {
+      content: ['Some new content']
+    };
+
+    const wikodeController = require('../controllers/wikode')(Wikode);
+
+    wikodeController.put(req, res, (err) => {
+      expect(err).to.be.undefined;
+      expect(res.locals.state.wikode).to.equal(expectedWikode);
+      wikodeMock.verify();
+      done();
+    })
+  });
 });
