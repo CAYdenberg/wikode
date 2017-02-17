@@ -72,7 +72,7 @@ describe('Wikode Controller', () => {
     const wikodeMock = sinon.mock(Wikode);
     wikodeMock
       .expects('findOne')
-      .rejects();
+      .resolves(null);
 
     const wikodeController = require('../controllers/wikode')(Wikode);
 
@@ -193,7 +193,7 @@ describe('Wikode Controller', () => {
       slug: 'my-slug',
       datetime: 111,
       content: ['Some old content']
-    }
+    };
     const newWikode = {
       title: 'My Title',
       user: '@AUser',
@@ -204,8 +204,9 @@ describe('Wikode Controller', () => {
     wikodeMock
       .expects('findOne').withArgs({
         user: '@AUser',
-        'slug': 'my-slug'
+        slug: 'my-slug'
       }).resolves(oldWikode);
+    oldWikode.save = sinon.stub().resolves(newWikode);
 
     req.body = {
       content: ['Some new content']
@@ -215,7 +216,7 @@ describe('Wikode Controller', () => {
 
     wikodeController.put(req, res, (err) => {
       expect(err).to.be.undefined;
-      expect(res.locals.state.wikode).to.equal(newWikode);
+      assert(res.locals.state.wikode, newWikode);
       wikodeMock.verify();
       done();
     })
