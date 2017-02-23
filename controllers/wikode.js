@@ -16,7 +16,7 @@ function Controller(model) {
       if (!wikode) {
         var err = new Error('Not Found');
         err.status = 404;
-        return next(err);
+        return err;
       } else {
         return wikode;
       }
