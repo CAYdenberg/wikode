@@ -8,7 +8,7 @@ function getUsername(req) {
 function Controller(model) {
   this.model = model;
 
-  this.findFromReq = (req, res, next) => {
+  this.findFromReq = (req) => {
     return this.model.findOne({
       user: req.params.user,
       slug: req.params.slug
@@ -16,11 +16,9 @@ function Controller(model) {
       if (!wikode) {
         var err = new Error('Not Found');
         err.status = 404;
-        return err;
-      } else {
-        return wikode;
+        return Promise.reject(err);
       }
-
+      return wikode;
     });
   }
 
@@ -62,19 +60,19 @@ function Controller(model) {
       return next(err);
     }
 
-    this.findFromReq(req, res, next).then(wikode => {
+    this.findFromReq(req).then(wikode => {
       return this.model.create({
         title: wikode.title,
         slug: wikode.slug,
         content: wikode.content,
         user: user
       }).catch(err => {
-
         if (err.code === 11000) {
           err.message = 'You already have a Wikode with the same or a similar title';
           err.status = 400;
         }
-        return next(err);
+        return Promise.reject(err);
+
       });
     }).then(newWikode => {
       res.locals.redirect = `/wikode/${newWikode.user}/${newWikode.slug}/`;
@@ -111,7 +109,7 @@ function Controller(model) {
     // make sure we can get back here after a successful login
     req.session.returnTo = req.path;
 
-    this.findFromReq(req, res, next).then(wikode => {
+    this.findFromReq(req).then(wikode => {
       res.locals.view = 'Editor';
       res.locals.title = wikode.title;
       res.locals.state.wikode = this.filterResponseData(wikode);
