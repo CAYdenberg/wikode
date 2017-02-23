@@ -95,8 +95,8 @@ describe('Wikode Controller', () => {
     };
     wikodeMock
       .expects('create').withArgs({
+        user: '@AUser',
         title: 'My Title',
-        user: '@AUser'
       }).resolves(expectedWikode);
 
     req.body = {
@@ -107,10 +107,10 @@ describe('Wikode Controller', () => {
 
     const wikodeController = require('../controllers/wikode')(Wikode);
 
-    wikodeController.brandNew(req, res, (err) => {
+    wikodeController.post(req, res, (err) => {
       expect(err).to.be.undefined;
-      expect(res.locals.state.wikode).to.equal(expectedWikode);
-      expect(res.locals.redirect).to.equal('/wikode/@AUser/my-title');
+      assert(res.locals.state.wikode, expectedWikode);
+      expect(res.locals.redirect).to.equal('/wikode/@AUser/my-title/');
       wikodeMock.verify();
       done();
     })
@@ -119,6 +119,14 @@ describe('Wikode Controller', () => {
 
   it('POST wikode that is a copy of another users wikode', (done) => {
     const wikodeMock = sinon.mock(Wikode);
+
+    const oldWikode = {
+      title: 'My Title',
+      user: '@OldUser',
+      slug: 'my-slug',
+      datetime: 111,
+      content: ['Some existing content']
+    }
     const expectedWikode = {
       title: 'My Title',
       user: '@AUser',
@@ -126,17 +134,17 @@ describe('Wikode Controller', () => {
       datetime: 111,
       content: ['Some existing content']
     };
-    wikodeMock.expect('findOne').withArgs({
+
+    wikodeMock.expects('findOne').withArgs({
       user: '@OldUser',
       slug: 'my-slug'
-    })
-    wikodeMock
-      .expects('create').withArgs({
-        title: 'My Title',
-        user: '@AUser',
-        slug: 'my-slug',
-        content: ['Some existing content']
-      }).resolves(expectedWikode);
+    }).resolves(oldWikode);
+    wikodeMock.expects('create').withArgs({
+      title: 'My Title',
+      user: '@AUser',
+      slug: 'my-slug',
+      content: ['Some existing content']
+    }).resolves(expectedWikode);
 
     req.body = {};
     req.path = '/wikode/@OldUser/my-slug';
@@ -149,8 +157,8 @@ describe('Wikode Controller', () => {
 
     wikodeController.fork(req, res, (err) => {
       expect(err).to.be.undefined;
-      expect(res.locals.state.wikode).to.equal(expectedWikode);
-      expect(res.locals.redirect).to.equal('/wikode/@AUser/my-slug');
+      assert(res.locals.state.wikode, expectedWikode);
+      expect(res.locals.redirect).to.equal('/wikode/@AUser/my-slug/');
       wikodeMock.verify();
       done();
     })
@@ -159,13 +167,28 @@ describe('Wikode Controller', () => {
 
   it('POST wikode that already exists (username + slug)', (done) => {
     const wikodeMock = sinon.mock(Wikode);
-    wikodeMock
-      .expects('create').withArgs({
+
+    const oldWikode = {
+      title: 'My Title',
+      user: '@OldUser',
+      slug: 'my-slug',
+      datetime: 111,
+      content: ['Some existing content']
+    }
+
+    wikodeMock.expects('findOne').withArgs({
+      user: '@OldUser',
+      slug: 'my-slug'
+    }).resolves(oldWikode);
+    wikodeMock.expects('create').withArgs({
         title: 'My Title',
         user: '@AUser',
         slug: 'my-slug',
         content: ['Some existing content']
-      }).rejects();
+      }).rejects({
+        name: 'MongoError',
+        code: 11000
+      });
 
     req.body = {};
     req.path = '/wikode/@OldUser/my-slug';
@@ -178,7 +201,7 @@ describe('Wikode Controller', () => {
 
     wikodeController.fork(req, res, (err) => {
       expect(err.status).to.equal(400);
-      expect(err.message).to.equal('Duplicate user + slug combination');
+      expect(err.message).to.equal('You already have a Wikode with the same or a similar title');
       wikodeMock.verify();
       done();
     })

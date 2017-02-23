@@ -161,7 +161,7 @@ app.use(function(req, res, next) {
 // renders the error page (HTML) or
 app.use(function(err, req, res) {
   res.status(err.status || 500);
-  res.locals.message = err.message;
+  res.locals.message = err.status ? err.message : 'Internal server error';
 
   if (req.accepts('text/html')) {
     res.render('error', res.locals);

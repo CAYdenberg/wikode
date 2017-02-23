@@ -22,7 +22,7 @@ WikodeSchema.index({ user: 1, slug: 1}, { unique: true });
 
 WikodeSchema.pre('validate', function(next) {
   // create slug from title if not sent
-  if (typeof this.slug === 'undefined') {
+  if (typeof this.slug === 'undefined' || !this.slug) {
     this.slug = slug(this.title || '').toLowerCase();
   }
   // set datetime to current time
