@@ -124,7 +124,7 @@ app.get('/auth/twitter/callback', passport.authenticate('twitter', { failureRedi
   res.redirect(req.session.returnTo || '/');
 });
 
-app.post('/wikode/', wikodeController.brandNew); // create a brand new Wikode
+app.post('/wikode/', wikodeController.post); // create a brand new Wikode
 app.post('/wikode/:user/:slug', wikodeController.fork); // fork a wikode belonging to :user to the current user
 app.put('/wikode/:user/:slug', wikodeController.put); // update a Wikode
 app.get('/wikode/:user/:slug', wikodeController.get);

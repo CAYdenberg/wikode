@@ -100,17 +100,21 @@ const WikiEditor = React.createClass({
     });
   },
 
-  _fork: function() {
+  _fork: function(e) {
     const user = this.context.store.getState().user;
     if (!user) {
+      e.preventDefault();
       this._toggleLoginModal();
-    } else {
-      this._save();
+      return false;
     }
+    console.log(e.target);
+    return true;
   },
 
   render: function() {
     const editorState = this.state.editorState;
+    const wikode = this.context.store.getState().wikode;
+    const thisUrl = `/wikode/${wikode.user}/${wikode.slug}/`;
 
     // If the user changes block type before entering any text, we can
     // either style the placeholder or hide it. Let's just hide it now.
@@ -151,9 +155,11 @@ const WikiEditor = React.createClass({
       <div className="RichEditor-root">
         <Affix>
           <div className="editor-controls">
-            <button onClick={this._fork} className="editor-controls__save" aria-label="fork">
-              Fork this document
-            </button>
+            <form method="POST" action={thisUrl} onSubmit={this._fork}>
+              <button type="submit" className="editor-controls__save" aria-label="fork">
+                Fork this document
+              </button>
+            </form>
           </div>
         </Affix>
         <div className={className}>

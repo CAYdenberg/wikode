@@ -1,4 +1,3 @@
-const update = require('react-addons-update');
 const popsicle = require('popsicle');
 
 const {
@@ -40,27 +39,18 @@ module.exports = exports.default = {
     return {type: SET_MODAL, value: null}
   },
 
-
-
   save: function(wikode, content, user) {
     return (dispatch) => {
-      const newWikode = update(wikode, {$merge: {
-        content: content,
-        user: user
-      }});
-
       popsicle.put({
-        url: `/wikode/${newWikode.slug}`,
-        body: newWikode,
+        url: `/wikode/${user}/${wikode.slug}`,
+        body: {
+          content: content
+        },
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         }
-
-      }).then((res) => {
-        history.pushState({}, newWikode.title, `/wikode/${newWikode.user}/${newWikode.slug}`);
-        dispatch(this.saveResponse(res));
-      });
+      }).then(res => dispatch(this.saveResponse(res)));
     }
   }
 
