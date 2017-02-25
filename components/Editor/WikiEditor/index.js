@@ -107,7 +107,6 @@ const WikiEditor = React.createClass({
       this._toggleLoginModal();
       return false;
     }
-    console.log(e.target);
     return true;
   },
 
