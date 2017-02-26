@@ -55,7 +55,7 @@ const Affix = React.createClass({
       <div
         ref={this.onDivMount}
         style={this.state.fixed ?
-          {position: "fixed", top: 0} : {position: "static"}}
+          {position: 'fixed', top: 0} : {position: 'static'}}
         >
         {this.props.children}
       </div>
