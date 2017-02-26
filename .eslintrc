@@ -24,10 +24,10 @@
   "extends": ["eslint:recommended"],
   "rules": {
     "no-console": 1,
+    "no-unused-vars": [2, {'varsIgnorePattern': 'React'}],
     "react/jsx-uses-vars": 1,
     'no-global-assign': 0,
     'no-unsafe-negation': 0,
-    'quotes': [2, 'single'],
-    'semi': [2, 'always']
+    'quotes': [2, 'single']
   }
 }
