@@ -1,5 +1,3 @@
-"use strict";
-
 const React = require('react');
 
 const Draft = require('draft-js');
@@ -7,9 +5,7 @@ const {Editor, EditorState, RichUtils, getDefaultKeyBinding, KeyBindingUtil} = D
 const {hasCommandModifier} = KeyBindingUtil;
 
 const Controls = require('./Controls');
-const Modal = require('../../partials/Modal');
 const Affix = require('../../partials/Affix');
-const LoginForm = require('../../Login');
 
 const WikiEditor = React.createClass({
   contextTypes: {
@@ -91,13 +87,11 @@ const WikiEditor = React.createClass({
     const contentState = this.state.editorState.getCurrentContent();
     const content = Draft.convertToRaw(contentState);
     const user = store.getState().user;
-    store.action("save", store.getState().wikode, content, user);
+    store.action('save', store.getState().wikode, content, user);
   },
 
   _toggleLoginModal: function() {
-    this.setState({
-      loginModal: !this.state.loginModal
-    });
+    this.context.store.action('openModal', 'login');
   },
 
   _fork: function(e) {
@@ -107,7 +101,6 @@ const WikiEditor = React.createClass({
       this._toggleLoginModal();
       return false;
     }
-    console.log(e.target);
     return true;
   },
 
@@ -172,10 +165,6 @@ const WikiEditor = React.createClass({
           />
         </div>
 
-        <Modal title="Login to continue" hide={this._toggleLoginModal} visible={this.state.loginModal}>
-          <LoginForm />
-        </Modal>
-
       </div>
     );
   }
@@ -183,8 +172,10 @@ const WikiEditor = React.createClass({
 
 function getBlockStyle(block) {
   switch (block.getType()) {
-    case 'blockquote': return 'RichEditor-blockquote';
-    default: return null;
+    case 'blockquote':
+      return 'RichEditor-blockquote';
+    default:
+      return null;
   }
 }
 

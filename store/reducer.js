@@ -9,7 +9,7 @@ const {
 function getMessage(action) {
   switch (action.type) {
     case SET_MESSAGE:
-      return action.message
+      return action.message;
 
     case SAVE_WIKODE:
       return 'The document was successfully saved';
@@ -79,4 +79,4 @@ module.exports = function(initialState, action) {
     wikode: {$merge: wikode(state.wikode, action)}
   });
 
-}
+};

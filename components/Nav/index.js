@@ -1,9 +1,5 @@
 const React = require('react');
 
-const Modal = require('../partials/Modal');
-const LoginForm = require('../Login');
-const NewWikodeForm = require('../NewWikode');
-
 const Nav = React.createClass({
   contextTypes: {
     store: React.PropTypes.object
@@ -23,21 +19,17 @@ const Nav = React.createClass({
     e.preventDefault();
     this.setState({
       collapsed: !this.state.collapsed
-    })
+    });
   },
 
   _toggleNewWikodeModal: function(e) {
     e.preventDefault();
-    this.setState({
-      newWikodeModal: !this.state.newWikodeModal
-    });
+    this.context.store.action('openModal', 'newWikode');
   },
 
   _toggleLoginModal: function(e) {
     e.preventDefault();
-    this.setState({
-      loginModal: !this.state.loginModal
-    });
+    this.context.store.action('openModal', 'login');
   },
 
   render: function() {
@@ -66,14 +58,6 @@ const Nav = React.createClass({
             {login}
           </li>
         </ul>
-
-        <Modal title="Login to continue" hide={this._toggleLoginModal} visible={this.state.loginModal}>
-          <LoginForm />
-        </Modal>
-
-        <Modal title="Create a new Wikode" hide={this._toggleNewWikodeModal} visible={this.state.newWikodeModal}>
-          <NewWikodeForm />
-        </Modal>
 
       </nav>
     );
