@@ -42,7 +42,7 @@ gulp.task('lint', function() {
 gulp.task('js', function () {
   // set up the browserify instance on a task basis
   var b = browserify('src/_main.js')
-    .transform("babelify", {presets: ['es2015', 'react']});
+    .transform('babelify', {presets: ['es2015', 'react']});
 
   return b.bundle()
     .pipe(source('main.js'))
@@ -61,7 +61,7 @@ gulp.task('watch', function () {
   // watch CLIENT SIDE JS
   gulp.watch(['src/**/*.js', 'components/**/*.js', 'store/**/*.js'], ['js']);
   // trigger browserSync reload when HBS files change
-  gulp.watch(['**/*.pug'], browserSync.reload);
+  gulp.watch(['views/**/*.pug'], browserSync.reload);
 
   return nodemon({
 
