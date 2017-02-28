@@ -97,7 +97,7 @@ function Controller(model) {
       return wikode.save();
 
     }).then(wikode => {
-      res.locals.view = 'Editor';
+      res.locals.view = 'Main';
       res.locals.title = wikode.title;
       res.locals.state.wikode = this.filterResponseData(wikode);
       return next();
@@ -110,7 +110,7 @@ function Controller(model) {
     req.session.returnTo = req.path;
 
     this.findFromReq(req).then(wikode => {
-      res.locals.view = 'Editor';
+      res.locals.view = 'Main';
       res.locals.title = wikode.title;
       res.locals.state.wikode = this.filterResponseData(wikode);
       return next();

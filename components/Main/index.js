@@ -1,5 +1,5 @@
 const React = require('react');
-const View = require('./view');
+const View = require('./View');
 
 // TODO: replace with connect
 
@@ -9,8 +9,10 @@ const Editor = React.createClass({
   },
 
   getInitialState: function() {
+    const state = this.context.store.getState();
     return {
-      title: this.context.store.getState().wikode.title
+      title: this.context.store.getState().wikode.title,
+      editMode: (state.wikode.user === state.user)
     };
   },
 
@@ -27,6 +29,7 @@ const Editor = React.createClass({
     return (
       <View
         title={this.state.title}
+        editMode={this.state.editMode}
       />
     );
   }

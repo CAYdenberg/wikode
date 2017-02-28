@@ -7,6 +7,25 @@ const {hasCommandModifier} = KeyBindingUtil;
 const Controls = require('./Controls');
 const Affix = require('../../partials/Affix');
 
+
+function getBlockStyle(block) {
+  switch (block.getType()) {
+    case 'blockquote':
+      return 'RichEditor-blockquote';
+    default:
+      return null;
+  }
+}
+
+
+function getKeyBinding(e) {
+  if (e.keyCode === 83 && hasCommandModifier(e)) { // ctrl + S
+    return 'save';
+  }
+  return getDefaultKeyBinding(e);
+}
+
+
 const WikiEditor = React.createClass({
   contextTypes: {
     store: React.PropTypes.object
@@ -24,22 +43,12 @@ const WikiEditor = React.createClass({
     }
 
     return ({
-      editorState: editorState,
-      editMode: (state.wikode.user === state.user),
-      showURLInput: false,
-      urlValue: '',
-      loginModal: false
+      editorState: editorState
     });
   },
 
   componentWillMount: function() {
-    const store = this.context.store;
-    this.context.store.subscribe(() => {
-      const state = store.getState();
-      this.setState({
-        editMode: (state.wikode.user === state.user)
-      });
-    });
+    return;
   },
 
   onEditorMount: function(domNode) {
@@ -90,24 +99,8 @@ const WikiEditor = React.createClass({
     store.action('save', store.getState().wikode, content, user);
   },
 
-  _toggleLoginModal: function() {
-    this.context.store.action('openModal', 'login');
-  },
-
-  _fork: function(e) {
-    const user = this.context.store.getState().user;
-    if (!user) {
-      e.preventDefault();
-      this._toggleLoginModal();
-      return false;
-    }
-    return true;
-  },
-
   render: function() {
     const editorState = this.state.editorState;
-    const wikode = this.context.store.getState().wikode;
-    const thisUrl = `/wikode/${wikode.user}/${wikode.slug}/`;
 
     // If the user changes block type before entering any text, we can
     // either style the placeholder or hide it. Let's just hide it now.
@@ -119,13 +112,11 @@ const WikiEditor = React.createClass({
       }
     }
 
-    return this.state.editMode ? (
+    return (
       <div className="RichEditor-root">
         <Affix>
           <Controls
             editorState={this.state.editorState}
-            urlValue={this.state.urlValue}
-            showURLInput={this.state.showURLInput}
             toggleInlineStyle={this.toggleInlineStyle}
             toggleBlockType={this.toggleBlockType}
             save={this._save}
@@ -144,46 +135,8 @@ const WikiEditor = React.createClass({
           />
         </div>
       </div>
-    ) : (
-      <div className="RichEditor-root">
-        <Affix>
-          <div className="editor-controls">
-            <form method="POST" action={thisUrl} onSubmit={this._fork}>
-              <button type="submit" className="editor-controls__save" aria-label="fork">
-                Fork this document
-              </button>
-            </form>
-          </div>
-        </Affix>
-        <div className={className}>
-          <Editor contenteditable="false"
-            readOnly="true"
-            editorState={editorState}
-            placeholder=""
-            ref="editor"
-            spellCheck={false}
-          />
-        </div>
-
-      </div>
     );
   }
 });
-
-function getBlockStyle(block) {
-  switch (block.getType()) {
-    case 'blockquote':
-      return 'RichEditor-blockquote';
-    default:
-      return null;
-  }
-}
-
-function getKeyBinding(e) {
-  if (e.keyCode === 83 && hasCommandModifier(e)) { // ctrl + S
-    return 'save';
-  }
-  return getDefaultKeyBinding(e);
-}
 
 module.exports = WikiEditor;

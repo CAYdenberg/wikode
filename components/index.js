@@ -7,7 +7,7 @@ const ModalController = require('./ModalController');
 
 const Routes = {
   Home: require('./Home'),
-  Editor: require('./Editor'),
+  Main: require('./Main'),
   Login: require('./Login'),
   NewWikode: require('./NewWikode')
 };
@@ -20,8 +20,11 @@ module.exports = (routeName, store) => {
         <header>
           <Nav />
         </header>
+
         <Route />
+
         <ModalController />
+
         <Messages />
       </div>
     </Provider>
