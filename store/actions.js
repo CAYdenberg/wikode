@@ -39,10 +39,10 @@ module.exports = exports.default = {
     return {type: SET_MODAL, value: null}
   },
 
-  save: function(wikode, content, user) {
+  save: function(wikode, content) {
     return (dispatch) => {
       popsicle.put({
-        url: `/wikode/${user}/${wikode.slug}`,
+        url: `/wikode/${wikode.user}/${wikode.slug}`,
         body: {
           content: content
         },

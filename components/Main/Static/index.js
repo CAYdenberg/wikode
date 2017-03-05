@@ -1,8 +1,9 @@
 const React = require('react');
 
 const Draft = require('draft-js');
-const {Editor, EditorState} = Draft;
+const {Editor} = Draft;
 
+const converter = require('../../../lib/converter');
 const Affix = require('../../partials/Affix');
 
 const Content = React.createClass({
@@ -11,16 +12,8 @@ const Content = React.createClass({
   },
 
   getInitialState: function() {
-
     const state = this.context.store.getState();
-
-    var editorState;
-    try {
-      editorState = EditorState.createWithContent(Draft.convertFromRaw(state.wikode.content));
-    } catch(e) {
-      editorState = EditorState.createEmpty();
-    }
-
+    const editorState = converter.raw2EditorState(state.wikode.content);
     return ({
       editorState: editorState
     });

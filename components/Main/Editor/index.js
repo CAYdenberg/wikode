@@ -1,11 +1,12 @@
 const React = require('react');
 
 const Draft = require('draft-js');
-const {Editor, EditorState, RichUtils, getDefaultKeyBinding, KeyBindingUtil} = Draft;
+const {Editor, RichUtils, getDefaultKeyBinding, KeyBindingUtil} = Draft;
 const {hasCommandModifier} = KeyBindingUtil;
 
-const Controls = require('./Controls');
+const converter = require('../../../lib/converter');
 const Affix = require('../../partials/Affix');
+const Controls = require('./Controls');
 
 
 function getBlockStyle(block) {
@@ -32,16 +33,8 @@ const WikiEditor = React.createClass({
   },
 
   getInitialState: function() {
-
     const state = this.context.store.getState();
-
-    var editorState;
-    try {
-      editorState = EditorState.createWithContent(Draft.convertFromRaw(state.wikode.content));
-    } catch(e) {
-      editorState = EditorState.createEmpty();
-    }
-
+    const editorState = converter.raw2EditorState(state.wikode.content);
     return ({
       editorState: editorState
     });
@@ -93,10 +86,8 @@ const WikiEditor = React.createClass({
 
   _save: function() {
     const store = this.context.store;
-    const contentState = this.state.editorState.getCurrentContent();
-    const content = Draft.convertToRaw(contentState);
-    const user = store.getState().user;
-    store.action('save', store.getState().wikode, content, user);
+    const content = converter.editorState2Raw(this.state.editorState);
+    store.action('save', store.getState().wikode, content);
   },
 
   render: function() {
