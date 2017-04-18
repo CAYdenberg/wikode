@@ -5,9 +5,7 @@ const gutil = require('gulp-util');
 const rename = require('gulp-rename');
 const sass = require('gulp-sass');
 const eslint = require('gulp-eslint');
-const browserify = require('browserify');
-const source = require('vinyl-source-stream');
-const buffer = require('vinyl-buffer');
+const webpack = require('gulp-webpack');
 
 const browserSync = require('browser-sync');
 const nodemon = require('gulp-nodemon');
@@ -40,17 +38,23 @@ gulp.task('lint', function() {
 });
 
 gulp.task('js', function () {
-  // set up the browserify instance on a task basis
-  var b = browserify('src/_main.js')
-    .transform("babelify", {presets: ['es2015', 'react']});
-
-  return b.bundle()
-    .pipe(source('main.js'))
-    .pipe(buffer())
+  return gulp.src('src/_main.js')
+    .pipe(webpack({
+      module: {loaders: [
+        {
+          test: /.js$/,
+          exclude: /node_modules/,
+          loader: 'babel',
+          query: {
+            presets: ['es2015', 'react']
+          }
+        }
+      ]}
+    }))
+    .pipe(rename('main.js'))
     .on('error', gutil.log)
     .pipe(gulp.dest('./dist'))
     .pipe(browserSync.stream());
-
 });
 
 gulp.task('default', ['css', 'fonts', 'lint', 'js']);
